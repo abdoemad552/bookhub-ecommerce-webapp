@@ -1,6 +1,7 @@
 package com.iti.jets.controller;
 
 import com.iti.jets.mock.dto.BookCardDto;
+import com.iti.jets.util.PathStorage;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +26,6 @@ public class FeaturedBooksServlet extends HttpServlet {
         );
         
         request.setAttribute("books", books);
-        request.getRequestDispatcher("book-card.jsp").forward(request, response);
+        request.getRequestDispatcher(PathStorage.BOOK_CARD).forward(request, response);
     }
 }

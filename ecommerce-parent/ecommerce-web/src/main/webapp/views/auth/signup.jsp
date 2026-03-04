@@ -8,7 +8,7 @@
     <meta name="description" content="Discover thousands of books across every genre. Shop for bestsellers, classics, and hidden gems with BookHub."/>
     <meta name="generator" content="BookHub"/>
     <meta name="keywords" content="books,bookstore,ebook,bestsellers,fiction,non-fiction"/>
-    <link rel="stylesheet" href="assets/css/tailwind.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
 </head>
 <body class="font-sans antialiased">
 <div class="min-h-screen bg-background flex items-center justify-center px-4 py-8">

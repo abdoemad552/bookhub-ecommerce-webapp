@@ -1,5 +1,6 @@
 package com.iti.jets.controller;
 
+import com.iti.jets.util.PathStorage;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +15,7 @@ public class LoginServlet extends HttpServlet {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws ServletException, IOException {
-        request.getRequestDispatcher("login.jsp").forward(request, response);
+        request.getRequestDispatcher(PathStorage.LOGIN_PAGE).forward(request, response);
     }
 
     @Override
