@@ -8,13 +8,14 @@
     <meta name="keywords" content="books,bookstore,ebook,bestsellers,fiction,non-fiction"/>
     <title>BookHub - Your Gateway to Endless Stories</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
 </head>
-<body class="font-sans antialiased">
+<body class="font-serif san antialiased">
 <div class="min-h-screen bg-background">
-    <jsp:include page="../util/header.jsp" />
+    <%@ include file="../util/header.jsp"%>
     <section class="bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-20 px-4">
         <div class="max-w-7xl mx-auto text-center">
-            <h1 class="text-5xl md:text-6xl font-bold text-foreground mb-6 text-balance">Your Gateway to Endless Stories</h1>
+            <h1 class="font-display text-5xl md:text-6xl font-bold text-foreground mb-6 text-balance">Your Gateway to Endless Stories</h1>
             <p class="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-balance">Discover thousands of books across every genre. From timeless classics to the latest bestsellers, find your next favorite read.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <a href="${pageContext.request.contextPath}/products">
