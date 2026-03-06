@@ -1,0 +1,40 @@
+/* Login Card */
+.card-modern {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--card) 0%, rgba(120, 53, 15, 0.01) 100%);
+    border: 1.5px solid var(--border);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    border-radius: 2rem;
+    padding: 2rem;
+}
+
+/* Floating accent */
+.card-modern::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(120, 53, 15, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Form spacing */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--foreground);
+    cursor: pointer;
+}
