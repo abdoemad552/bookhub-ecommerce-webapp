@@ -49,6 +49,20 @@ CREATE TABLE carts
         ON DELETE CASCADE
 );
 
+CREATE TABLE addresses
+(
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id     BIGINT UNIQUE,
+    government  VARCHAR(50),
+    city        VARCHAR(50),
+    street      VARCHAR(50),
+    building_no VARCHAR(50),
+    description VARCHAR(255)
+
+    FOREIGN KEY (user_id) REFERENCES users (id)
+        ON DELETE CASCADE
+);
+
 CREATE TABLE orders
 (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
