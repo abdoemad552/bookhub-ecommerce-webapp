@@ -20,6 +20,6 @@ public class SignupServlet extends HttpServlet {
         // Validate
 
         // Then
-        resp.sendRedirect(PathStorage.LOGIN_PAGE);
+        resp.sendRedirect(PathStorage.LOGIN_SERVLET);
     }
 }

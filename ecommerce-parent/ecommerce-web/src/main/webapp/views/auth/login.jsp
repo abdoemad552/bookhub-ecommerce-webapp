@@ -10,7 +10,7 @@
     <title>BookHub - Your Gateway to Endless Stories</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/login.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/authentication.css">
 </head>
 
 <body class="font-serif antialiased">
@@ -76,7 +76,7 @@
                 </div>
 
                 <!-- Checkbox Options -->
-                <div class="checkbox-group">
+                <div class="animate-slide-up checkbox-group">
                     <label class="checkbox-item">
                         <input type="checkbox" name="rememberMe" class="checkbox-modern">
                         <span>Remember me</span>
