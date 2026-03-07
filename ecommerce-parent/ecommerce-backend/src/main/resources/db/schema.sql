@@ -51,15 +51,17 @@ CREATE TABLE carts
 
 CREATE TABLE addresses
 (
-    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id     BIGINT UNIQUE,
-    government  VARCHAR(50),
-    city        VARCHAR(50),
-    street      VARCHAR(50),
-    building_no VARCHAR(50),
-    description VARCHAR(255)
+    id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id      BIGINT       NOT NULL,
+    address_type ENUM('HOME','WORK','SHIPPING','BILLING') DEFAULT 'SHIPPING',
+    government   VARCHAR(50)  NOT NULL,
+    city         VARCHAR(50)  NOT NULL,
+    street       VARCHAR(100) NOT NULL,
+    building_no  VARCHAR(20)  NOT NULL,
+    description  VARCHAR(255),
 
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (user_id)
+        REFERENCES users (id)
         ON DELETE CASCADE
 );
 
@@ -237,6 +239,9 @@ CREATE INDEX idx_wishlists_book ON wishlists (book_id);
 -- Tags Table
 CREATE INDEX idx_tags_name ON tags (name);
 CREATE INDEX idx_book_tags_tag_book ON book_tags (tag_id, book_id);
+
+-- Address Table
+CREATE INDEX idx_addresses_user ON addresses(user_id);
 
 -- Authors Table
 CREATE INDEX idx_authors_name ON authors (name);
