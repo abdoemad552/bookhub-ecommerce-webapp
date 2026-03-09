@@ -1,17 +1,17 @@
 CREATE TABLE users
 (
     id                  BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username            VARCHAR(20)    NOT NULL UNIQUE,
-    email               VARCHAR(100)   NOT NULL UNIQUE,
-    password            VARCHAR(255)   NOT NULL,
+    username            VARCHAR(20)           NOT NULL UNIQUE,
+    email               VARCHAR(100)          NOT NULL UNIQUE,
+    password            VARCHAR(255)          NOT NULL,
     first_name          VARCHAR(20),
     last_name           VARCHAR(20),
-    role                ENUM('ADMIN','USER') NOT NULL DEFAULT 'USER',
+    role                ENUM ('ADMIN','USER') NOT NULL DEFAULT 'USER',
     profile_pic_url     TEXT,
     birth_date          DATE,
     job                 VARCHAR(100),
-    credit_limit        DECIMAL(10, 2) NOT NULL DEFAULT 0.00 CHECK (credit_limit >= 0),
-    email_notifications BOOLEAN        NOT NULL DEFAULT FALSE
+    credit_limit        DECIMAL(10, 2)        NOT NULL DEFAULT 0.00 CHECK (credit_limit >= 0),
+    email_notifications BOOLEAN               NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE categories
@@ -21,18 +21,31 @@ CREATE TABLE categories
     description TEXT
 );
 
+CREATE TABLE user_interests
+(
+    user_id     BIGINT,
+    category_id BIGINT,
+
+    PRIMARY KEY (user_id, category_id),
+
+    FOREIGN KEY (user_id) REFERENCES users (id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories (id)
+        ON DELETE CASCADE
+);
+
 CREATE TABLE books
 (
     id             BIGINT AUTO_INCREMENT PRIMARY KEY,
-    title          VARCHAR(255)   NOT NULL,
+    title          VARCHAR(255)                           NOT NULL,
     description    TEXT,
-    price          DECIMAL(10, 2) NOT NULL CHECK (price >= 0),
-    stock_quantity INT            NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
+    price          DECIMAL(10, 2)                         NOT NULL CHECK (price >= 0),
+    stock_quantity INT                                    NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
     publish_date   DATE,
     image_url      TEXT,
-    isbn           VARCHAR(20)    NOT NULL UNIQUE,
+    isbn           VARCHAR(20)                            NOT NULL UNIQUE,
     category_id    BIGINT,
-    book_type      ENUM('PAPERBACK','HARDCOVER','EBOOK') NOT NULL DEFAULT 'PAPERBACK',
+    book_type      ENUM ('PAPERBACK','HARDCOVER','EBOOK') NOT NULL DEFAULT 'PAPERBACK',
     pages          INT CHECK (pages > 0),
     sold_quantity  INT,
 
@@ -53,7 +66,7 @@ CREATE TABLE addresses
 (
     id           BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id      BIGINT       NOT NULL,
-    address_type ENUM('HOME','WORK','SHIPPING','BILLING') DEFAULT 'SHIPPING',
+    address_type ENUM ('HOME','WORK','SHIPPING','BILLING') DEFAULT 'SHIPPING',
     government   VARCHAR(50)  NOT NULL,
     city         VARCHAR(50)  NOT NULL,
     street       VARCHAR(100) NOT NULL,
@@ -69,9 +82,9 @@ CREATE TABLE orders
 (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id     BIGINT,
-    total_price DECIMAL(10, 2) NOT NULL CHECK (total_price >= 0),
-    status      ENUM('PENDING','PAID','CANCELLED','SHIPPED','DELIVERED') NOT NULL DEFAULT 'PENDING',
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    total_price DECIMAL(10, 2)                                            NOT NULL CHECK (total_price >= 0),
+    status      ENUM ('PENDING','PAID','CANCELLED','SHIPPED','DELIVERED') NOT NULL DEFAULT 'PENDING',
+    created_at  TIMESTAMP                                                          DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id) REFERENCES users (id)
         ON DELETE CASCADE
@@ -241,7 +254,7 @@ CREATE INDEX idx_tags_name ON tags (name);
 CREATE INDEX idx_book_tags_tag_book ON book_tags (tag_id, book_id);
 
 -- Address Table
-CREATE INDEX idx_addresses_user ON addresses(user_id);
+CREATE INDEX idx_addresses_user ON addresses (user_id);
 
 -- Authors Table
 CREATE INDEX idx_authors_name ON authors (name);

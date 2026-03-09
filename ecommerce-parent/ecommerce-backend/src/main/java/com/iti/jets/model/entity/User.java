@@ -65,8 +65,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Order> orders = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<UserTag> userTags = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<UserInterest> interests = new HashSet<>();
 
     // Synchronization methods
     public void addAddress(Address address) {
@@ -109,6 +112,17 @@ public class User {
             userTags.remove(ut);
             ut.setUser(null);
         }
+    }
+
+    public void addInterest(Category category) {
+        if (category != null) {
+            UserInterest ui = new UserInterest(new UserInterestId(this.id, category.getId()), this, category);
+            interests.add(ui);
+        }
+    }
+
+    public void removeInterest(Category category) {
+        interests.removeIf(ui -> ui.getCategory().equals(category));
     }
 
     // Special setters
