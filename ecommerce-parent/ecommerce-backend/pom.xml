@@ -13,13 +13,6 @@
     <artifactId>ecommerce-backend</artifactId>
 
     <dependencies>
-        <!-- Jakarta EE -->
-        <dependency>
-            <groupId>jakarta.platform</groupId>
-            <artifactId>jakarta.jakartaee-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        
         <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
