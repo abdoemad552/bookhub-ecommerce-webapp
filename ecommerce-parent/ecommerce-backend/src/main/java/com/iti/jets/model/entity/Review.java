@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Review {
 
@@ -37,6 +38,7 @@ public class Review {
     private Book book;
 
     @Column(name = "rating")
+    @Builder.Default
     private Integer rating = 1;
 
     @Lob
@@ -46,16 +48,6 @@ public class Review {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
-
-    // Special constructor
-    public Review(User user, Book book, Integer rating, String comment, LocalDateTime createdAt) {
-        this.user = user;
-        this.book = book;
-        this.rating = rating;
-        this.comment = comment;
-        this.createdAt = createdAt;
-        this.id = new ReviewId(user.getId(), book.getId());
-    }
 
     // Special setters
     public void setRating(Integer rating) {

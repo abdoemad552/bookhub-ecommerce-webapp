@@ -9,10 +9,11 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "book_tags", indexes = {
         @Index(name = "idx_book_tags_tag_book", columnList = "tag_id, book_id")
 })
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BookTag {
 
@@ -31,11 +32,4 @@ public class BookTag {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "tag_id", nullable = false)
     private Tag tag;
-
-    // Special constructor
-    public BookTag(Tag tag, Book book) {
-        this.book = book;
-        this.tag = tag;
-        this.id = new BookTagId(book.getId(), tag.getId());
-    }
 }

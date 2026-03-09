@@ -8,10 +8,11 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Embeddable
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BookTagId implements Serializable {
 

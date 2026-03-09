@@ -14,6 +14,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CartItem {
 
@@ -35,14 +36,6 @@ public class CartItem {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
-
-    // Special constructor
-    public CartItem(Cart cart, Book book, Integer quantity) {
-        this.cart = cart;
-        this.book = book;
-        this.quantity = quantity;
-        this.id = new CartItemId(cart.getId(), book.getId());
-    }
 
     // Special setters
     public void setQuantity(Integer quantity) {

@@ -22,6 +22,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Book {
 
@@ -39,9 +40,11 @@ public class Book {
     private String description;
 
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
+    @Builder.Default
     private BigDecimal price = BigDecimal.ZERO;
 
     @Column(name = "stock_quantity", nullable = false)
+    @Builder.Default
     private Integer stockQuantity = 0;
 
     @Column(name = "publish_date")
@@ -61,21 +64,26 @@ public class Book {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "book_type", nullable = false)
+    @Builder.Default
     private BookType bookType = BookType.PAPERBACK;
 
     @Column(name = "pages")
     private Integer pages;
 
     @Column(name = "sold_quantity")
+    @Builder.Default
     private Integer soldQuantity = 0;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<Offer> offers = new HashSet<>();
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<BookAuthor> bookAuthors = new HashSet<>();
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<BookTag> bookTags = new HashSet<>();
 
     // Synchronization methods
@@ -97,8 +105,6 @@ public class Book {
         BookAuthor bookAuthor = new BookAuthor();
         bookAuthor.setBook(this);
         bookAuthor.setAuthor(author);
-        bookAuthor.setId(new BookAuthorId(this.id, author.getId()));
-
         bookAuthors.add(bookAuthor);
     }
 
@@ -110,8 +116,6 @@ public class Book {
         BookTag bookTag = new BookTag();
         bookTag.setBook(this);
         bookTag.setTag(tag);
-        bookTag.setId(new BookTagId(this.id, tag.getId()));
-
         bookTags.add(bookTag);
     }
 

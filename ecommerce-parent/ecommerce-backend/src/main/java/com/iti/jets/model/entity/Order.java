@@ -20,6 +20,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Order {
 
@@ -39,6 +40,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
+    @Builder.Default
     private OrderStatus status = OrderStatus.PENDING;
 
     @CreationTimestamp
@@ -46,6 +48,7 @@ public class Order {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<OrderItem> items = new HashSet<>();
 
     // Synchronization methods
@@ -66,12 +69,11 @@ public class Order {
     public void addBook(Book book, int quantity) {
         if (book == null) return;
 
-        OrderItemId id = new OrderItemId(this.getId(), book.getId());
         OrderItem item = new OrderItem();
-
-        item.setId(id);
+        item.setOrder(this);
         item.setBook(book);
         item.setQuantity(quantity);
+
         this.addItem(item);
     }
 

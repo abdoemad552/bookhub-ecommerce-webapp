@@ -14,6 +14,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Address {
 
@@ -30,6 +31,7 @@ public class Address {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "address_type")
+    @Builder.Default
     private AddressType addressType = AddressType.SHIPPING;
 
     @Column(name = "government", nullable = false, length = 50)

@@ -7,10 +7,11 @@ import lombok.*;
 @Table(name = "tags", indexes = {
         @Index(name = "idx_tags_name", columnList = "name")
 })
-@Setter
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Tag {
     @Id

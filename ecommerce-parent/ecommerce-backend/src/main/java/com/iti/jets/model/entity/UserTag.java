@@ -16,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserTag {
 
@@ -38,6 +39,7 @@ public class UserTag {
     private String description;
 
     @OneToMany(mappedBy = "userTag", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<UserBookTag> books = new HashSet<>();
 
     public void addBook(UserBookTag ubt) {

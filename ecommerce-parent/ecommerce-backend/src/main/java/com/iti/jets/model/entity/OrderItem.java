@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class OrderItem {
 
@@ -40,13 +41,6 @@ public class OrderItem {
 
     @Column(name = "current_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal currentPrice;
-
-    // Special constructor
-    public OrderItem(Order order, Book book) {
-        this.order = order;
-        this.book = book;
-        this.id = new OrderItemId(order.getId(), book.getId());
-    }
 
     public void setQuantity(Integer quantity) {
         this.quantity = (quantity == null || quantity <= 0) ? 1 : quantity;

@@ -2,18 +2,17 @@ package com.iti.jets.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Objects;
 
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserBookTagId implements Serializable {
 

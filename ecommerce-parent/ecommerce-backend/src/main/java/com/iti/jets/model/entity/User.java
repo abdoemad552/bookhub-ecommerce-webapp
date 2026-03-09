@@ -1,8 +1,8 @@
 package com.iti.jets.model.entity;
 
-import lombok.*;
 import com.iti.jets.model.enums.UserRole;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,6 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
@@ -41,6 +42,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
+    @Builder.Default
     private UserRole role = UserRole.USER;
 
     @Lob
@@ -54,21 +56,27 @@ public class User {
     private String job;
 
     @Column(name = "credit_limit", nullable = false, precision = 10, scale = 2)
+    @Builder.Default
     private BigDecimal creditLimit = BigDecimal.ZERO;
 
     @Column(name = "email_notifications", nullable = false)
+    @Builder.Default
     private Boolean emailNotifications = false;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<Address> addresses = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<Order> orders = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<UserTag> userTags = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<UserInterest> interests = new HashSet<>();
 
     // Synchronization methods

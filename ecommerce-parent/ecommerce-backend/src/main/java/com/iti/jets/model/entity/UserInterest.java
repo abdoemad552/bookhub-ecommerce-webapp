@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserInterest {
 
@@ -24,11 +25,4 @@ public class UserInterest {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
-
-    // Special constructor
-    public UserInterest(Category category, User user) {
-        this.category = category;
-        this.user = user;
-        this.id = new UserInterestId(user.getId(), category.getId());
-    }
 }
