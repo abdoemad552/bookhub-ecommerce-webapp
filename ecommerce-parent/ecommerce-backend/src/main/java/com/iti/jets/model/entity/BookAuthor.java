@@ -13,9 +13,11 @@ import org.hibernate.annotations.OnDeleteAction;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BookAuthor {
 
     @EmbeddedId
+    @EqualsAndHashCode.Include
     private BookAuthorId id;
 
     @MapsId("bookId")
@@ -29,4 +31,11 @@ public class BookAuthor {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "author_id", nullable = false)
     private Author author;
+
+    // Special constructor
+    public BookAuthor(Book book, Author author) {
+        this.book = book;
+        this.author = author;
+        this.id = new BookAuthorId(book.getId(), author.getId());
+    }
 }

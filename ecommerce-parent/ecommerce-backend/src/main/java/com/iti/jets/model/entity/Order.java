@@ -1,20 +1,32 @@
 package com.iti.jets.model.entity;
 
+import com.iti.jets.model.enums.OrderStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "orders", schema = "book_hub")
+@Table(name = "orders", indexes = {
+        @Index(name = "idx_orders_user", columnList = "user_id")
+})
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Order {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -22,58 +34,73 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @NotNull
     @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice;
 
-    @NotNull
-    @ColumnDefault("'PENDING'")
-    @Lob
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status;
+    private OrderStatus status = OrderStatus.PENDING;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at")
-    private Instant createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-    public Long getId() {
-        return id;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<OrderItem> items = new HashSet<>();
+
+    // Synchronization methods
+    public void addItem(OrderItem item) {
+        if (item != null) {
+            items.add(item);
+            item.setOrder(this);
+        }
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void removeItem(OrderItem item) {
+        if (item != null) {
+            items.remove(item);
+            item.setOrder(null);
+        }
     }
 
-    public User getUser() {
-        return user;
+    public void addBook(Book book, int quantity) {
+        if (book == null) return;
+
+        OrderItemId id = new OrderItemId(this.getId(), book.getId());
+        OrderItem item = new OrderItem();
+
+        item.setId(id);
+        item.setBook(book);
+        item.setQuantity(quantity);
+        this.addItem(item);
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void removeBook(Book book) {
+        if (book == null) return;
+
+        items.removeIf(item -> {
+            boolean match = item.getBook().equals(book);
+            if (match) {
+                item.setOrder(null);
+            }
+            return match;
+        });
     }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
-
+    // Special setters
     public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
+        this.totalPrice = (totalPrice == null || totalPrice.compareTo(BigDecimal.ZERO) < 0)
+                ? BigDecimal.ZERO
+                : totalPrice;
     }
 
-    public String getStatus() {
-        return status;
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", totalPrice=" + totalPrice +
+                ", status='" + status + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
 }

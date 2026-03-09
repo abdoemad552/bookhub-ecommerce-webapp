@@ -1,13 +1,24 @@
 package com.iti.jets.model.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "wishlists", schema = "book_hub")
+@Table(name = "wishlists", indexes = {
+        @Index(name = "idx_wishlists_user", columnList = "user_id"),
+        @Index(name = "idx_wishlists_book", columnList = "book_id"),
+})
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Wishlist {
+
     @EmbeddedId
+    @EqualsAndHashCode.Include
     private WishlistId id;
 
     @MapsId("userId")
@@ -21,29 +32,4 @@ public class Wishlist {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
-
-    public WishlistId getId() {
-        return id;
-    }
-
-    public void setId(WishlistId id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
-
 }

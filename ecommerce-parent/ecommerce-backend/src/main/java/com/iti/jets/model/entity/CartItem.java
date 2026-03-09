@@ -1,10 +1,7 @@
 package com.iti.jets.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -17,9 +14,11 @@ import org.hibernate.annotations.OnDeleteAction;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CartItem {
 
     @EmbeddedId
+    @EqualsAndHashCode.Include
     private CartItemId id;
 
     @MapsId("cartId")
@@ -36,6 +35,19 @@ public class CartItem {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+    // Special constructor
+    public CartItem(Cart cart, Book book, Integer quantity) {
+        this.cart = cart;
+        this.book = book;
+        this.quantity = quantity;
+        this.id = new CartItemId(cart.getId(), book.getId());
+    }
+
+    // Special setters
+    public void setQuantity(Integer quantity) {
+        this.quantity = (quantity == null || quantity <= 0) ? 1 : quantity;
+    }
 
     @Override
     public String toString() {

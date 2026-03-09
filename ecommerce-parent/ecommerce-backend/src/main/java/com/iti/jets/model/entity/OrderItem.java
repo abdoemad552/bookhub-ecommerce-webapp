@@ -1,16 +1,26 @@
 package com.iti.jets.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "order_items", schema = "book_hub")
+@Table(name = "order_items", indexes = {
+        @Index(name = "idx_order_items_order", columnList = "order_id"),
+        @Index(name = "idx_order_items_book", columnList = "book_id")
+})
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class OrderItem {
+
     @EmbeddedId
+    @EqualsAndHashCode.Include
     private OrderItemId id;
 
     @MapsId("orderId")
@@ -25,52 +35,35 @@ public class OrderItem {
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
-    @NotNull
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @NotNull
     @Column(name = "current_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal currentPrice;
 
-    public OrderItemId getId() {
-        return id;
-    }
-
-    public void setId(OrderItemId id) {
-        this.id = id;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
+    // Special constructor
+    public OrderItem(Order order, Book book) {
         this.order = order;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
         this.book = book;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
+        this.id = new OrderItemId(order.getId(), book.getId());
     }
 
     public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public BigDecimal getCurrentPrice() {
-        return currentPrice;
+        this.quantity = (quantity == null || quantity <= 0) ? 1 : quantity;
     }
 
     public void setCurrentPrice(BigDecimal currentPrice) {
-        this.currentPrice = currentPrice;
+        this.currentPrice = (currentPrice == null || currentPrice.compareTo(BigDecimal.ZERO) < 0)
+                ? BigDecimal.ZERO
+                : currentPrice;
     }
 
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                ", currentPrice=" + currentPrice +
+                '}';
+    }
 }

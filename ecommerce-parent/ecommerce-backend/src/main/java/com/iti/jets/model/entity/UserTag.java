@@ -1,27 +1,35 @@
 package com.iti.jets.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
-@Table(name = "user_tags", schema = "book_hub")
+@Table(name = "user_tags", indexes = {
+        @Index(name = "idx_user_tags_user", columnList = "user_id")
+})
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserTag {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    @EqualsAndHashCode.Include
     private Long id;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Size(max = 100)
-    @NotNull
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
@@ -29,36 +37,44 @@ public class UserTag {
     @Column(name = "description")
     private String description;
 
-    public Long getId() {
-        return id;
+    @OneToMany(mappedBy = "userTag", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<UserBookTag> books = new HashSet<>();
+
+    public void addBook(UserBookTag ubt) {
+        if (ubt != null) {
+            books.add(ubt);
+            ubt.setUserTag(this);
+        }
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void removeBook(UserBookTag ubt) {
+        if (ubt != null) {
+            books.remove(ubt);
+            ubt.setUserTag(null);
+        }
     }
 
-    public User getUser() {
-        return user;
+    public void addBook(Book book) {
+        if (book != null) {
+            UserBookTag userBookTag = new UserBookTag();
+            userBookTag.setBook(book);
+            userBookTag.setUserTag(this);
+            books.add(userBookTag);
+        }
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void removeBook(Book book) {
+        if (book != null) {
+            books.removeIf(ubt -> ubt.getBook().equals(book));
+        }
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public String toString() {
+        return "UserTag{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
 }

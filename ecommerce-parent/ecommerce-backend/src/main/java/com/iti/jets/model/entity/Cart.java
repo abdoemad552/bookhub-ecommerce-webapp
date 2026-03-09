@@ -50,11 +50,32 @@ public class Cart {
         }
     }
 
+    public void addItem(Book book, int quantity) {
+        CartItem existing = items.stream()
+                .filter(ci -> ci.getBook().equals(book))
+                .findFirst()
+                .orElse(null);
+
+        if (existing != null) {
+            existing.setQuantity(existing.getQuantity() + quantity);
+        } else {
+            CartItem item = new CartItem();
+            item.setCart(this);
+            item.setBook(book);
+            item.setQuantity(quantity);
+            items.add(item);
+        }
+    }
+
     public void removeItem(CartItem item) {
         if (item != null) {
             items.remove(item);
             item.setCart(null);
         }
+    }
+
+    public void removeItem(Book book) {
+        items.removeIf(item -> item.getBook().equals(book));
     }
 
     @Override

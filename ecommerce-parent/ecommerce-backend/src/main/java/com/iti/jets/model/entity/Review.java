@@ -1,16 +1,27 @@
 package com.iti.jets.model.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "reviews", schema = "book_hub")
+@Table(name = "reviews", indexes = {
+        @Index(name = "idx_reviews_book", columnList = "book_id"),
+        @Index(name = "idx_reviews_book_created_at", columnList = "book_id, created_at")
+})
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Review {
+
     @EmbeddedId
+    @EqualsAndHashCode.Include
     private ReviewId id;
 
     @MapsId("userId")
@@ -26,62 +37,42 @@ public class Review {
     private Book book;
 
     @Column(name = "rating")
-    private Integer rating;
+    private Integer rating = 1;
 
     @Lob
     @Column(name = "comment")
     private String comment;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at")
-    private Instant createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-    public ReviewId getId() {
-        return id;
-    }
-
-    public void setId(ReviewId id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
+    // Special constructor
+    public Review(User user, Book book, Integer rating, String comment, LocalDateTime createdAt) {
         this.user = user;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
         this.book = book;
-    }
-
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
         this.rating = rating;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+        this.id = new ReviewId(user.getId(), book.getId());
     }
 
+    // Special setters
+    public void setRating(Integer rating) {
+        if(rating != null){
+            if(rating >= 1 && rating <= 5){
+                this.rating = rating;
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "id=" + id +
+                ", rating=" + rating +
+                ", comment='" + comment + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }
