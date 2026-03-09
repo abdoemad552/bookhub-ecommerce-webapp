@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -57,6 +59,59 @@ public class User {
     @Column(name = "email_notifications", nullable = false)
     private Boolean emailNotifications = false;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Address> addresses = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Order> orders = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserTag> userTags = new HashSet<>();
+
+    // Synchronization methods
+    public void addAddress(Address address) {
+        if (address != null) {
+            addresses.add(address);
+            address.setUser(this);
+        }
+    }
+
+    public void removeAddress(Address address) {
+        if (address != null) {
+            addresses.remove(address);
+            address.setUser(null);
+        }
+    }
+
+    public void addOrder(Order order) {
+        if (order != null) {
+            orders.add(order);
+            order.setUser(this);
+        }
+    }
+
+    public void removeOrder(Order order) {
+        if (order != null) {
+            orders.remove(order);
+            order.setUser(null);
+        }
+    }
+
+    public void addUserTag(UserTag ut){
+        if(ut != null){
+            userTags.add(ut);
+            ut.setUser(this);
+        }
+    }
+
+    public void removeUserTag(UserTag ut){
+        if(ut != null){
+            userTags.remove(ut);
+            ut.setUser(null);
+        }
+    }
+
+    // Special setters
     public void setCreditLimit(BigDecimal creditLimit) {
         this.creditLimit = (creditLimit == null || creditLimit.compareTo(BigDecimal.ZERO) < 0)
                 ? BigDecimal.ZERO
