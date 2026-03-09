@@ -2,49 +2,35 @@ package com.iti.jets.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
+import java.io.Serial;
 import java.io.Serializable;
-import java.util.Objects;
 
 @Embeddable
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BookAuthorId implements Serializable {
+
+    @Serial
     private static final long serialVersionUID = 7928548887450048385L;
-    @NotNull
+
     @Column(name = "book_id", nullable = false)
+    @EqualsAndHashCode.Include
     private Long bookId;
 
-    @NotNull
     @Column(name = "author_id", nullable = false)
+    @EqualsAndHashCode.Include
     private Long authorId;
 
-    public Long getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(Long bookId) {
-        this.bookId = bookId;
-    }
-
-    public Long getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
-    }
-
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BookAuthorId entity = (BookAuthorId) o;
-        return Objects.equals(this.bookId, entity.bookId) &&
-                Objects.equals(this.authorId, entity.authorId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(bookId, authorId);
+    public String toString() {
+        return "BookAuthorId{" +
+                "bookId=" + bookId +
+                ", authorId=" + authorId +
+                '}';
     }
 }

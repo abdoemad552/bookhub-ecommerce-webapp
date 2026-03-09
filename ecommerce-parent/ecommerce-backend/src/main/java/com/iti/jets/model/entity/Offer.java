@@ -1,23 +1,31 @@
 package com.iti.jets.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "offers", schema = "book_hub")
+@Table(name = "offers", indexes = {
+        @Index(name = "idx_offers_product", columnList = "book_id"),
+        @Index(name = "idx_offers_active", columnList = "active")
+})
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Offer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
+    @EqualsAndHashCode.Include
     private Long id;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "book_id", nullable = false)
@@ -26,64 +34,30 @@ public class Offer {
     @Column(name = "discount_percent", precision = 5, scale = 2)
     private BigDecimal discountPercent;
 
-    @NotNull
     @Column(name = "start_date", nullable = false)
-    private Instant startDate;
+    private LocalDateTime startDate;
 
-    @NotNull
     @Column(name = "end_date", nullable = false)
-    private Instant endDate;
+    private LocalDateTime endDate;
 
-    @ColumnDefault("1")
-    @Column(name = "active")
-    private Boolean active;
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
 
-    public Long getId() {
-        return id;
+    // Special Setters
+    public void setDiscountPercent(BigDecimal percent) {
+        this.discountPercent = (percent == null || percent.compareTo(BigDecimal.ZERO) < 0)
+                ? BigDecimal.ZERO
+                : percent;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public String toString() {
+        return "Offer{" +
+                "id=" + id +
+                ", discountPercent=" + discountPercent +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", active=" + active +
+                '}';
     }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
-
-    public BigDecimal getDiscountPercent() {
-        return discountPercent;
-    }
-
-    public void setDiscountPercent(BigDecimal discountPercent) {
-        this.discountPercent = discountPercent;
-    }
-
-    public Instant getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Instant startDate) {
-        this.startDate = startDate;
-    }
-
-    public Instant getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Instant endDate) {
-        this.endDate = endDate;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
 }

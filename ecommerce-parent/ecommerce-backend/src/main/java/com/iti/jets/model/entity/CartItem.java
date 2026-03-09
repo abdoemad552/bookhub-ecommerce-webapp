@@ -1,13 +1,24 @@
 package com.iti.jets.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "cart_items", schema = "book_hub")
+@Table(name = "cart_items", indexes = {
+        @Index(name = "idx_cart_items_cart", columnList = "cart_id"),
+        @Index(name = "idx_cart_items_book", columnList = "book_id")
+})
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class CartItem {
+
     @EmbeddedId
     private CartItemId id;
 
@@ -23,40 +34,14 @@ public class CartItem {
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
-    @NotNull
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    public CartItemId getId() {
-        return id;
+    @Override
+    public String toString() {
+        return "CartItem{" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                '}';
     }
-
-    public void setId(CartItemId id) {
-        this.id = id;
-    }
-
-    public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
 }

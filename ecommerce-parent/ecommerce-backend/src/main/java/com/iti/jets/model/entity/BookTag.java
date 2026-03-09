@@ -1,12 +1,20 @@
 package com.iti.jets.model.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "book_tags", schema = "book_hub")
+@Table(name = "book_tags", indexes = {
+        @Index(name = "idx_book_tags_tag_book", columnList = "tag_id, book_id")
+})
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookTag {
+
     @EmbeddedId
     private BookTagId id;
 
@@ -21,29 +29,4 @@ public class BookTag {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "tag_id", nullable = false)
     private Tag tag;
-
-    public BookTagId getId() {
-        return id;
-    }
-
-    public void setId(BookTagId id) {
-        this.id = id;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
-
-    public Tag getTag() {
-        return tag;
-    }
-
-    public void setTag(Tag tag) {
-        this.tag = tag;
-    }
-
 }

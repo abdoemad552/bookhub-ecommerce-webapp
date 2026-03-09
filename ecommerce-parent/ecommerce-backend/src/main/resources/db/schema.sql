@@ -1,11 +1,11 @@
 CREATE TABLE users
 (
     id                  BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username            VARCHAR(50)    NOT NULL UNIQUE,
+    username            VARCHAR(20)    NOT NULL UNIQUE,
     email               VARCHAR(100)   NOT NULL UNIQUE,
     password            VARCHAR(255)   NOT NULL,
-    first_name          VARCHAR(50),
-    last_name           VARCHAR(50),
+    first_name          VARCHAR(20),
+    last_name           VARCHAR(20),
     role                ENUM('ADMIN','USER') NOT NULL DEFAULT 'USER',
     profile_pic_url     TEXT,
     birth_date          DATE,

@@ -2,49 +2,35 @@ package com.iti.jets.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
+import java.io.Serial;
 import java.io.Serializable;
-import java.util.Objects;
 
 @Embeddable
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CartItemId implements Serializable {
+
+    @Serial
     private static final long serialVersionUID = 514418106954792554L;
-    @NotNull
+
     @Column(name = "cart_id", nullable = false)
+    @EqualsAndHashCode.Include
     private Long cartId;
 
-    @NotNull
     @Column(name = "book_id", nullable = false)
+    @EqualsAndHashCode.Include
     private Long bookId;
 
-    public Long getCartId() {
-        return cartId;
-    }
-
-    public void setCartId(Long cartId) {
-        this.cartId = cartId;
-    }
-
-    public Long getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(Long bookId) {
-        this.bookId = bookId;
-    }
-
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CartItemId entity = (CartItemId) o;
-        return Objects.equals(this.cartId, entity.cartId) &&
-                Objects.equals(this.bookId, entity.bookId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(cartId, bookId);
+    public String toString() {
+        return "CartItemId{" +
+                "cartId=" + cartId +
+                ", bookId=" + bookId +
+                '}';
     }
 }

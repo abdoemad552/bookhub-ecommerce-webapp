@@ -1,25 +1,36 @@
 package com.iti.jets.model.entity;
 
+import com.iti.jets.model.enums.BookType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "books", schema = "book_hub")
+@Table(name = "books", indexes = {
+        @Index(name = "idx_books_category", columnList = "category_id"),
+        @Index(name = "idx_books_title", columnList = "title"),
+        @Index(name = "idx_books_price", columnList = "price"),
+        @Index(name = "idx_books_publish_date", columnList = "publish_date")
+})
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Book {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
+    @EqualsAndHashCode.Include
     private Long id;
 
-    @Size(max = 255)
-    @NotNull
     @Column(name = "title", nullable = false)
     private String title;
 
@@ -27,14 +38,11 @@ public class Book {
     @Column(name = "description")
     private String description;
 
-    @NotNull
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+    private BigDecimal price = BigDecimal.ZERO;
 
-    @NotNull
-    @ColumnDefault("0")
     @Column(name = "stock_quantity", nullable = false)
-    private Integer stockQuantity;
+    private Integer stockQuantity = 0;
 
     @Column(name = "publish_date")
     private LocalDate publishDate;
@@ -43,9 +51,7 @@ public class Book {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Size(max = 20)
-    @NotNull
-    @Column(name = "isbn", nullable = false, length = 20)
+    @Column(name = "isbn", nullable = false, unique = true, length = 20)
     private String isbn;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -53,112 +59,95 @@ public class Book {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @NotNull
-    @ColumnDefault("'PAPERBACK'")
-    @Lob
+    @Enumerated(EnumType.STRING)
     @Column(name = "book_type", nullable = false)
-    private String bookType;
+    private BookType bookType = BookType.PAPERBACK;
 
     @Column(name = "pages")
     private Integer pages;
 
     @Column(name = "sold_quantity")
-    private Integer soldQuantity;
+    private Integer soldQuantity = 0;
 
-    public Long getId() {
-        return id;
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Offer> offers = new HashSet<>();
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<BookAuthor> bookAuthors = new HashSet<>();
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<BookTag> bookTags = new HashSet<>();
+
+    // Synchronization methods
+    public void addOffer(Offer offer) {
+        if (offer != null) {
+            offers.add(offer);
+            offer.setBook(this);
+        }
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void removeOffer(Offer offer) {
+        if (offer != null) {
+            offers.remove(offer);
+            offer.setBook(null);
+        }
     }
 
-    public String getTitle() {
-        return title;
+    public void addAuthor(Author author) {
+        BookAuthor bookAuthor = new BookAuthor();
+        bookAuthor.setBook(this);
+        bookAuthor.setAuthor(author);
+        bookAuthor.setId(new BookAuthorId(this.id, author.getId()));
+
+        bookAuthors.add(bookAuthor);
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void removeAuthor(Author author) {
+        bookAuthors.removeIf(ba -> ba.getAuthor().equals(author));
     }
 
-    public String getDescription() {
-        return description;
+    public void addTags(Tag tag) {
+        BookTag bookTag = new BookTag();
+        bookTag.setBook(this);
+        bookTag.setTag(tag);
+        bookTag.setId(new BookTagId(this.id, tag.getId()));
+
+        bookTags.add(bookTag);
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void removeTag(Tag tag) {
+        bookTags.removeIf(bt -> bt.getTag().equals(tag));
     }
 
-    public BigDecimal getPrice() {
-        return price;
-    }
-
+    // Special Setters
     public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Integer getStockQuantity() {
-        return stockQuantity;
+        this.price = (price == null || price.compareTo(BigDecimal.ZERO) < 0)
+                ? BigDecimal.ZERO
+                : price;
     }
 
     public void setStockQuantity(Integer stockQuantity) {
-        this.stockQuantity = stockQuantity;
-    }
-
-    public LocalDate getPublishDate() {
-        return publishDate;
-    }
-
-    public void setPublishDate(LocalDate publishDate) {
-        this.publishDate = publishDate;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public String getBookType() {
-        return bookType;
-    }
-
-    public void setBookType(String bookType) {
-        this.bookType = bookType;
-    }
-
-    public Integer getPages() {
-        return pages;
+        this.stockQuantity = (stockQuantity == null || stockQuantity < 0) ? 0 : stockQuantity;
     }
 
     public void setPages(Integer pages) {
-        this.pages = pages;
+        this.pages = (pages == null || pages < 0) ? 0 : pages;
     }
 
-    public Integer getSoldQuantity() {
-        return soldQuantity;
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", stockQuantity=" + stockQuantity +
+                ", publishDate=" + publishDate +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", isbn='" + isbn + '\'' +
+                ", bookType=" + bookType +
+                ", pages=" + pages +
+                ", soldQuantity=" + soldQuantity +
+                '}';
     }
-
-    public void setSoldQuantity(Integer soldQuantity) {
-        this.soldQuantity = soldQuantity;
-    }
-
 }

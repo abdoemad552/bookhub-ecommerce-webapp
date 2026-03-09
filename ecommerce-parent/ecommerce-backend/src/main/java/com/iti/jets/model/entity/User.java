@@ -1,49 +1,45 @@
 package com.iti.jets.model.entity;
 
+import lombok.*;
+import com.iti.jets.model.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "users", schema = "book_hub")
+@Table(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
+    @EqualsAndHashCode.Include
     private Long id;
 
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "username", nullable = false, length = 50)
+    @Column(name = "username", nullable = false, unique = true, length = 20)
     private String username;
 
-    @Size(max = 100)
-    @NotNull
-    @Column(name = "email", nullable = false, length = 100)
+    @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
-    @Size(max = 255)
-    @NotNull
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Size(max = 50)
-    @Column(name = "first_name", length = 50)
+    @Column(name = "first_name", length = 20)
     private String firstName;
 
-    @Size(max = 50)
-    @Column(name = "last_name", length = 50)
+    @Column(name = "last_name", length = 20)
     private String lastName;
 
-    @NotNull
-    @ColumnDefault("'USER'")
-    @Lob
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private String role;
+    private UserRole role = UserRole.USER;
 
     @Lob
     @Column(name = "profile_pic_url")
@@ -52,114 +48,36 @@ public class User {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @Size(max = 100)
     @Column(name = "job", length = 100)
     private String job;
 
-    @NotNull
-    @ColumnDefault("0.00")
     @Column(name = "credit_limit", nullable = false, precision = 10, scale = 2)
-    private BigDecimal creditLimit;
+    private BigDecimal creditLimit = BigDecimal.ZERO;
 
-    @NotNull
-    @ColumnDefault("0")
     @Column(name = "email_notifications", nullable = false)
-    private Boolean emailNotifications;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getProfilePicUrl() {
-        return profilePicUrl;
-    }
-
-    public void setProfilePicUrl(String profilePicUrl) {
-        this.profilePicUrl = profilePicUrl;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public String getJob() {
-        return job;
-    }
-
-    public void setJob(String job) {
-        this.job = job;
-    }
-
-    public BigDecimal getCreditLimit() {
-        return creditLimit;
-    }
+    private Boolean emailNotifications = false;
 
     public void setCreditLimit(BigDecimal creditLimit) {
-        this.creditLimit = creditLimit;
+        this.creditLimit = (creditLimit == null || creditLimit.compareTo(BigDecimal.ZERO) < 0)
+                ? BigDecimal.ZERO
+                : creditLimit;
     }
 
-    public Boolean getEmailNotifications() {
-        return emailNotifications;
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", role=" + role +
+                ", profilePicUrl='" + profilePicUrl + '\'' +
+                ", birthDate=" + birthDate +
+                ", job='" + job + '\'' +
+                ", creditLimit=" + creditLimit +
+                ", emailNotifications=" + emailNotifications +
+                ", password='" + password + '\'' +
+                '}';
     }
-
-    public void setEmailNotifications(Boolean emailNotifications) {
-        this.emailNotifications = emailNotifications;
-    }
-
 }

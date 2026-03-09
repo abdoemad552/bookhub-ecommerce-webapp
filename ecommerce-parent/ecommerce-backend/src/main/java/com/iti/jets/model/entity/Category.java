@@ -1,48 +1,57 @@
 package com.iti.jets.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "categories", schema = "book_hub")
+@Table(name = "categories")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
+    @EqualsAndHashCode.Include
     private Long id;
 
-    @Size(max = 100)
-    @NotNull
-    @Column(name = "name", nullable = false, length = 100)
+    @Column(name = "name", nullable = false, unique = true, length = 100)
     private String name;
 
     @Lob
     @Column(name = "description")
     private String description;
 
-    public Long getId() {
-        return id;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Book> books = new HashSet<>();
+
+    // Synchronization methods
+    public void addBook(Book book){
+        if(book != null && !books.contains(book)){
+            books.add(book);
+            book.setCategory(this);
+        }
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void removeBook(Book book){
+        if(book != null){
+            books.remove(book);
+            book.setCategory(null);
+        }
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
 }
