@@ -27,6 +27,8 @@
         <jstl.version>3.0.1</jstl.version>
         <junit.version>5.10.2</junit.version>
         <mockito.version>5.11.0</mockito.version>
+        <lombok.version>1.18.32</lombok.version>
+        <bcrypt.version>0.4</bcrypt.version>
     </properties>
 
     <dependencyManagement>
@@ -76,7 +78,6 @@
                 <version>2.25.3</version>
                 <scope>compile</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 

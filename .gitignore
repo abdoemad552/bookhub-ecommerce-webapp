@@ -15,6 +15,9 @@ target/
 *.war
 *.ear
 
+# Properties files
+*.properties
+
 # IDEs
 # IntelliJ
 .idea/
