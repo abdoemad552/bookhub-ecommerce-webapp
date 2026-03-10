@@ -5,5 +5,10 @@ public enum OrderStatus {
     PAID,
     CANCELLED,
     SHIPPED,
-    DELIVERED
+    DELIVERED;
+
+    public String getPrettyName() {
+        String lower = this.name().toLowerCase();
+        return Character.toUpperCase(lower.charAt(0)) + lower.substring(1);
+    }
 }

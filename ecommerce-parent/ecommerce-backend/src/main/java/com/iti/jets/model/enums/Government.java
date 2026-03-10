@@ -1,11 +1,14 @@
 package com.iti.jets.model.enums;
 
-public enum AddressType {
-    HOME,
-    WORK,
-    SHIPPING,
-    BILLING,
-    ONLINE;
+public enum Government {
+    CAIRO,
+    GIZA,
+    ALEXANDRIA,
+    MENOFIA,
+    BEHEIRA,
+    ISMAILIA,
+    FAYOUM,
+    PORT_SAID;
 
     public String getPrettyName() {
         String lower = this.name().toLowerCase();

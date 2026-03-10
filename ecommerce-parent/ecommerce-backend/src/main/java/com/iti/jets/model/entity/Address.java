@@ -1,6 +1,7 @@
 package com.iti.jets.model.entity;
 
 import com.iti.jets.model.enums.AddressType;
+import com.iti.jets.model.enums.Government;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -34,8 +35,9 @@ public class Address {
     @Builder.Default
     private AddressType addressType = AddressType.SHIPPING;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "government", nullable = false, length = 50)
-    private String government;
+    private Government government;
 
     @Column(name = "city", nullable = false, length = 50)
     private String city;
