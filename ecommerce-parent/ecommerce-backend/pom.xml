@@ -63,6 +63,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Bcrypt hashing -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>${bcrypt.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
