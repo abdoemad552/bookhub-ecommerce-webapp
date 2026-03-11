@@ -106,11 +106,12 @@ CREATE TABLE offers
 
 CREATE TABLE cart_items
 (
-    cart_id  BIGINT,
-    book_id  BIGINT,
-    quantity INT NOT NULL CHECK (quantity > 0),
+    id       BIGINT AUTO_INCREMENT PRIMARY KEY,
+    cart_id  BIGINT NOT NULL,
+    book_id  BIGINT NOT NULL,
+    quantity INT    NOT NULL CHECK (quantity > 0),
 
-    PRIMARY KEY (cart_id, book_id),
+    CONSTRAINT uq_cart_items UNIQUE (book_id, cart_id),
 
     FOREIGN KEY (cart_id) REFERENCES carts (id)
         ON DELETE CASCADE,
@@ -120,12 +121,13 @@ CREATE TABLE cart_items
 
 CREATE TABLE order_items
 (
-    order_id      BIGINT,
-    book_id       BIGINT,
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id      BIGINT         NOT NULL,
+    book_id       BIGINT         NOT NULL,
     quantity      INT            NOT NULL CHECK (quantity > 0),
     current_price DECIMAL(10, 2) NOT NULL CHECK (current_price >= 0),
 
-    PRIMARY KEY (order_id, book_id),
+    CONSTRAINT uq_order_items UNIQUE (book_id, order_id),
 
     FOREIGN KEY (order_id) REFERENCES orders (id)
         ON DELETE CASCADE,
@@ -135,13 +137,14 @@ CREATE TABLE order_items
 
 CREATE TABLE reviews
 (
-    user_id    BIGINT,
-    book_id    BIGINT,
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id    BIGINT NOT NULL,
+    book_id    BIGINT NOT NULL,
     rating     INT CHECK (rating BETWEEN 1 AND 5),
     comment    TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (user_id, book_id),
+    CONSTRAINT uq_book_reviews UNIQUE (book_id, user_id),
 
     FOREIGN KEY (user_id) REFERENCES users (id)
         ON DELETE CASCADE,

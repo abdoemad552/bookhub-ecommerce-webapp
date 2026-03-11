@@ -6,10 +6,15 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "cart_items", indexes = {
-        @Index(name = "idx_cart_items_cart", columnList = "cart_id"),
-        @Index(name = "idx_cart_items_book", columnList = "book_id")
-})
+@Table(name = "cart_items",
+        indexes = {
+                @Index(name = "idx_cart_items_cart", columnList = "cart_id"),
+                @Index(name = "idx_cart_items_book", columnList = "book_id")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uq_cart_items", columnNames = {"book_id", "cart_id"})
+        }
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -18,17 +23,15 @@ import org.hibernate.annotations.OnDeleteAction;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CartItem {
 
-    @EmbeddedId
+    @Id
     @EqualsAndHashCode.Include
-    private CartItemId id;
+    private Long id;
 
-    @MapsId("cartId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
-    @MapsId("bookId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "book_id", nullable = false)
