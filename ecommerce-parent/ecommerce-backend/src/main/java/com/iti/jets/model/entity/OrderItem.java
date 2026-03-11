@@ -8,10 +8,15 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "order_items", indexes = {
-        @Index(name = "idx_order_items_order", columnList = "order_id"),
-        @Index(name = "idx_order_items_book", columnList = "book_id")
-})
+@Table(name = "order_items",
+        indexes = {
+                @Index(name = "idx_order_items_order", columnList = "order_id"),
+                @Index(name = "idx_order_items_book", columnList = "book_id")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uq_order_items", columnNames = {"book_id", "order_id"})
+        }
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -20,17 +25,15 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class OrderItem {
 
-    @EmbeddedId
+    @Id
     @EqualsAndHashCode.Include
-    private OrderItemId id;
+    private Long id;
 
-    @MapsId("orderId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @MapsId("bookId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "book_id", nullable = false)
