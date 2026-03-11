@@ -14,9 +14,6 @@
             <property name="jakarta.persistence.jdbc.user" value="${db.username}" />
             <property name="jakarta.persistence.jdbc.password" value="${db.password}" />
 
-            <!-- SQL dialect -->
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
-
             <!-- Create/update tables automatically using mapping metadata -->
             <property name="hibernate.hbm2ddl.auto" value="update"/>
 
@@ -26,18 +23,3 @@
 
     </persistence-unit>
 </persistence>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

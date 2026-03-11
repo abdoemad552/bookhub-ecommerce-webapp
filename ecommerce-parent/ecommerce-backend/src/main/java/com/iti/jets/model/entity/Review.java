@@ -9,10 +9,15 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "reviews", indexes = {
-        @Index(name = "idx_reviews_book", columnList = "book_id"),
-        @Index(name = "idx_reviews_book_created_at", columnList = "book_id, created_at")
-})
+@Table(name = "reviews",
+        indexes = {
+                @Index(name = "idx_reviews_book", columnList = "book_id"),
+                @Index(name = "idx_reviews_book_created_at", columnList = "book_id, created_at")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uq_book_reviews", columnNames = {"book_id", "user_id"})
+        }
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -21,17 +26,15 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Review {
 
-    @EmbeddedId
+    @Id
     @EqualsAndHashCode.Include
-    private ReviewId id;
+    private Long id;
 
-    @MapsId("userId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @MapsId("bookId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "book_id", nullable = false)
@@ -51,8 +54,8 @@ public class Review {
 
     // Special setters
     public void setRating(Integer rating) {
-        if(rating != null){
-            if(rating >= 1 && rating <= 5){
+        if (rating != null) {
+            if (rating >= 1 && rating <= 5) {
                 this.rating = rating;
             }
         }
