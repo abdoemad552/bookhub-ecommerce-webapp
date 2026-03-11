@@ -236,30 +236,31 @@
 }
 
 .divider-modern {
-    position: relative;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     margin: 1.5rem 0;
 }
 
-.divider-modern::before {
+.divider-modern::before,
+.divider-modern::after {
     content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border) 50%);
+}
+
+.divider-modern::after {
+    background: linear-gradient(90deg, var(--border) 50%, transparent);
 }
 
 .divider-modern span {
-    position: relative;
-    background: var(--card);
-    padding: 0 1rem;
     color: var(--muted-foreground);
     font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.5px;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .link-modern {

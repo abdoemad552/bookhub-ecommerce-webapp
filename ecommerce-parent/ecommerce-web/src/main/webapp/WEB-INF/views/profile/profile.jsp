@@ -10,7 +10,7 @@
 </head>
 <body class="font-sans antialiased">
 <div class="min-h-screen bg-background">
-    <jsp:include page="../util/header.jsp" />
+    <jsp:include page="../common/header.jsp"/>
     <main class="max-w-7xl mx-auto px-4 py-12">
         <h1 class="text-4xl font-bold text-foreground mb-12">My Account</h1>
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -126,7 +126,7 @@
             </div>
         </div>
     </main>
-    <%@include file="../util/footer.jsp"%>
+    <%@include file="../common/footer.jsp"%>
 </div>
 <script>
     const profileTabs = document.querySelectorAll(".profile-tab");

@@ -10,9 +10,10 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/authentication.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
 </head>
 
-<body class="font-serif antialiased">
+<body class="font-google-sans antialiased">
 
 <div class="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex items-center justify-center px-4 py-8 relative">
 
@@ -32,13 +33,13 @@
                             <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
                         </svg>
                     </div>
-                    <h1 class="text-3xl font-display text-gradient">BookHub</h1>
+                    <h1 class="text-3xl font-google-sans-bold text-gradient">BookHub</h1>
                 </a>
             </div>
 
             <!-- Title Section -->
             <div class="animate-slide-down delay-2 mb-8">
-                <h2 class="text-4xl font-display text-foreground mb-2">Join Us</h2>
+                <h2 class="text-4xl font-google-sans-medium text-foreground mb-2">Join Us</h2>
                 <p class="text-muted-foreground">Create your reading sanctuary</p>
             </div>
 
@@ -175,7 +176,7 @@
 
             <!-- Divider -->
             <div class="divider-modern">
-                <span>Already have an account</span>
+                <span class="select-none">Already have an account?</span>
             </div>
 
             <!-- Footer Links -->
@@ -189,9 +190,6 @@
     </div>
 
 </div>
-
-<!-- Validation Script -->
-<script src="${pageContext.request.contextPath}/assets/java-script/signup.js"></script>
-
+<script src="${pageContext.request.contextPath}/assets/js/signup/signup.js"></script>
 </body>
 </html>

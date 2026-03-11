@@ -107,7 +107,7 @@
 
             <!-- Divider -->
             <div class="divider-modern">
-                <span>New to BookHub</span>
+                <span class="select-none">New to BookHub?</span>
             </div>
 
             <!-- Footer Links -->
@@ -121,9 +121,6 @@
     </div>
 
 </div>
-
-<!-- Validation Script -->
-<script src="${pageContext.request.contextPath}/assets/java-script/login.js"></script>
-
+<script src="${pageContext.request.contextPath}/assets/js/login/login.js"></script>
 </body>
 </html>
