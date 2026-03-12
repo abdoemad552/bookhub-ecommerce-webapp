@@ -6,39 +6,52 @@ import jakarta.persistence.Persistence;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 public class JPAConfig {
 
-    private static EntityManagerFactory emf;
+    private static volatile EntityManagerFactory emf;
+
+    private static final ThreadLocal<EntityManager> threadLocalEM = new ThreadLocal<>();
 
     private JPAConfig() {
     }
 
-    public static synchronized EntityManagerFactory getEntityManagerFactory() {
+    public static EntityManagerFactory getEntityManagerFactory() {
         if (emf == null) {
-            try {
-                // Load properties file
-                Properties props = new Properties();
-                props.load(JPAConfig.class.getClassLoader()
-                        .getResourceAsStream("application.properties"));
+            synchronized (JPAConfig.class) {
+                if (emf == null) {
+                    try {
+                        // Configure connection pooling
+                        Map<String, Object> configOverrides = new HashMap<>();
+                        configOverrides.put("jakarta.persistence.nonJtaDataSource", DataSourceConfig.getDataSource());
 
-                // Configure connection pooling
-                Map<String, Object> configOverrides = new HashMap<>();
-                configOverrides.put("jakarta.persistence.nonJtaDataSource", DataSourceConfig.getDataSource());
+                        // Create entity manager factory
+                        emf = Persistence.createEntityManagerFactory("book_hub", configOverrides);
 
-                // Create entity manager factory
-                emf = Persistence.createEntityManagerFactory("book_hub", configOverrides);
-
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to initialize EntityManagerFactory", e);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Failed to initialize EntityManagerFactory", e);
+                    }
+                }
             }
         }
         return emf;
     }
 
     public static EntityManager getEntityManager() {
-        return getEntityManagerFactory().createEntityManager();
+        EntityManager em = threadLocalEM.get();
+        if (em == null || !em.isOpen()) {
+            em = getEntityManagerFactory().createEntityManager();
+            threadLocalEM.set(em);
+        }
+        return em;
+    }
+
+    public static void closeEntityManager() {
+        EntityManager em = threadLocalEM.get();
+        if (em != null && em.isOpen()) {
+            em.close();
+        }
+        threadLocalEM.remove();
     }
 
     public static void closeEntityManagerFactory() {

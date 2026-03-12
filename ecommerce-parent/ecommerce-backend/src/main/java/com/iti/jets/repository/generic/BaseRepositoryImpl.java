@@ -29,13 +29,19 @@ public class BaseRepositoryImpl<T, ID> implements BaseRepository<T, ID> {
     protected <R> R executeInTransaction(Function<EntityManager, R> action) {
         EntityManager em = JPAConfig.getEntityManager();
         EntityTransaction tx = em.getTransaction();
-        try (em) {
-            tx.begin();
+        try {
+            // Begin only if not already active
+            if (!tx.isActive()) {
+                tx.begin();
+            }
+
             R result = action.apply(em);
             tx.commit();
             return result;
         } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
+            if (tx.isActive()) {
+                tx.rollback();
+            }
             throw new RepositoryException("Transaction failed for " + entityClass.getSimpleName(), e);
         }
     }
@@ -43,7 +49,7 @@ public class BaseRepositoryImpl<T, ID> implements BaseRepository<T, ID> {
     // Generic method for read-only operations
     protected <R> R executeReadOnly(Function<EntityManager, R> action) {
         EntityManager em = JPAConfig.getEntityManager();
-        try (em) {
+        try {
             return action.apply(em);
         } catch (Exception e) {
             throw new RepositoryException("Read operation failed for " + entityClass.getSimpleName(), e);
@@ -61,7 +67,11 @@ public class BaseRepositoryImpl<T, ID> implements BaseRepository<T, ID> {
 
     @Override
     public T update(T entity) {
-        return executeInTransaction(em -> em.merge(entity));
+        return executeInTransaction(em -> {
+            T merged = em.merge(entity);
+            em.flush();
+            return merged;
+        });
     }
 
     @Override
@@ -74,7 +84,7 @@ public class BaseRepositoryImpl<T, ID> implements BaseRepository<T, ID> {
     @Override
     public List<T> findAll() {
         return executeReadOnly(em -> {
-            String jpql = "SELECT e FROM " + entityClass + " e";
+            String jpql = "SELECT e FROM " + entityClass.getSimpleName() + " e";
             TypedQuery<T> query = em.createQuery(jpql, entityClass);
 
             return query.getResultList();
@@ -84,7 +94,7 @@ public class BaseRepositoryImpl<T, ID> implements BaseRepository<T, ID> {
     @Override
     public List<T> findAll(int pageNumber, int pageSize) {
         return executeReadOnly(em -> {
-            String jpql = "SELECT e FROM " + entityClass + " e";
+            String jpql = "SELECT e FROM " + entityClass.getSimpleName() + " e";
             TypedQuery<T> query = em.createQuery(jpql, entityClass);
 
             // Calculate the offset (starts from 1)
@@ -122,8 +132,8 @@ public class BaseRepositoryImpl<T, ID> implements BaseRepository<T, ID> {
     @Override
     public long count() {
         return executeReadOnly(em -> {
-           String jpql = "SELECT COUNT(e) FROM " + entityClass + " e";
-           return em.createQuery(jpql, Long.class).getSingleResult();
+            String jpql = "SELECT COUNT(e) FROM " + entityClass.getSimpleName() + " e";
+            return em.createQuery(jpql, Long.class).getSingleResult();
         });
     }
 
