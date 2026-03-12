@@ -11,6 +11,32 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
+@NamedQueries({
+        @NamedQuery(
+                name = "User.findByEmail",
+                query = "SELECT u FROM User u WHERE u.email = :email"
+        ),
+        @NamedQuery(
+                name = "User.findByUserName",
+                query = "SELECT u FROM User u WHERE u.username = :username"
+        ),
+        @NamedQuery(
+                name = "User.findByRole",
+                query = "SELECT u FROM User u WHERE u.role = :role"
+        ),
+        @NamedQuery(
+                name = "User.findByJob",
+                query = "SELECT u FROM User u WHERE u.job = :job"
+        ),
+        @NamedQuery(
+                name = "User.findEmailEnabledUsers",
+                query = "SELECT u FROM User u WHERE u.emailNotifications = true"
+        ),
+        @NamedQuery(
+                name = "User.findZeroCreditUsers",
+                query = "SELECT u FROM User u WHERE u.creditLimit = 0"
+        )
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -108,15 +134,15 @@ public class User {
         }
     }
 
-    public void addUserTag(UserTag ut){
-        if(ut != null){
+    public void addUserTag(UserTag ut) {
+        if (ut != null) {
             userTags.add(ut);
             ut.setUser(this);
         }
     }
 
-    public void removeUserTag(UserTag ut){
-        if(ut != null){
+    public void removeUserTag(UserTag ut) {
+        if (ut != null) {
             userTags.remove(ut);
             ut.setUser(null);
         }
@@ -124,7 +150,9 @@ public class User {
 
     public void addInterest(Category category) {
         if (category != null) {
-            UserInterest ui = new UserInterest(new UserInterestId(this.id, category.getId()), this, category);
+            UserInterest ui = new UserInterest();
+            ui.setUser(this);
+            ui.setCategory(category);
             interests.add(ui);
         }
     }
@@ -138,6 +166,13 @@ public class User {
         this.creditLimit = (creditLimit == null || creditLimit.compareTo(BigDecimal.ZERO) < 0)
                 ? BigDecimal.ZERO
                 : creditLimit;
+    }
+
+    public void setInterests(Set<Category> categories) {
+        interests.clear();
+        if (categories != null) {
+            categories.forEach(this::addInterest);
+        }
     }
 
     @Override
