@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -173,6 +174,13 @@ public class User {
         if (categories != null) {
             categories.forEach(this::addInterest);
         }
+    }
+
+    // Special getter
+    public Set<Category> getCategories() {
+        return interests.stream()
+                .map(UserInterest::getCategory)
+                .collect(Collectors.toSet());
     }
 
     @Override
