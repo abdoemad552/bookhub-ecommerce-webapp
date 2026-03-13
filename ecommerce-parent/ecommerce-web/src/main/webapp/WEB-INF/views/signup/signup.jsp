@@ -468,7 +468,6 @@
 </head>
 
 <body class="font-google-sans antialiased">
-<body>
 <div class="page-wrap">
 
     <!-- Brand -->
