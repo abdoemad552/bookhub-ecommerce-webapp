@@ -5,8 +5,8 @@ const inputs = {
     lastName: document.querySelector('input[name="lastName"]'),
     username: document.querySelector('input[name="username"]'),
     email: document.querySelector('input[name="email"]'),
-    birthDate: document.querySelector('input[name="birthDate"]'),
     password: document.querySelector('input[name="password"]'),
+    birthDate: document.querySelector('input[name="birthDate"]'),
     confirmPassword: document.querySelector('input[name="confirmPassword"]'),
     creditLimit: document.querySelector('input[name="creditCardLimit"]')
 };
@@ -74,7 +74,6 @@ form.addEventListener('submit', event => {
     // Password matching checking
     if (inputs.password.value !== inputs.confirmPassword.value) {
         setError('Passwords do not match', event);
-        event.preventDefault();
     }
 });
 

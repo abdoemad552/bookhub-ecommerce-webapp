@@ -14,13 +14,13 @@ import java.util.Set;
 @ToString
 public class RegisterRequestDTO {
 
+    private String firstName;
+    private String lastName;
     private String username;
     private String email;
     private String password;
     // TODO: Not needed...
     private String confirmPassword;
-    private String firstName;
-    private String lastName;
     private LocalDate birthDate;
     private String job;
     private BigDecimal creditLimit;

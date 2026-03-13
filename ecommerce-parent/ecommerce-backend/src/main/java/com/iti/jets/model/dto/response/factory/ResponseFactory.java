@@ -1,6 +1,6 @@
 package com.iti.jets.model.dto.response.factory;
 
-import java.util.List;
+import com.iti.jets.model.enums.ServerStatusCode;
 
 public final class ResponseFactory {
 

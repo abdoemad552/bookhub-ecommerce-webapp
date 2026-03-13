@@ -11,9 +11,12 @@
         <!-- Info -->
         <div class="p-3 md:p-4 flex flex-col flex-1">
             <div class="flex-1">
-                <h3 class="font-semibold text-foreground line-clamp-2 text-sm md:text-base mb-1">
-                        ${book.title}
-                </h3>
+                <div class="flex justify-between items-center mb-1">
+                    <h3 class="font-semibold text-foreground line-clamp-2 text-sm md:text-base">${book.title}</h3>
+                    <c:if test="${true}">
+                        <span class="ml-2 bg-red-200 text-red-950 rounded-lg px-2 py-1">Out of stock</span>
+                    </c:if>
+                </div>
                 <p class="text-xs md:text-sm text-muted-foreground mb-2">${book.author}</p>
                 <div class="flex items-center gap-1">
                     <c:forEach begin="1" end="${book.averageRating}">
