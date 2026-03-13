@@ -1,17 +1,22 @@
 package com.iti.jets.model.enums;
 
 public enum Government {
-    CAIRO,
-    GIZA,
-    ALEXANDRIA,
-    MENOFIA,
-    BEHEIRA,
-    ISMAILIA,
-    FAYOUM,
-    PORT_SAID;
+    CAIRO("Cairo"),
+    GIZA("Giza"),
+    ALEXANDRIA("Alexandria"),
+    MENOFIA("Menofia"),
+    BEHEIRA("Beheira"),
+    ISMAILIA("Ismailia"),
+    FAYOUM("Fayoum"),
+    PORT_SAID("Port Said");
+
+    private final String prettyName;
+
+    Government(String prettyName) {
+        this.prettyName = prettyName;
+    }
 
     public String getPrettyName() {
-        String lower = this.name().toLowerCase();
-        return Character.toUpperCase(lower.charAt(0)) + lower.substring(1);
+        return this.prettyName;
     }
 }

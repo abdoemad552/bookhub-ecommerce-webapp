@@ -1,12 +1,17 @@
 package com.iti.jets.model.enums;
 
 public enum BookType {
-    PAPERBACK,
-    HARDCOVER,
-    EBOOK;
+    PAPERBACK("Paperback"),
+    HARDCOVER("Hardcover"),
+    EBOOK("E-Book");
+
+    private final String prettyName;
+
+    BookType(String prettyName) {
+        this.prettyName = prettyName;
+    }
 
     public String getPrettyName() {
-        String lower = this.name().toLowerCase();
-        return Character.toUpperCase(lower.charAt(0)) + lower.substring(1);
+        return prettyName;
     }
 }
