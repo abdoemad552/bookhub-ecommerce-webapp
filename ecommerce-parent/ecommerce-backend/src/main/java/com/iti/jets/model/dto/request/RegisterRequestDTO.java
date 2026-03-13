@@ -17,6 +17,7 @@ public class RegisterRequestDTO {
     private String username;
     private String email;
     private String password;
+    // TODO: Not needed...
     private String confirmPassword;
     private String firstName;
     private String lastName;

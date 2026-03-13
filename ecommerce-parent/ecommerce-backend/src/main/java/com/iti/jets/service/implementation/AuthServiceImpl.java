@@ -55,15 +55,15 @@ public class AuthServiceImpl extends ContextHandler implements AuthService {
 
             User user = userOpt.get();
 
-            if(request.getEmailNotifications() != null){
-                user.setEmailNotifications(request.getEmailNotifications());
-                userRepository.update(user);
-            }
-
             // Validate password
             if (!PasswordHasher.verify(request.getPassword(), user.getPassword())) {
                 LOGGER.warn("Failed login attempt: {} wrong password", request.getUsernameOrEmail());
                 return ResponseFactory.failure("Wrong password");
+            }
+
+            if(request.getEmailNotifications() != null){
+                user.setEmailNotifications(request.getEmailNotifications());
+                userRepository.update(user);
             }
 
             LOGGER.info("Login successful: {}", user.getUsername());

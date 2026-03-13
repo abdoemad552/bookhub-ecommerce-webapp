@@ -1,11 +1,16 @@
 package com.iti.jets.model.enums;
 
 public enum UserRole {
-    ADMIN,
-    USER;
+    ADMIN("Admin"),
+    USER("User");
+
+    private final String prettyName;
+
+    UserRole(String prettyName) {
+        this.prettyName = prettyName;
+    }
 
     public String getPrettyName() {
-        String lower = this.name().toLowerCase();
-        return Character.toUpperCase(lower.charAt(0)) + lower.substring(1);
+        return this.prettyName;
     }
 }
