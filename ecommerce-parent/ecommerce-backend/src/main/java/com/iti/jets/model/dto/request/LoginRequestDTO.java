@@ -12,4 +12,5 @@ public class LoginRequestDTO {
 
     private String usernameOrEmail;
     private String password;
+    private Boolean emailNotifications;
 }

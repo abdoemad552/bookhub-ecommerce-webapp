@@ -1,5 +1,7 @@
 package com.iti.jets.model.dto.response.factory;
 
+import java.util.List;
+
 public final class ResponseFactory {
 
     // Prevent instantiation

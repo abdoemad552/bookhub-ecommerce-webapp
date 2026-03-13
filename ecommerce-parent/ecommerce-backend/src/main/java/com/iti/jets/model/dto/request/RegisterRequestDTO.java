@@ -2,6 +2,7 @@ package com.iti.jets.model.dto.request;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ public class RegisterRequestDTO {
     private String lastName;
     private LocalDate birthDate;
     private String job;
+    private BigDecimal creditLimit;
 
     private Set<Long> categoryIds;
 }
