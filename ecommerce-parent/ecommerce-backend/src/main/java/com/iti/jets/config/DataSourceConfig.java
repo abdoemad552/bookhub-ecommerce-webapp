@@ -19,6 +19,7 @@ public class DataSourceConfig {
 
             // Configure HikariCP
             HikariConfig hikariConfig = new HikariConfig();
+            hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
             hikariConfig.setJdbcUrl(props.getProperty("db.url"));
             hikariConfig.setUsername(props.getProperty("db.username"));
             hikariConfig.setPassword(props.getProperty("db.password"));

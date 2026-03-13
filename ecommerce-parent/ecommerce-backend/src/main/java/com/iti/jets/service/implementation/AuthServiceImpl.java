@@ -55,7 +55,7 @@ public class AuthServiceImpl extends ContextHandler implements AuthService {
 
             User user = userOpt.get();
 
-            if(request.getEmailNotifications() != null){
+            if (request.getEmailNotifications() != null) {
                 user.setEmailNotifications(request.getEmailNotifications());
                 userRepository.update(user);
             }

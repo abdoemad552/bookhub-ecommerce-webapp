@@ -13,6 +13,7 @@ public class PathStorage {
     public static final String FOOTER = "/views/util/footer.jsp";
 
     // Servlet Mapping
+    public static final String HOME_SERVLET = "home";
     public static final String LOGIN_SERVLET = "login";
     public static final String PROFILE_SERVLET = "profile";
     public static final String ADMIN_DASHBOARD_SERVLET = "admin/dashboard";
