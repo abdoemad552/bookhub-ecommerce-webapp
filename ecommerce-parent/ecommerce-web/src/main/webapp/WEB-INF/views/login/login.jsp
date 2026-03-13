@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,7 +56,7 @@
                             <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path>
                             <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                         </svg>
-                        <input type="text" id="js-username" placeholder="Email or Username"
+                        <input type="text" id="js-username" name="usernameOrEmail" placeholder="Email or Username"
                                class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
                     </div>
                 </div>
@@ -70,7 +71,7 @@
                             <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                         </svg>
-                        <input type="password" id="js-password" placeholder="Password"
+                        <input type="password" id="js-password" name="password" placeholder="Password"
                                class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
                     </div>
                 </div>
@@ -83,7 +84,7 @@
                     </label>
 
                     <label class="checkbox-item">
-                        <input type="checkbox" name="emailUpdates" class="checkbox-modern">
+                        <input type="checkbox" name="emailNotifications" class="checkbox-modern">
                         <span>Send me updates</span>
                     </label>
                 </div>
@@ -97,6 +98,16 @@
                     </svg>
                     <span class="error-text">Username and password are required</span>
                 </div>
+
+                <c:if test="${not empty requestScope.error}">
+                    <div id="server-error-message" class="mt-2 text-sm flex text-red-600 items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle flex-shrink-0" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
+                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"></path>
+                        </svg>
+                        <span class="error-text">${requestScope.error}</span>
+                    </div>
+                </c:if>
 
                 <!-- Log In Button -->
                 <button type="submit"

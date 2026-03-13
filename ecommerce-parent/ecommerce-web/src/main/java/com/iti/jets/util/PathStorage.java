@@ -19,6 +19,7 @@ public class PathStorage {
     public static final String ADMIN_DASHBOARD_PAGE = "/WEB-INF/views/admin/dashboard/dashboard.jsp";
 
     // Servlet Mapping
+    public static final String HOME_SERVLET = "home";
     public static final String LOGIN_SERVLET = "login";
     public static final String SIGNUP_SERVLET = "signup";
     public static final String PROFILE_SERVLET = "profile";

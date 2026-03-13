@@ -9,10 +9,7 @@
 
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>com.iti.jets.model.entity.User</class>
-
         <properties>
-
             <!-- Create/update tables automatically using mapping metadata -->
             <property name="hibernate.hbm2ddl.auto" value="update"/>
 
