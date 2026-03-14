@@ -100,7 +100,7 @@ public class AuthServiceImpl extends ContextHandler implements AuthService {
                     .job(request.getJob())
                     .creditLimit(request.getCreditLimit())
                     .role(UserRole.USER)
-                    .emailNotifications(false)
+                    .emailNotifications(request.getEmailNotifications())
                     .profilePicUrl(null)
                     .build();
 
