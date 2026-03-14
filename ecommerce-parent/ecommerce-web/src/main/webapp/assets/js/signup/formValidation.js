@@ -1,6 +1,7 @@
-import {$, markField, setHint, removeHint, hideAlert, showAlert} from './util.js';
+import { $, markField, setHint, removeHint } from './util.js';
 
-let currentStep = 1;
+export let currentStep = 1;
+const TOTAL_STEPS = 3;
 
 // Step navigation
 export function goToStep(step, direction) {
@@ -11,23 +12,30 @@ export function goToStep(step, direction) {
     panel.classList.add('active');
     currentStep = step;
     updateStepUI();
-    window.scrollTo({top: 0, behavior: 'smooth'});
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 export function updateStepUI() {
-    [1, 2].forEach(n => {
+    for (let n = 1; n <= TOTAL_STEPS; n++) {
         const item = $('si-' + n);
+        if (!item) continue;
         item.classList.remove('active', 'done');
         if (n === currentStep) item.classList.add('active');
-        if (n < currentStep) item.classList.add('done');
+        if (n < currentStep)   item.classList.add('done');
+
         const dot = $('sd-' + n);
         if (n < currentStep) {
             dot.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 6 9 17 4 12"/></svg>`;
-        } else dot.textContent = n;
-    });
-    $('sc-1')?.classList.toggle('filled', currentStep > 1);
+        } else {
+            dot.textContent = n;
+        }
+    }
+    // Fill connectors for completed steps
+    for (let n = 1; n < TOTAL_STEPS; n++) {
+        $('sc-' + n)?.classList.toggle('filled', currentStep > n);
+    }
 }
 
 // Validations

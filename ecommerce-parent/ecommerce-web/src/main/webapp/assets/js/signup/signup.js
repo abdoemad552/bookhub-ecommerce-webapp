@@ -1,10 +1,72 @@
-import {$, showAlert, hideAlert, markField, setHint, removeHint} from './util.js';
-import {validateStep1, validateStep2, goToStep, calcStrength, checkConfirm} from './formValidation.js';
+import {$, showAlert, hideAlert, markField, setHint, removeHint, getCatIcon} from './util.js';
+import {validateStep1, validateStep2, goToStep, updateStepUI, calcStrength, checkConfirm, currentStep} from './formValidation.js';
 
-const CONTEXT = '/ecommerce';
+// Global variables
+const CONTEXT = document.querySelector('meta[name="ctx"]').content;
 const LOGIN = CONTEXT + '/login';
 const SIGNUP = CONTEXT + '/signup';
 const CHECK_AVAILABILITY = CONTEXT + '/checkAvailability';
+const CATEGORIES_URL = CONTEXT + '/categories';
+
+// Load categories via AJAX when step 3 becomes visible
+let categoriesLoaded = false;
+
+async function loadCategories() {
+    if (categoriesLoaded) return;
+    const grid = $('category-grid');
+
+    try {
+        const res = await fetch(CATEGORIES_URL, {
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const categories = await res.json(); // expected: [{id, name}, ...]
+
+        grid.innerHTML = ''; // clear skeletons
+
+        if (!categories.length) {
+            grid.innerHTML = '<div class="cat-load-error">No categories available yet.</div>';
+            categoriesLoaded = true;
+            return;
+        }
+
+        categories.forEach(cat => {
+            const icon = getCatIcon(cat.name);
+            const card = document.createElement('div');
+            card.className = 'category-card';
+            card.innerHTML = `
+                <input type="checkbox" id="cat-${cat.id}" name="categoryIds" value="${cat.id}">
+                <label class="category-label" for="cat-${cat.id}">
+                    <span class="cat-icon">${icon}</span>
+                    <span class="cat-name">${cat.name}</span>
+                </label>
+                <div class="category-check">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                </div>`;
+            // Update selected count on toggle
+            card.querySelector('input').addEventListener('change', updateSelectedCount);
+            grid.appendChild(card);
+        });
+
+        categoriesLoaded = true;
+        updateSelectedCount();
+
+    } catch (err) {
+        console.error('Failed to load categories:', err);
+        grid.innerHTML = `<div class="cat-load-error">
+            Could not load categories. You can skip this step and update later.
+        </div>`;
+    }
+}
+
+function updateSelectedCount() {
+    const checked = document.querySelectorAll('#category-grid input[type="checkbox"]:checked').length;
+    const numEl = $('selected-num');
+    if (numEl) numEl.textContent = checked;
+}
 
 // Password visibility toggle
 const S_COLORS = ['#ef4444', '#eab308', '#22c55e'];
@@ -18,55 +80,62 @@ export function togglePw(id, btn) {
     btn.style.opacity = isText ? '1' : '0.55';
     $('eye-' + id).innerHTML = isText ? EYE_OPEN : EYE_CLOSE;
 }
-// Globally accessible for inline handlers
+// Make it globally accessible in inline attributes
 window.togglePw = togglePw;
 
-// Button wiring
-$('btn-next').addEventListener('click', () => {
+// Step 1 → 2
+$('btn-next-1').addEventListener('click', () => {
     hideAlert();
     if (!validateStep1()) {
-        showAlert('Please fix the errors bellow.');
+        showAlert('Please fix the errors below.');
         return;
     }
     goToStep(2, 'forward');
 });
 
-$('btn-back').addEventListener('click', () => {
-    goToStep(1, 'back');
-});
+// Step 2 back → 1
+$('btn-back-2').addEventListener('click', () => goToStep(1, 'back'));
 
-// Signup AJAX submit
-$('signup-form').addEventListener('submit', async function (e) {
-    e.preventDefault();
+// Step 2 → 3
+$('btn-next-2').addEventListener('click', () => {
     hideAlert();
-
     if (!validateStep2()) {
         showAlert('Please fix the errors below.');
         return;
     }
+    goToStep(3, 'forward');
+
+    // lazy-load only when user actually reaches step 3
+    loadCategories();
+});
+
+// Step 3 back → 2
+$('btn-back-3').addEventListener('click', () => goToStep(2, 'back'));
+
+// AJAX form submit
+$('signup-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    hideAlert();
 
     const submitBtn = $('submit-btn');
     submitBtn.disabled = true;
     submitBtn.classList.add('is-loading');
 
     try {
-        // collect form data
         const formData = new FormData(this);
         const params = new URLSearchParams(formData);
 
         const response = await fetch(SIGNUP, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: params
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: params,
         });
 
         submitBtn.disabled = false;
         submitBtn.classList.remove('is-loading');
 
         if (!response.ok) {
-            console.error('Error creating new account');
+            showAlert('Something went wrong. Please try again.');
             return;
         }
 
@@ -79,9 +148,11 @@ $('signup-form').addEventListener('submit', async function (e) {
     } catch (err) {
         submitBtn.disabled = false;
         submitBtn.classList.remove('is-loading');
-        console.error('Network error:', err);
+        showAlert('Network error. Please check your connection.');
+        console.error('Submit error:', err);
     }
 });
+
 
 // Live field feedback
 $('password').addEventListener('input', function () {

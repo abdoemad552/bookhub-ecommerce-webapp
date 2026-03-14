@@ -1,10 +1,12 @@
 package com.iti.jets.controller;
 
 import com.iti.jets.model.dto.request.RegisterRequestDTO;
+import com.iti.jets.model.dto.response.CategoryDTO;
 import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.AuthService;
+import com.iti.jets.service.interfaces.CategoryService;
 import com.iti.jets.util.ParsingHelper;
 import com.iti.jets.util.PathStorage;
 import jakarta.json.Json;
@@ -17,16 +19,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SignupServlet extends HttpServlet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SignupServlet.class);
 
     private AuthService authService;
+    private CategoryService categoryService;
 
     @Override
     public void init() {
         authService = ServiceFactory.getInstance().getAuthService();
+        categoryService = ServiceFactory.getInstance().getCategoryService();
     }
 
     @Override
@@ -68,6 +76,18 @@ public class SignupServlet extends HttpServlet {
     }
 
     private RegisterRequestDTO buildRegisterRequest(HttpServletRequest req) {
+        String[] categoryStringIds = req.getParameterValues("categoryIds");
+        Set<Long> categoryIds = new HashSet<>();
+        if (categoryStringIds != null) {
+            for (String id : categoryStringIds) {
+                try {
+                    categoryIds.add(Long.parseLong(id));
+                } catch (NumberFormatException ignored) {
+                    LOGGER.warn("Invalid category id: {}", id);
+                }
+            }
+        }
+
         return RegisterRequestDTO.builder()
                 .username(req.getParameter("username"))
                 .email(req.getParameter("email"))
@@ -78,7 +98,8 @@ public class SignupServlet extends HttpServlet {
                 .birthDate(ParsingHelper.parseDate(req.getParameter("birthDate")))
                 .job(req.getParameter("job"))
                 .creditLimit(ParsingHelper.parseBigDecimal(req.getParameter("creditCardLimit")))
-                .categoryIds(null)
+                .emailNotifications(req.getParameter("emailNotifications") != null)
+                .categoryIds(categoryIds)
                 .build();
     }
 }

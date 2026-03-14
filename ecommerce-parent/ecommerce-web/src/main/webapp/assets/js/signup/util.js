@@ -39,3 +39,23 @@ export function removeHint(hintElem) {
     hintElem.classList.add('hint-success');
     hintElem.classList.remove('hint-error');
 }
+
+// Category icons map (keyed by name fragment, case-insensitive)
+const CAT_ICONS = {
+    fiction: '📖', fantasy: '🧙', mystery: '🔍',
+    romance: '💕', thriller: '🔪', horror: '👻',
+    science: '🚀', history: '🏛️', biography: '👤',
+    self: '💡', children: '🧸', comic: '💥',
+    poetry: '✍️', cooking: '🍳', travel: '🌍',
+    business: '💼', philosophy: '🤔', religion: '🙏',
+    art: '🎨', technology: '💻', sport: '⚽',
+    health: '🏃', education: '🎓', adventure: '🗺️',
+};
+
+export function getCatIcon(name) {
+    const lower = name.toLowerCase();
+    for (const [key, icon] of Object.entries(CAT_ICONS)) {
+        if (lower.includes(key)) return icon;
+    }
+    return '📚'; // default
+}
