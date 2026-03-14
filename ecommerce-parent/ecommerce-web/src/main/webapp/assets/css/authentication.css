@@ -38,3 +38,164 @@
     color: var(--foreground);
     cursor: pointer;
 }
+
+/* Password strength bar */
+.strength-track {
+    display: grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap: 5px;
+    margin-top: 8px;
+}
+
+.strength-seg {
+    height: 3px;
+    border-radius: 99px;
+    background: var(--border);
+    transition: background .35s;
+}
+
+/* Password visibility toggle */
+.pw-toggle {
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: var(--muted-foreground);
+    transition: color .2s;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+}
+
+.pw-toggle:hover {
+    color: var(--foreground);
+}
+
+.pw-toggle svg {
+    width: 18px;
+    height: 18px;
+}
+
+
+/* Step indicator */
+.step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 32px;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.step-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: .78rem;
+    font-weight: 700;
+    border: 2px solid var(--border);
+    color: var(--muted-foreground);
+    background: var(--background);
+    transition: all .4s cubic-bezier(.34, 1.56, .64, 1);
+    flex-shrink: 0;
+}
+
+.step-item.active .step-dot {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--primary-foreground);
+    transform: scale(1.1);
+}
+
+.step-item.done .step-dot {
+    border-color: #16a34a;
+    background: #16a34a;
+    color: #fff;
+}
+
+.step-item.active .step-label {
+    color: var(--foreground);
+}
+
+.step-item.done .step-label {
+    color: #16a34a;
+}
+
+.step-label {
+    color: var(--muted-foreground);
+    transition: color .3s;
+    white-space: nowrap;
+}
+
+.step-connector {
+    flex: 1;
+    height: 2px;
+    margin: 0 10px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+    border-radius: 99px;
+}
+
+.step-connector::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .5s cubic-bezier(.34, 1.56, .64, 1);
+    border-radius: 99px;
+}
+
+.step-connector.filled::after {
+    transform: scaleX(1);
+}
+
+/* Step panels */
+.step-panel {
+    display: none;
+    animation: stepIn .35s cubic-bezier(.34, 1.56, .64, 1) forwards;
+}
+
+.step-panel.active {
+    display: block;
+}
+
+@keyframes stepIn {
+    from {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes stepBack {
+    from {
+        opacity: 0;
+        transform: translateX(-24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.step-panel.going-back {
+    animation: stepBack .35s cubic-bezier(.34, 1.56, .64, 1) forwards;
+}

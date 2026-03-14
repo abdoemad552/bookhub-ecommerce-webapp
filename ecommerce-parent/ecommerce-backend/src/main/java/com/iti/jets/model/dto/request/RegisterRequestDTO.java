@@ -19,11 +19,11 @@ public class RegisterRequestDTO {
     private String username;
     private String email;
     private String password;
-    // TODO: Not needed...
     private String confirmPassword;
     private LocalDate birthDate;
     private String job;
     private BigDecimal creditLimit;
+    private Boolean emailNotifications;
 
     private Set<Long> categoryIds;
 }

@@ -1,57 +1,93 @@
 package com.iti.jets.controller;
 
 import com.iti.jets.model.dto.request.RegisterRequestDTO;
+import com.iti.jets.model.dto.response.CategoryDTO;
 import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.AuthService;
+import com.iti.jets.service.interfaces.CategoryService;
+import com.iti.jets.util.ParsingHelper;
 import com.iti.jets.util.PathStorage;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SignupServlet extends HttpServlet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SignupServlet.class);
 
     private AuthService authService;
+    private CategoryService categoryService;
 
     @Override
     public void init() {
         authService = ServiceFactory.getInstance().getAuthService();
+        categoryService = ServiceFactory.getInstance().getCategoryService();
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        // Redirect already-logged-in users to home page
+        if (req.getSession(false) != null
+                && req.getSession(false).getAttribute("user") != null) {
+
+            resp.sendRedirect(PathStorage.HOME_SERVLET);
+            return;
+        }
         req.getRequestDispatcher(PathStorage.SING_UP_PAGE).forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
         RegisterRequestDTO registerRequestDTO = buildRegisterRequest(req);
-        System.out.println(registerRequestDTO);
-        BaseResponse<UserDTO> userDTOResponse = authService.register(registerRequestDTO);
+        BaseResponse<UserDTO> result = authService.register(registerRequestDTO);
 
-        System.out.println(userDTOResponse);
-        if (userDTOResponse.isFailure()) {
-            req.setAttribute("error", userDTOResponse.getMessage());
-            req.getRequestDispatcher(PathStorage.SING_UP_PAGE).forward(req, resp);
-            return;
+        boolean isSuccess = result.isSuccess();
+
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+
+        JsonObject json = Json.createObjectBuilder()
+                .add("success", isSuccess)
+                .add("message", result.getMessage())
+                .build();
+
+        resp.getWriter().write(json.toString());
+
+        if (isSuccess) {
+            LOGGER.info("New user registered: {}", registerRequestDTO.getUsername());
         }
-
-        resp.sendRedirect(PathStorage.LOGIN_SERVLET);
     }
 
     private RegisterRequestDTO buildRegisterRequest(HttpServletRequest req) {
+        String[] categoryStringIds = req.getParameterValues("categoryIds");
+        Set<Long> categoryIds = new HashSet<>();
+        if (categoryStringIds != null) {
+            for (String id : categoryStringIds) {
+                try {
+                    categoryIds.add(Long.parseLong(id));
+                } catch (NumberFormatException ignored) {
+                    LOGGER.warn("Invalid category id: {}", id);
+                }
+            }
+        }
+
         return RegisterRequestDTO.builder()
                 .username(req.getParameter("username"))
                 .email(req.getParameter("email"))
@@ -59,35 +95,11 @@ public class SignupServlet extends HttpServlet {
                 .confirmPassword(req.getParameter("confirmPassword"))
                 .firstName(req.getParameter("firstName"))
                 .lastName(req.getParameter("lastName"))
-                .birthDate(parseBirthDate(req.getParameter("birthDate")))
-                .job(null)
-                .creditLimit(parseCreditLimit(req.getParameter("creditCardLimit")))
-                .categoryIds(null)
+                .birthDate(ParsingHelper.parseDate(req.getParameter("birthDate")))
+                .job(req.getParameter("job"))
+                .creditLimit(ParsingHelper.parseBigDecimal(req.getParameter("creditCardLimit")))
+                .emailNotifications(req.getParameter("emailNotifications") != null)
+                .categoryIds(categoryIds)
                 .build();
-    }
-
-    private LocalDate parseBirthDate(String birthDateParam) {
-        if (birthDateParam == null || birthDateParam.trim().isEmpty()) {
-            return null;
-        }
-        try {
-            return LocalDate.parse(birthDateParam);
-        } catch (DateTimeParseException e) {
-            LOGGER.warn("Invalid birth date format: {}", birthDateParam);
-            return null;
-        }
-    }
-
-    private BigDecimal parseCreditLimit(String creditLimitParam) {
-        if (creditLimitParam == null || creditLimitParam.trim().isEmpty()) {
-            return BigDecimal.ZERO;
-        }
-        try {
-            BigDecimal value = new BigDecimal(creditLimitParam);
-            return value.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : value;
-        } catch (NumberFormatException e) {
-            LOGGER.warn("Invalid credit limit format: {}", creditLimitParam);
-            return BigDecimal.ZERO;
-        }
     }
 }
