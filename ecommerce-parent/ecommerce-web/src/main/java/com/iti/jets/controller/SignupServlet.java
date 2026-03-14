@@ -10,7 +10,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,22 +30,37 @@ public class SignupServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        // Redirect already-logged-in users to home page
+        if (req.getSession(false) != null
+                && req.getSession(false).getAttribute("user") != null) {
+
+            resp.sendRedirect(PathStorage.HOME_SERVLET);
+            return;
+        }
         req.getRequestDispatcher(PathStorage.SING_UP_PAGE).forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RegisterRequestDTO registerRequestDTO = buildRegisterRequest(req);
-        System.out.println(registerRequestDTO);
-        BaseResponse<UserDTO> userDTOResponse = authService.register(registerRequestDTO);
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
-        System.out.println(userDTOResponse);
-        if (userDTOResponse.isFailure()) {
-            req.setAttribute("error", userDTOResponse.getMessage());
+        RegisterRequestDTO registerRequestDTO = buildRegisterRequest(req);
+        BaseResponse<UserDTO> result = authService.register(registerRequestDTO);
+
+        if (result.isFailure()) {
+            // Preserve what the user typed so they don't retype everything
+            req.setAttribute("error", result.getMessage());
+            req.setAttribute("formData", registerRequestDTO);
             req.getRequestDispatcher(PathStorage.SING_UP_PAGE).forward(req, resp);
+            return;
         }
 
+        // Flash success message consumed by login page
+        req.getSession().setAttribute("successMessage", "Account created! Please sign in.");
+        LOGGER.info("New user registered: {}", registerRequestDTO.getUsername());
         resp.sendRedirect(PathStorage.LOGIN_SERVLET);
     }
 
@@ -59,33 +73,29 @@ public class SignupServlet extends HttpServlet {
                 .firstName(req.getParameter("firstName"))
                 .lastName(req.getParameter("lastName"))
                 .birthDate(parseBirthDate(req.getParameter("birthDate")))
-                .job(null)
+                .job(req.getParameter("job"))
                 .creditLimit(parseCreditLimit(req.getParameter("creditCardLimit")))
                 .categoryIds(null)
                 .build();
     }
 
-    private LocalDate parseBirthDate(String birthDateParam) {
-        if (birthDateParam == null || birthDateParam.trim().isEmpty()) {
-            return null;
-        }
+    private LocalDate parseBirthDate(String value) {
+        if (value == null || value.isBlank()) return null;
         try {
-            return LocalDate.parse(birthDateParam);
+            return LocalDate.parse(value);
         } catch (DateTimeParseException e) {
-            LOGGER.warn("Invalid birth date format: {}", birthDateParam);
+            LOGGER.warn("Invalid birth date format: {}", value);
             return null;
         }
     }
 
-    private BigDecimal parseCreditLimit(String creditLimitParam) {
-        if (creditLimitParam == null || creditLimitParam.trim().isEmpty()) {
-            return BigDecimal.ZERO;
-        }
+    private BigDecimal parseCreditLimit(String value) {
+        if (value == null || value.isBlank()) return BigDecimal.ZERO;
         try {
-            BigDecimal value = new BigDecimal(creditLimitParam);
-            return value.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : value;
+            BigDecimal v = new BigDecimal(value);
+            return v.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : v;
         } catch (NumberFormatException e) {
-            LOGGER.warn("Invalid credit limit format: {}", creditLimitParam);
+            LOGGER.warn("Invalid credit limit: {}", value);
             return BigDecimal.ZERO;
         }
     }
