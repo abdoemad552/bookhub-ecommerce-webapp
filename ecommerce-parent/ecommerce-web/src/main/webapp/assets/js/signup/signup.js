@@ -17,6 +17,7 @@ async function loadCategories() {
 
     try {
         const res = await fetch(CATEGORIES_URL, {
+            cache: "no-store",
             headers: {'X-Requested-With': 'XMLHttpRequest'}
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
