@@ -29,10 +29,12 @@ public class LoginServlet extends HttpServlet {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        if (session.getAttribute("user") != null) {
+
+        if (request.getSession(false) != null
+                && request.getSession(false).getAttribute("user") != null) {
             response.sendRedirect(PathStorage.HOME_SERVLET);
         }
+
         request.getRequestDispatcher(PathStorage.LOGIN_PAGE).forward(request, response);
     }
 
