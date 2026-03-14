@@ -83,11 +83,11 @@ public class AuthServiceImpl extends ContextHandler implements AuthService {
         return executeInContext(() -> {
 
             // Check duplicates
-            if (userRepository.existsByEmail(request.getEmail())) {
-                return ResponseFactory.failure("Email address already exists");
-            }
             if (userRepository.existsByUserName(request.getUsername())) {
                 return ResponseFactory.failure("This username is already taken");
+            }
+            if (userRepository.existsByEmail(request.getEmail())) {
+                return ResponseFactory.failure("Email address already exists");
             }
 
             User newUser = User.builder()
