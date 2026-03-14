@@ -1,23 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%
-    com.iti.jets.model.dto.request.RegisterRequestDTO fd =
-            (com.iti.jets.model.dto.request.RegisterRequestDTO) request.getAttribute("formData");
 
-    String firstName = fd != null && fd.getFirstName() != null ? fd.getFirstName() : "";
-    String lastName = fd != null && fd.getLastName() != null ? fd.getLastName() : "";
-    String username = fd != null && fd.getUsername() != null ? fd.getUsername() : "";
-    String email = fd != null && fd.getEmail() != null ? fd.getEmail() : "";
-    String job = fd != null && fd.getJob() != null ? fd.getJob() : "";
-    String birthDate = fd != null && fd.getBirthDate() != null ? fd.getBirthDate().toString() : "";
-    String creditLimit = fd != null && fd.getCreditLimit() != null ? fd.getCreditLimit().toPlainString() : "";
-    String password = fd != null && fd.getPassword() != null ? fd.getPassword() : "";
-    String confirmPassword = fd != null && fd.getConfirmPassword() != null ? fd.getConfirmPassword() : "";
-    String serverError = (String) request.getAttribute("error");
-
-    // If server returned an error, we want to land on step 2 (account fields)
-    boolean hasServerError = serverError != null && !serverError.isEmpty();
-%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,6 +11,8 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/authentication.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
+
+    <script type="module"> import '${pageContext.request.contextPath}/assets/js/signup/signup.js' </script>
 </head>
 
 <body class="font-google-sans antialiased">
@@ -74,19 +58,6 @@
                     <span class="step-label">Your account</span>
                 </div>
             </div>
-
-            <!-- Server error banner -->
-            <c:if test="${not empty requestScope.error}">
-                <div class="alert-banner alert-error" role="alert">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                    <span class="error-text">${requestScope.error}</span>
-                </div>
-            </c:if>
 
             <!-- Client-side alert -->
             <div id="js-alert" class="alert-banner alert-error" style="display:none;" role="alert">
@@ -136,7 +107,7 @@
                                     <circle cx="12" cy="7" r="4"></circle>
                                 </svg>
                                 <input type="text" id="lastName" name="lastName"
-                                       placeholder="Last name" value="<%= lastName %>"
+                                       placeholder="Last name"
                                        autocomplete="family-name"
                                        class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
                             </div>
@@ -156,10 +127,9 @@
                                 <path d="M16 2v4M8 2v4M3 10h18"></path>
                             </svg>
                             <input type="date" id="birthDate" name="birthDate"
-                                   value="<%= birthDate %>"
                                    class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground focus:outline-none"/>
                         </div>
-                        <div class="field-hint" id="hint-birthDate">Must be 18 years or older</div>
+                        <div class="field-hint" id="hint-birthDate"></div>
                     </div>
 
                     <!-- Optional section -->
@@ -175,7 +145,7 @@
                                     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                                 </svg>
                                 <input type="text" id="job" name="job"
-                                       placeholder="e.g. Engineer" value="<%= job %>"
+                                       placeholder="e.g. Engineer"
                                        class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
                             </div>
                         </div>
@@ -191,7 +161,7 @@
                                     <line x1="2" x2="22" y1="10" y2="10"></line>
                                 </svg>
                                 <input type="number" id="creditCardLimit" name="creditCardLimit"
-                                       min="0" placeholder="0" value="<%= creditLimit %>"
+                                       min="0" placeholder="0"
                                        class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
                             </div>
                         </div>
@@ -228,11 +198,11 @@
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             <input type="text" id="username" name="username"
-                                   placeholder="Username" value="<%= username %>"
+                                   placeholder="Username"
                                    autocomplete="username" maxlength="20"
                                    class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
                         </div>
-                        <div class="field-hint" id="hint-username">3–20 characters, letters, numbers and _ only</div>
+                        <div class="field-hint" id="hint-username"></div>
                     </div>
 
                     <!-- Email -->
@@ -247,7 +217,7 @@
                                 <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                             </svg>
                             <input type="email" id="email" name="email"
-                                   placeholder="name@example.com" value="<%= email %>"
+                                   placeholder="name@example.com"
                                    autocomplete="email"
                                    class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
                         </div>
@@ -266,7 +236,7 @@
                                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                             </svg>
                             <input type="password" id="password" name="password"
-                                   placeholder="Choose Strong Password" value="<%=password%>"
+                                   placeholder="Choose Strong Password"
                                    autocomplete="new-password"
                                    class="input-modern w-full pl-12 pr-11 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
                             <button type="button" class="pw-toggle" onclick="togglePw('password',this)"
@@ -284,7 +254,7 @@
                             <div class="strength-seg" id="seg2"></div>
                             <div class="strength-seg" id="seg3"></div>
                         </div>
-                        <div class="field-hint" id="hint-password">At least 8 characters</div>
+                        <div class="field-hint" id="hint-password"></div>
                     </div>
 
                     <!-- Confirm Password -->
@@ -298,7 +268,7 @@
                                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                             </svg>
                             <input type="password" id="confirmPassword" name="confirmPassword"
-                                   placeholder="Repeat your password" value="<%=confirmPassword%>"
+                                   placeholder="Repeat your password"
                                    autocomplete="new-password"
                                    class="input-modern w-full pl-12 pr-11 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
                             <button type="button" class="pw-toggle" onclick="togglePw('confirmPassword',this)"
@@ -311,7 +281,7 @@
                                 </svg>
                             </button>
                         </div>
-                        <div class="field-hint" id="hint-confirm">Must match your password</div>
+                        <div class="field-hint" id="hint-confirm"></div>
                     </div>
 
                     <!-- Back + Submit -->
@@ -343,7 +313,6 @@
                         </button>
                     </div>
                 </div>
-
             </form>
 
             <!-- Login link -->
@@ -360,20 +329,5 @@
         </div>
     </div>
 </div>
-
-<script src="${pageContext.request.contextPath}/assets/js/signup/signup.js"></script>
-
-<script>
-    /**
-     * On load — if server returned error, jump to step 2
-     * Fields already repopulated by JSP
-     */
-    <% if (hasServerError) { %>
-    goToStep(2, 'forward');
-    <% } else { %>
-    updateStepUI();
-    <% } %>
-</script>
-
 </body>
 </html>
