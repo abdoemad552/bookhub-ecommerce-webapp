@@ -74,6 +74,12 @@ public class Book {
     @Builder.Default
     private Integer soldQuantity = 0;
 
+    @Column(name = "average_rating")
+    private Double averageRating;
+
+    @Column(name = "rating_count")
+    private Integer ratingCount;
+
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private Set<Offer> offers = new HashSet<>();
