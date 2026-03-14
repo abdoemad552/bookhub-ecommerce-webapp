@@ -1,13 +1,16 @@
 package com.iti.jets.service.factory;
 
+import com.iti.jets.mapper.CategoryMapper;
 import com.iti.jets.mapper.UserMapper;
 import com.iti.jets.repository.implementation.CategoryRepositoryImpl;
 import com.iti.jets.repository.implementation.UserRepositoryImpl;
 import com.iti.jets.repository.interfaces.CategoryRepository;
 import com.iti.jets.repository.interfaces.UserRepository;
 import com.iti.jets.service.implementation.AuthServiceImpl;
+import com.iti.jets.service.implementation.CategoryServiceImpl;
 import com.iti.jets.service.implementation.UserServiceImpl;
 import com.iti.jets.service.interfaces.AuthService;
+import com.iti.jets.service.interfaces.CategoryService;
 import com.iti.jets.service.interfaces.UserService;
 
 
@@ -22,6 +25,7 @@ public class ServiceFactory {
     // Service
     private final AuthService authService;
     private final UserService userService;
+    private final CategoryService categoryService;
 
     private ServiceFactory() {
         // Repository
@@ -31,6 +35,7 @@ public class ServiceFactory {
         // Service
         this.authService = new AuthServiceImpl(userRepository, categoryRepository, UserMapper.getInstance());
         this.userService = new UserServiceImpl(userRepository, categoryRepository, UserMapper.getInstance());
+        this.categoryService = new CategoryServiceImpl(categoryRepository, CategoryMapper.getInstance());
     }
 
     public static ServiceFactory getInstance() {
@@ -50,5 +55,9 @@ public class ServiceFactory {
 
     public UserService getUserService() {
         return userService;
+    }
+
+    public CategoryService getCategoryService() {
+        return categoryService;
     }
 }
