@@ -8,7 +8,7 @@
         <input id="search-input" type="text" placeholder="Search books..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary" value=""/>
     </div>
     <div class="mb-3">
-        <button id="categories-controller" class="w-full font-bold text-foreground mb-2 flex items-center justify-between hover:text-primary hover:bg-background/30 transition-colors cursor-pointer">
+        <button id="categories-controller" class="w-full font-bold text-foreground mb-2 flex items-center justify-between hover:text-primary hover:bg-primary/10 rounded-lg p-2 transition-colors cursor-pointer">
             <span class="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-funnel w-4 h-4" aria-hidden="true">
                     <path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"></path>
@@ -24,13 +24,13 @@
         </div>
         <div id="categories-container" class="overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0">
             <div class="space-y-1 bg-muted/50 rounded-lg p-2 border border-border">
-                <button data-category="all"             class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer bg-primary text-primary-foreground font-semibold">All</button>
-                <button data-category="fiction"         class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-background text-foreground">Fiction</button>
-                <button data-category="science-fiction" class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-background text-foreground">Science Fiction</button>
-                <button data-category="fantasy"         class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-background text-foreground">Fantasy</button>
-                <button data-category="self-help"       class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-background text-foreground">Self-Help</button>
-                <button data-category="non-fiction"     class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-background text-foreground">Non-Fiction</button>
-                <button data-category="biography"       class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-background text-foreground">Biography</button>
+                <button data-category="all"             class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold">All</button>
+                <button data-category="fiction"         class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Fiction</button>
+                <button data-category="science-fiction" class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Science Fiction</button>
+                <button data-category="fantasy"         class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Fantasy</button>
+                <button data-category="self-help"       class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Self-Help</button>
+                <button data-category="non-fiction"     class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Non-Fiction</button>
+                <button data-category="biography"       class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Biography</button>
             </div>
         </div>
     </div>
@@ -51,10 +51,10 @@
         </div>
         <div id="sort-container" class="overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0">
             <div class="space-y-1 bg-muted/50 rounded-lg p-2 border border-border">
-                <button data-criteria="featured"    class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer bg-primary text-primary-foreground font-semibold">Featured</button>
-                <button data-criteria="price-low"   class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-background text-foreground">Price: Low to High</button>
-                <button data-criteria="price-high"  class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-background text-foreground">Price: High to Low</button>
-                <button data-criteria="rating"      class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-background text-foreground">Top Rated</button>
+                <button data-criteria="featured"    class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold">Featured</button>
+                <button data-criteria="price-low-to-high"   class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Price: Low to High</button>
+                <button data-criteria="price-high-to-low"  class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Price: High to Low</button>
+                <button data-criteria="rating"      class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Top Rated</button>
             </div>
         </div>
     </div>

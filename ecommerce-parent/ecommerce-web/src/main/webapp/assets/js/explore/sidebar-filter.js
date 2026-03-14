@@ -20,10 +20,10 @@ const categoriesMapping = {
 };
 
 const sortCriteriaMapping = {
-    "featured":     "Featured",
-    "price-low":    "Price Low",
-    "price-high":   "Price High",
-    "rating":       "Rating"
+    "featured":             "Featured",
+    "price-low-to-high":    "Price: Low to High",
+    "price-high-to-low":    "Price: High to Low",
+    "rating":               "Rating"
 };
 
 function handleSearchQueryChange() {
@@ -59,16 +59,17 @@ export function initSidebarFilter() {
     container.querySelectorAll('.category-btn')
         .forEach(function (categoryBtn) {
             categoryBtn.addEventListener('click', function () {
+                if (selectedCategory === this.dataset.category) return;
                 $(this)
-                    .addClass('bg-primary hover:bg-primary/20 active:bg-primary/30 text-primary-foreground font-semibold')
-                    .removeClass('hover:bg-background active:bg-background/30 text-foreground');
+                    .addClass('bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold')
+                    .removeClass('hover:bg-primary/5 active:bg-primary/10 text-foreground');
 
                 // TODO: Get the previous toggled one and make the opposite...
                 $(`[data-category='${selectedCategory}']`)
-                    .addClass('hover:bg-background/20 active:bg-background/30 text-foreground')
-                    .removeClass('bg-primary hover:bg-primary/20 active:bg-primary/30 text-primary-foreground font-semibold');
+                    .addClass('hover:bg-primary/5 active:bg-primary/10 text-foreground')
+                    .removeClass('bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold');
 
-                selectedCategory = categoryBtn.dataset.category;
+                selectedCategory = this.dataset.category;
                 document.getElementById('selected-category').textContent = categoriesMapping[selectedCategory];
                 document.getElementById('grid-selected-category').textContent = categoriesMapping[selectedCategory];
 
@@ -77,7 +78,7 @@ export function initSidebarFilter() {
         });
 
     container.querySelector('.range-input')
-        .addEventListener('change', function () {
+        .addEventListener('input', function () {
             priceRange = this.value;
             document.getElementById('selected-price-range').textContent = priceRange;
 
@@ -87,16 +88,17 @@ export function initSidebarFilter() {
     container.querySelectorAll('.sort-btn')
         .forEach(function (sortBtn) {
             sortBtn.addEventListener('click', function () {
+                if (sortCriteria === this.dataset.criteria) return;
                 $(this)
-                    .addClass('bg-primary hover:bg-primary/20 active:bg-primary/30 text-primary-foreground font-semibold')
-                    .removeClass('hover:bg-background active:bg-background/30 text-foreground');
+                    .addClass('bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold')
+                    .removeClass('hover:bg-primary/5 active:bg-primary/10 text-foreground');
 
                 // TODO: Get the previous toggled one and make the opposite...
                 $(`[data-criteria='${sortCriteria}']`)
-                    .addClass('hover:bg-background/20 active:bg-background/30 text-foreground')
-                    .removeClass('bg-primary hover:bg-primary/20 active:bg-primary/30 text-primary-foreground font-semibold');
+                    .addClass('hover:bg-primary/5 active:bg-primary/10 text-foreground')
+                    .removeClass('bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold');
 
-                sortCriteria = sortBtn.dataset.criteria;
+                sortCriteria = this.dataset.criteria;
                 document.getElementById('selected-sort-criteria').textContent = sortCriteriaMapping[sortCriteria];
 
                 handleSortChange();

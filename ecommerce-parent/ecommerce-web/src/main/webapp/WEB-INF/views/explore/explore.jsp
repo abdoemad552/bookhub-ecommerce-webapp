@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
     <script src="${pageContext.request.contextPath}/assets/js/jquery/jquery.js"></script>
 </head>
-<body class="font-sans antialiased">
+<body class="font-sans antialiased overflow-y-scroll">
 <div class="min-h-screen bg-background">
     <jsp:include page="../common/header.jsp"/>
     <div class="max-w-7xl mx-auto px-4 py-8">
