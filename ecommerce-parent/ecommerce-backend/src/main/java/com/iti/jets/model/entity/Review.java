@@ -42,7 +42,7 @@ public class Review {
 
     @Column(name = "rating")
     @Builder.Default
-    private Integer rating = 1;
+    private Integer rating = 0;
 
     @Lob
     @Column(name = "comment")

@@ -31,6 +31,9 @@ public class Cart {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "total_price")
+    private double totalPrice;
+
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private Set<CartItem> items = new HashSet<>();

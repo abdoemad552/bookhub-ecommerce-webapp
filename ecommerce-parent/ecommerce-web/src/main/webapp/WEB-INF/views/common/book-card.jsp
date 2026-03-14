@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <c:forEach items="${requestScope.books}" var="book">
-    <div data-slot="card" class="bg-card text-card-foreground rounded-xl border shadow-sm shrink-0 w-72 sm:w-80 md:w-96 overflow-hidden hover:shadow-lg hover:scale-95 active:scale-90 cursor-pointer flex flex-row transition-all duration-150 ease-in-out">
+    <div onclick="window.location.href = '${pageContext.request.contextPath}/books/${book.id}'" data-slot="card" class="bg-card text-card-foreground rounded-xl border shadow-sm shrink-0 w-72 sm:w-80 md:w-96 overflow-hidden hover:shadow-lg hover:scale-95 active:scale-90 cursor-pointer flex flex-row transition-all duration-150 ease-in-out">
 
         <!-- Book Cover -->
         <div class="w-24 sm:w-28 md:w-32 shrink-0">
@@ -9,12 +9,12 @@
         </div>
 
         <!-- Info -->
-        <div class="p-3 md:p-4 flex flex-col flex-1">
+        <div class="p-3 md:p-4 flex flex-col flex-1 select-none">
             <div class="flex-1">
                 <div class="flex justify-between items-center mb-1">
                     <h3 class="font-semibold text-foreground line-clamp-2 text-sm md:text-base">${book.title}</h3>
                     <c:if test="${true}">
-                        <span class="ml-2 bg-red-200 text-red-950 rounded-lg px-2 py-1">Out of stock</span>
+                        <span class="text-sm ml-2 bg-red-200 text-red-950 rounded-lg px-2 py-1">Out of stock</span>
                     </c:if>
                 </div>
                 <p class="text-xs md:text-sm text-muted-foreground mb-2">${book.author}</p>
