@@ -45,6 +45,7 @@ public class SignupServlet extends HttpServlet {
         if (userDTOResponse.isFailure()) {
             req.setAttribute("error", userDTOResponse.getMessage());
             req.getRequestDispatcher(PathStorage.SING_UP_PAGE).forward(req, resp);
+            return;
         }
 
         resp.sendRedirect(PathStorage.LOGIN_SERVLET);

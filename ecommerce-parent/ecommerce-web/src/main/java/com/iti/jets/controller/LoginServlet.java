@@ -1,7 +1,6 @@
 package com.iti.jets.controller;
 
 import com.iti.jets.model.dto.request.LoginRequestDTO;
-import com.iti.jets.model.dto.request.RegisterRequestDTO;
 import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.service.factory.ServiceFactory;
@@ -48,6 +47,7 @@ public class LoginServlet extends HttpServlet {
         if (userDTOResponse.isFailure()) {
             request.setAttribute("error", userDTOResponse.getMessage());
             request.getRequestDispatcher(PathStorage.LOGIN_PAGE).forward(request, response);
+            return;
         }
 
         // TODO: How to handle remember me?

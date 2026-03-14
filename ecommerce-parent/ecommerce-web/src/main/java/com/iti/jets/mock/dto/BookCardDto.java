@@ -1,6 +1,7 @@
 package com.iti.jets.mock.dto;
 
 public class BookCardDto {
+    private int id;
     private String title;
     private String author;
     private String description;
@@ -8,13 +9,22 @@ public class BookCardDto {
     private double price;
     private String coverPicUrl;
 
-    public BookCardDto(String title, String author, String description, double averageRating, double price, String coverPicUrl) {
+    public BookCardDto(int id, String title, String author, String description, double averageRating, double price, String coverPicUrl) {
+        this.id = id;
         this.title = title;
         this.author = author;
         this.description = description;
         this.averageRating = averageRating;
         this.price = price;
         this.coverPicUrl = coverPicUrl;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {

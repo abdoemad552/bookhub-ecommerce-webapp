@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
-    <script type="module" src="${pageContext.request.contextPath}/assets/js/home/home.js"></script>
     <script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body class="font-google-sans antialiased">
@@ -79,5 +78,6 @@
     </section>
     <jsp:include page="../common/footer.jsp"/>
 </div>
+<script type="module" src="${pageContext.request.contextPath}/assets/js/home/home.js"></script>
 </body>
 </html>

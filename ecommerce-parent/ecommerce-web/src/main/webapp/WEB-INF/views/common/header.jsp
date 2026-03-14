@@ -44,7 +44,7 @@
                                     <path d="m6 9 6 6 6-6"></path>
                                 </svg>
                             </button>
-                            <div id="dropdown" class="absolute right-0 mt-2 w-48 bg-card rounded-lg border border-border shadow-lg overflow-hidden transition-all duration-200 origin-top-right opacity-100 scale-100 visible">
+                            <div id="dropdown" class="absolute right-0 mt-2 w-48 bg-card rounded-lg border border-border shadow-lg overflow-hidden transition-all duration-200 origin-top-right opacity-0 scale-95 invisible" aria-expanded="false">
                                 <div class="px-4 py-3 border-b border-border bg-muted/30">
                                     <p class="text-sm font-semibold text-foreground truncate">${sessionScope.user.firstName} ${sessionScope.user.lastName}</p>
                                     <p class="text-xs text-muted-foreground truncate">${sessionScope.user.email}</p>

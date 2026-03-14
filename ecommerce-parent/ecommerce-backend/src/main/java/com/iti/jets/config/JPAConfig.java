@@ -48,15 +48,19 @@ public class JPAConfig {
 
     public static void closeEntityManager() {
         EntityManager em = threadLocalEM.get();
-        if (em != null && em.isOpen()) {
-            em.close();
+        try {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        } finally {
+            threadLocalEM.remove();
         }
-        threadLocalEM.remove();
     }
 
     public static void closeEntityManagerFactory() {
         if (emf != null && emf.isOpen()) {
             emf.close();
+            emf = null;
         }
     }
 }
