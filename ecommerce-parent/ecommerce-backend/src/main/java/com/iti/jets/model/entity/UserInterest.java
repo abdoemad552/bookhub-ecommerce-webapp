@@ -16,17 +16,26 @@ import org.hibernate.annotations.OnDeleteAction;
 public class UserInterest {
 
     @EmbeddedId
-    private UserInterestId id;
+    @Builder.Default
+    private UserInterestId id = new UserInterestId();
 
     @MapsId("userId")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
+    @EqualsAndHashCode.Include
     private User user;
 
     @MapsId("categoryId")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
+    @EqualsAndHashCode.Include
     private Category category;
+
+    public UserInterest(User user, Category category) {
+        this.user = user;
+        this.category = category;
+        this.id = new UserInterestId();
+    }
 }

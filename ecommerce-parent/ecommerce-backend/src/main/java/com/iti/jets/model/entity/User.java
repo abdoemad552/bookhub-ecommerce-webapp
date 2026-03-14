@@ -151,9 +151,7 @@ public class User {
 
     public void addInterest(Category category) {
         if (category != null) {
-            UserInterest ui = new UserInterest();
-            ui.setUser(this);
-            ui.setCategory(category);
+            UserInterest ui = new UserInterest(this, category);
             interests.add(ui);
         }
     }
