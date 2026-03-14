@@ -1,14 +1,30 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%
+    com.iti.jets.model.dto.request.RegisterRequestDTO fd =
+            (com.iti.jets.model.dto.request.RegisterRequestDTO) request.getAttribute("formData");
 
+    String firstName = fd != null && fd.getFirstName() != null ? fd.getFirstName() : "";
+    String lastName = fd != null && fd.getLastName() != null ? fd.getLastName() : "";
+    String username = fd != null && fd.getUsername() != null ? fd.getUsername() : "";
+    String email = fd != null && fd.getEmail() != null ? fd.getEmail() : "";
+    String job = fd != null && fd.getJob() != null ? fd.getJob() : "";
+    String birthDate = fd != null && fd.getBirthDate() != null ? fd.getBirthDate().toString() : "";
+    String creditLimit = fd != null && fd.getCreditLimit() != null ? fd.getCreditLimit().toPlainString() : "";
+    String password = fd != null && fd.getPassword() != null ? fd.getPassword() : "";
+    String confirmPassword = fd != null && fd.getConfirmPassword() != null ? fd.getConfirmPassword() : "";
+    String serverError = (String) request.getAttribute("error");
+
+    // If server returned an error, we want to land on step 2 (account fields)
+    boolean hasServerError = serverError != null && !serverError.isEmpty();
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charSet="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes"/>
-    <meta name="description" content="Discover thousands of books across every genre. Shop for bestsellers, classics, and hidden gems with BookHub."/>
-    <meta name="generator" content="BookHub"/>
-    <meta name="keywords" content="books,bookstore,ebook,bestsellers,fiction,non-fiction"/>
-    <title>BookHub - Create Account</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"/>
+    <title>BookHub — Create Account</title>
+
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/authentication.css">
@@ -17,191 +33,347 @@
 
 <body class="font-google-sans antialiased">
 
-<div class="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex items-center justify-center px-4 py-8 relative">
+<div class="min-h-screen bg-gradient-to-br from-background via-background to-accent/5
+            flex items-center justify-center px-4 py-8 relative">
+
+    <!-- Ambient orbs -->
+    <div class="absolute -top-20 -right-20 w-72 h-72 bg-accent/10 rounded-full blur-3xl animate-float opacity-25 pointer-events-none"></div>
+    <div class="absolute bottom-0 -left-20 w-56 h-56 bg-primary/8 rounded-full blur-3xl animate-float opacity-15 pointer-events-none"
+         style="animation-delay:3s;"></div>
 
     <div class="w-full max-w-2xl relative z-10">
-
-        <!-- Floating accent -->
-        <div class="absolute -top-20 -right-20 w-40 h-40 bg-accent/20 rounded-full blur-3xl animate-float opacity-30"></div>
-
         <div class="card-modern rounded-2xl p-8 sm:p-10 animate-slide-up shadow-2xl">
 
-            <!-- Header Section -->
-            <div class="animate-slide-down delay-1 mb-8">
-                <a href="${pageContext.request.contextPath}/home" class="flex items-center gap-3 mb-4">
+            <!-- Brand Header -->
+            <div class="animate-slide-down delay-1 mb-6">
+                <a href="${pageContext.request.contextPath}/home" class="flex items-center gap-3 mb-5">
                     <div class="p-3 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary icon-pulse">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"
+                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="text-primary icon-pulse">
                             <path d="M12 7v14"></path>
                             <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
                         </svg>
                     </div>
-                    <h1 class="text-3xl font-google-sans-bold text-gradient">BookHub</h1>
+                    <h1 class="text-3xl font-bold text-gradient">BookHub</h1>
                 </a>
+                <h2 class="text-4xl font-bold text-foreground mb-1">Join Us</h2>
+                <p class="text-muted-foreground text-sm">Create your reading sanctuary</p>
             </div>
 
-            <!-- Title Section -->
-            <div class="animate-slide-down delay-2 mb-8">
-                <h2 class="text-4xl font-google-sans-medium text-foreground mb-2">Join Us</h2>
-                <p class="text-muted-foreground">Create your reading sanctuary</p>
+            <!-- Step indicator -->
+            <div class="step-indicator animate-slide-down delay-2">
+                <div class="step-item active" id="si-1">
+                    <div class="step-dot" id="sd-1">1</div>
+                    <span class="step-label">Personal info</span>
+                </div>
+                <div class="step-connector" id="sc-1"></div>
+                <div class="step-item" id="si-2">
+                    <div class="step-dot" id="sd-2">2</div>
+                    <span class="step-label">Your account</span>
+                </div>
             </div>
 
-            <!-- Form -->
-            <form action="signup" method="post" class="space-y-5">
-
-                <!-- Name Row -->
-                <div class="grid grid-cols-2 gap-4 animate-slide-up delay-3">
-                    <!-- First Name -->
-                    <div class="group">
-                        <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide">First Name</label>
-                        <div class="relative">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10">
-                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                            <input type="text" name="firstName" placeholder="First name" class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
-                        </div>
-                    </div>
-
-                    <!-- Last Name -->
-                    <div class="group">
-                        <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide">Last Name</label>
-                        <div class="relative">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10">
-                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                            <input type="text" name="lastName" placeholder="Last name" class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Username Input -->
-                <div class="animate-slide-up delay-4 group">
-                    <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide">Username</label>
-                    <div class="relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10">
-                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                        <input type="text" name="username" placeholder="Username" class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
-                    </div>
-                    <p class="text-xs text-muted-foreground mt-2">3-20 characters, letters and numbers only</p>
-                </div>
-
-                <!-- Email Input -->
-                <div class="animate-slide-up delay-4 group">
-                    <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide">Email Address</label>
-                    <div class="relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10">
-                            <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path>
-                            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-                        </svg>
-                        <input type="email" name="email" placeholder="Email" class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
-                    </div>
-                </div>
-
-                <!-- Birth Date Input -->
-                <div class="animate-slide-up delay-4 group">
-                    <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide">Birth Date</label>
-                    <div class="relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10">
-                            <rect width="18" height="18" x="3" y="4" rx="2"></rect>
-                            <path d="M16 2v4"></path>
-                            <path d="M8 2v4"></path>
-                            <path d="M3 10h18"></path>
-                        </svg>
-                        <input type="date" name="birthDate" class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
-                    </div>
-                    <p class="text-xs text-muted-foreground mt-2">Must be 18 years or older</p>
-                </div>
-
-                <!-- Password Input -->
-                <div class="animate-slide-up delay-5 group">
-                    <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide">Password</label>
-                    <div class="relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10">
-                            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                        <input type="password" name="password" placeholder="Password" class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
-                    </div>
-                    <p class="text-xs text-muted-foreground mt-2">Must contain at least 8 characters</p>
-                </div>
-
-                <!-- Confirm Password Input -->
-                <div class="animate-slide-up delay-5 group">
-                    <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide">Confirm Password</label>
-                    <div class="relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10">
-                            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                        <input type="password" name="confirmPassword" placeholder="Confirm password" class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
-                    </div>
-                </div>
-
-                <!-- Credit card limit -->
-                <div class="animate-slide-up delay-3 group">
-                    <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide">Credit Card Limit</label>
-                    <div class="relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10">
-                            <rect width="20" height="14" x="2" y="5" rx="2"></rect>
-                            <line x1="2" x2="22" y1="10" y2="10"></line>
-                        </svg>
-                        <input type="number" name="creditCardLimit" min="0" placeholder="Your Limit" class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
-                    </div>
-                </div>
-
-                <!-- Profile Picture Upload -->
-<%--                <div class="animate-slide-up delay-3 group">--%>
-<%--                    <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide">Profile Picture</label>--%>
-<%--                    <div class="relative">--%>
-<%--                        <input type="file" name="profilePic" accept="image/*" class="input-modern w-full pl-4 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 cursor-pointer"/>--%>
-<%--                    </div>--%>
-<%--                    <p class="text-xs text-muted-foreground mt-2">Optional - JPG, PNG or GIF (Max 5MB)</p>--%>
-<%--                </div>--%>
-
-                <!-- Error message container -->
-                <div id="js-error-message" class="hidden mt-2 text-sm text-red-600 items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle flex-shrink-0" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"></path>
+            <!-- Server error banner -->
+            <c:if test="${not empty requestScope.error}">
+                <div class="alert-banner alert-error" role="alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
                     </svg>
-                    <span class="error-text"></span>
+                    <span class="error-text">${requestScope.error}</span>
+                </div>
+            </c:if>
+
+            <!-- Client-side alert -->
+            <div id="js-alert" class="alert-banner alert-error" style="display:none;" role="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span id="js-alert-text"></span>
+            </div>
+
+            <!-- FORM — single form, two visual panels -->
+            <form id="signup-form" action="signup" method="post" novalidate>
+
+                <!-- STEP 1 — Personal info -->
+                <div class="step-panel active" id="panel-1">
+
+                    <!-- First + Last -->
+                    <div class="grid grid-cols-2 gap-4 mb-5">
+                        <div class="group">
+                            <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide"
+                                   for="firstName">First Name</label>
+                            <div class="relative">
+                                <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10"
+                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <input type="text" id="firstName" name="firstName"
+                                       placeholder="First name" value="${requestScope.formData.firstName}"
+                                       autocomplete="given-name"
+                                       class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
+                            </div>
+                            <div class="field-hint" id="hint-firstName"></div>
+                        </div>
+
+                        <div class="group">
+                            <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide"
+                                   for="lastName">Last Name</label>
+                            <div class="relative">
+                                <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10"
+                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <input type="text" id="lastName" name="lastName"
+                                       placeholder="Last name" value="<%= lastName %>"
+                                       autocomplete="family-name"
+                                       class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
+                            </div>
+                            <div class="field-hint" id="hint-lastName"></div>
+                        </div>
+                    </div>
+
+                    <!-- Birthdate -->
+                    <div class="group mb-5">
+                        <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide"
+                               for="birthDate">Date of Birth</label>
+                        <div class="relative">
+                            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10"
+                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2">
+                                <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                                <path d="M16 2v4M8 2v4M3 10h18"></path>
+                            </svg>
+                            <input type="date" id="birthDate" name="birthDate"
+                                   value="<%= birthDate %>"
+                                   class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground focus:outline-none"/>
+                        </div>
+                        <div class="field-hint" id="hint-birthDate">Must be 18 years or older</div>
+                    </div>
+
+                    <!-- Optional section -->
+                    <div class="grid grid-cols-2 gap-4 mb-2">
+                        <div class="group">
+                            <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide"
+                                   for="job">Occupation</label>
+                            <div class="relative">
+                                <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10"
+                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2">
+                                    <rect width="20" height="14" x="2" y="7" rx="2"></rect>
+                                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                </svg>
+                                <input type="text" id="job" name="job"
+                                       placeholder="e.g. Engineer" value="<%= job %>"
+                                       class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
+                            </div>
+                        </div>
+
+                        <div class="group">
+                            <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide"
+                                   for="creditCardLimit">Credit Limit</label>
+                            <div class="relative">
+                                <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10"
+                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2">
+                                    <rect width="20" height="14" x="2" y="5" rx="2"></rect>
+                                    <line x1="2" x2="22" y1="10" y2="10"></line>
+                                </svg>
+                                <input type="number" id="creditCardLimit" name="creditCardLimit"
+                                       min="0" placeholder="0" value="<%= creditLimit %>"
+                                       class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 1 → Next -->
+                    <div class="nav-row no-back">
+                        <button type="button" id="btn-next"
+                                class="btn-modern w-full py-3.5 px-4 text-primary-foreground
+                                       font-semibold text-base rounded-xl focus:outline-none
+                                       focus:ring-2 focus:ring-primary/40 uppercase tracking-wide
+                                       flex items-center justify-center gap-2">
+                            Continue
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14M12 5l7 7-7 7"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
-                <c:if test="${not empty requestScope.error}">
-                    <div id="server-error-message" class="mt-2 text-sm text-red-600 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle flex-shrink-0" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
-                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"></path>
-                        </svg>
-                        <span class="error-text">${requestScope.error}</span>
+                <!-- STEP 2 — Account details  -->
+                <div class="step-panel" id="panel-2">
+                    <!-- Username -->
+                    <div class="group mb-5">
+                        <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide"
+                               for="username">Username</label>
+                        <div class="relative">
+                            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10"
+                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <input type="text" id="username" name="username"
+                                   placeholder="Username" value="<%= username %>"
+                                   autocomplete="username" maxlength="20"
+                                   class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
+                        </div>
+                        <div class="field-hint" id="hint-username">3–20 characters, letters, numbers and _ only</div>
                     </div>
-                </c:if>
 
-                <!-- Sign Up Button -->
-                <button type="submit" class="btn-modern w-full py-3.5 px-4 text-primary-foreground font-semibold text-base rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 focus:ring-offset-2 focus:ring-offset-background active:scale-95 transition-all duration-300 mt-6 relative z-10 uppercase tracking-wide">
-                    Sign Up
-                </button>
+                    <!-- Email -->
+                    <div class="group mb-5">
+                        <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide"
+                               for="email">Email Address</label>
+                        <div class="relative">
+                            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10"
+                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2">
+                                <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path>
+                                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                            </svg>
+                            <input type="email" id="email" name="email"
+                                   placeholder="name@example.com" value="<%= email %>"
+                                   autocomplete="email"
+                                   class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
+                        </div>
+                        <div class="field-hint" id="hint-email"></div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="group mb-5">
+                        <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide"
+                               for="password">Password</label>
+                        <div class="relative">
+                            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10"
+                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2">
+                                <rect width="18" height="11" x="3" y="11" rx="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            <input type="password" id="password" name="password"
+                                   placeholder="Choose Strong Password" value="<%=password%>"
+                                   autocomplete="new-password"
+                                   class="input-modern w-full pl-12 pr-11 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
+                            <button type="button" class="pw-toggle" onclick="togglePw('password',this)"
+                                    aria-label="Toggle password">
+                                <svg id="eye-password" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="strength-track">
+                            <div class="strength-seg" id="seg1"></div>
+                            <div class="strength-seg" id="seg2"></div>
+                            <div class="strength-seg" id="seg3"></div>
+                        </div>
+                        <div class="field-hint" id="hint-password">At least 8 characters</div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="group mb-2">
+                        <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide"
+                               for="confirmPassword">Confirm Password</label>
+                        <div class="relative">
+                            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10"
+                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                            <input type="password" id="confirmPassword" name="confirmPassword"
+                                   placeholder="Repeat your password" value="<%=confirmPassword%>"
+                                   autocomplete="new-password"
+                                   class="input-modern w-full pl-12 pr-11 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
+                            <button type="button" class="pw-toggle" onclick="togglePw('confirmPassword',this)"
+                                    aria-label="Toggle confirm">
+                                <svg id="eye-confirmPassword" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="field-hint" id="hint-confirm">Must match your password</div>
+                    </div>
+
+                    <!-- Back + Submit -->
+                    <div class="nav-row has-back">
+                        <button type="button" id="btn-back" class="btn-back">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path d="M19 12H5M12 19l-7-7 7-7"></path>
+                            </svg>
+                            Back
+                        </button>
+
+                        <button type="submit" id="submit-btn"
+                                class="btn-modern py-3.5 px-4 text-primary-foreground
+                                       font-semibold text-base rounded-xl focus:outline-none
+                                       focus:ring-2 focus:ring-primary/40 uppercase tracking-wide relative">
+                            <span class="btn-text">Create Account</span>
+                            <span class="btn-spinner">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
+                                        <animateTransform attributeName="transform" type="rotate"
+                                                          from="0 12 12" to="360 12 12" dur=".8s"
+                                                          repeatCount="indefinite"></animateTransform>
+                                    </path>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
             </form>
 
-            <!-- Divider -->
-            <div class="divider-modern">
+            <!-- Login link -->
+            <div class="divider-modern mt-6">
                 <span class="select-none">Already have an account?</span>
             </div>
-
-            <!-- Footer Links -->
-            <div class="space-y-3 text-center animate-fade-in" style="animation-delay: 0.6s;">
-                <a href="login" class="link-modern block text-sm font-semibold">
+            <div class="text-center animate-fade-in" style="animation-delay:.6s;">
+                <a href="${pageContext.request.contextPath}/login"
+                   class="link-modern text-sm font-semibold">
                     Log In to BookHub
                 </a>
             </div>
 
         </div>
     </div>
-
 </div>
+
 <script src="${pageContext.request.contextPath}/assets/js/signup/signup.js"></script>
+
+<script>
+    /**
+     * On load — if server returned error, jump to step 2
+     * Fields already repopulated by JSP
+     */
+    <% if (hasServerError) { %>
+    goToStep(2, 'forward');
+    <% } else { %>
+    updateStepUI();
+    <% } %>
+</script>
+
 </body>
 </html>
