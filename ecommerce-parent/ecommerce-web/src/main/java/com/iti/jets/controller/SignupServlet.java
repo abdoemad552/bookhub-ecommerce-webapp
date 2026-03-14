@@ -5,7 +5,10 @@ import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.AuthService;
+import com.iti.jets.util.ParsingHelper;
 import com.iti.jets.util.PathStorage;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,9 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 
 public class SignupServlet extends HttpServlet {
 
@@ -50,18 +50,21 @@ public class SignupServlet extends HttpServlet {
         RegisterRequestDTO registerRequestDTO = buildRegisterRequest(req);
         BaseResponse<UserDTO> result = authService.register(registerRequestDTO);
 
-        if (result.isFailure()) {
-            // Preserve what the user typed so they don't retype everything
-            req.setAttribute("error", result.getMessage());
-            req.setAttribute("formData", registerRequestDTO);
-            req.getRequestDispatcher(PathStorage.SING_UP_PAGE).forward(req, resp);
-            return;
-        }
+        boolean isSuccess = result.isSuccess();
 
-        // Flash success message consumed by login page
-        req.getSession().setAttribute("successMessage", "Account created! Please sign in.");
-        LOGGER.info("New user registered: {}", registerRequestDTO.getUsername());
-        resp.sendRedirect(PathStorage.LOGIN_SERVLET);
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+
+        JsonObject json = Json.createObjectBuilder()
+                .add("success", isSuccess)
+                .add("message", result.getMessage())
+                .build();
+
+        resp.getWriter().write(json.toString());
+
+        if (isSuccess) {
+            LOGGER.info("New user registered: {}", registerRequestDTO.getUsername());
+        }
     }
 
     private RegisterRequestDTO buildRegisterRequest(HttpServletRequest req) {
@@ -72,31 +75,10 @@ public class SignupServlet extends HttpServlet {
                 .confirmPassword(req.getParameter("confirmPassword"))
                 .firstName(req.getParameter("firstName"))
                 .lastName(req.getParameter("lastName"))
-                .birthDate(parseBirthDate(req.getParameter("birthDate")))
+                .birthDate(ParsingHelper.parseDate(req.getParameter("birthDate")))
                 .job(req.getParameter("job"))
-                .creditLimit(parseCreditLimit(req.getParameter("creditCardLimit")))
+                .creditLimit(ParsingHelper.parseBigDecimal(req.getParameter("creditCardLimit")))
                 .categoryIds(null)
                 .build();
-    }
-
-    private LocalDate parseBirthDate(String value) {
-        if (value == null || value.isBlank()) return null;
-        try {
-            return LocalDate.parse(value);
-        } catch (DateTimeParseException e) {
-            LOGGER.warn("Invalid birth date format: {}", value);
-            return null;
-        }
-    }
-
-    private BigDecimal parseCreditLimit(String value) {
-        if (value == null || value.isBlank()) return BigDecimal.ZERO;
-        try {
-            BigDecimal v = new BigDecimal(value);
-            return v.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : v;
-        } catch (NumberFormatException e) {
-            LOGGER.warn("Invalid credit limit: {}", value);
-            return BigDecimal.ZERO;
-        }
     }
 }

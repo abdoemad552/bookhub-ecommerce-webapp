@@ -2,6 +2,8 @@ package com.iti.jets.controller;
 
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.UserService;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +35,11 @@ public class CheckAvailabilityServlet extends HttpServlet {
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.getWriter().write("{\"available\":" + available + "}");
+
+        JsonObject json = Json.createObjectBuilder()
+                .add("available", available)
+                .build();
+
+        resp.getWriter().write(json.toString());
     }
 }
