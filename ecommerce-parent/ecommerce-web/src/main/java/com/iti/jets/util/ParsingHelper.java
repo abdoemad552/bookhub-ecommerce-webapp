@@ -1,6 +1,5 @@
 package com.iti.jets.util;
 
-import com.iti.jets.controller.SignupServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

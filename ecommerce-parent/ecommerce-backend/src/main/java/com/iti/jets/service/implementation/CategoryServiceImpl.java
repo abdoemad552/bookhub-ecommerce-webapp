@@ -49,21 +49,31 @@ public class CategoryServiceImpl extends ContextHandler implements CategoryServi
 
     @Override
     public List<CategoryDTO> findAll(int pageNumber, int pageSize) {
-        return List.of();
+        return executeInContext(() -> categoryRepository
+                .findAll(pageNumber, pageSize)
+                .stream()
+                .map(categoryMapper::toDTO)
+                .toList()
+        );
     }
 
     @Override
-    public void delete(Long aLong) {
-
+    public void delete(Long id) {
+        executeInContext(() -> {
+            Optional<Category> categoryOpt = categoryRepository.findById(id);
+            if (categoryOpt.isPresent()) {
+                categoryRepository.delete(categoryOpt.get());
+            }
+        });
     }
 
     @Override
     public long count() {
-        return 0;
+        return executeInContext(categoryRepository::count);
     }
 
     @Override
-    public boolean existsById(Long aLong) {
-        return false;
+    public boolean existsById(Long id) {
+        return executeInContext(() -> categoryRepository.existsById(id));
     }
 }

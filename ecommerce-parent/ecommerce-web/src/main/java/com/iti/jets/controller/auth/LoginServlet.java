@@ -1,4 +1,4 @@
-package com.iti.jets.controller;
+package com.iti.jets.controller.auth;
 
 import com.iti.jets.model.dto.request.LoginRequestDTO;
 import com.iti.jets.model.dto.response.UserDTO;

@@ -1,8 +1,10 @@
-package com.iti.jets.controller;
+package com.iti.jets.controller.auth;
 
 import com.iti.jets.model.dto.response.CategoryDTO;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.CategoryService;
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +20,6 @@ import java.util.List;
 public class CategoriesServlet extends HttpServlet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoriesServlet.class);
-
     private CategoryService categoryService;
 
     @Override
@@ -37,28 +38,18 @@ public class CategoriesServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.setHeader("Cache-Control", "public, max-age=3600"); // categories rarely change
 
-        List<CategoryDTO> categories = categoryService.findAll();
+        // Render only 8 categories in user interests UI
+        List<CategoryDTO> categories = categoryService.findAll(1, 8);
+
+        JsonArrayBuilder jsonArray = Json.createArrayBuilder();
+        for (CategoryDTO c : categories) {
+            jsonArray.add(Json.createObjectBuilder()
+                    .add("id", c.getId())
+                    .add("name", c.getName())
+            );
+        }
 
         PrintWriter out = resp.getWriter();
-        out.print('[');
-        for (int i = 0; i < categories.size(); i++) {
-            CategoryDTO c = categories.get(i);
-            out.print("{\"id\":");
-            out.print(c.getId());
-            out.print(",\"name\":\"");
-            out.print(escapeJson(c.getName()));
-            out.print("\"}");
-            if (i < categories.size() - 1) out.print(',');
-        }
-        out.print(']');
-    }
-
-    // Minimal JSON string escaper — avoids pulling in a library
-    private String escapeJson(String s) {
-        return s.replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("\t", "\\t");
+        out.write(jsonArray.build().toString());
     }
 }
