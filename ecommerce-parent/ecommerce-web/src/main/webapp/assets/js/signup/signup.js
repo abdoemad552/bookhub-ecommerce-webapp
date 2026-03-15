@@ -167,7 +167,7 @@ $('password').addEventListener('input', function () {
         markField('password', null);
     } else {
         const ok = score >= 1;
-        markField('password', ok ? 'ok' : 'bad');
+        markField('password', ok ? null : 'bad');
 
         const hint = $('hint-password');
         if (!ok) {
@@ -267,7 +267,7 @@ $('username').addEventListener('blur', async function () {
             markField('username', 'bad');
             setHint(hint, 'Username already taken');
         } else {
-            markField('username', 'ok');
+            markField('username', null);
             removeHint(hint);
         }
     } catch (err) {
@@ -304,7 +304,7 @@ $('email').addEventListener('blur', async function () {
             markField('email', 'bad');
             setHint(hint, 'Email address already exists');
         } else {
-            markField('email', 'ok');
+            markField('email', null);
             removeHint(hint);
         }
     } catch (err) {

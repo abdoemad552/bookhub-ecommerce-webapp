@@ -64,7 +64,10 @@ public class SignupServlet extends HttpServlet {
 
         resp.getWriter().write(json.toString());
 
+        // Set up the flash message that consumed by login page
         if (isSuccess) {
+            req.getSession().setAttribute("flash_success", "Account created successfully. Please login");
+            req.getSession().setAttribute("flash_username", registerRequestDTO.getUsername());
             LOGGER.info("New user registered: {}", registerRequestDTO.getUsername());
         }
     }

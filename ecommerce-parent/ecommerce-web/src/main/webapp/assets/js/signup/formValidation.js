@@ -114,7 +114,7 @@ export function checkConfirm() {
         return;
     }
     const ok = pw === cp;
-    markField('confirmPassword', ok ? 'ok' : 'bad');
+    markField('confirmPassword', ok ? null : 'bad');
 
     const hint = $('hint-confirm');
     if (!ok) {

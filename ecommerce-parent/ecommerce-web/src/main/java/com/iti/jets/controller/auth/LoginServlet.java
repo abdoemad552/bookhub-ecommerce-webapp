@@ -6,15 +6,21 @@ import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.AuthService;
 import com.iti.jets.util.PathStorage;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class LoginServlet extends HttpServlet {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoginServlet.class);
 
     private AuthService authService;
 
@@ -24,49 +30,66 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        var session = request.getSession(false);
+        if(session != null){
+            // Already logged-in user
+            if (session.getAttribute("user") != null) {
+                response.sendRedirect(PathStorage.HOME_SERVLET);
+                return;
+            }
 
-        if (request.getSession(false) != null
-                && request.getSession(false).getAttribute("user") != null) {
-            response.sendRedirect(PathStorage.HOME_SERVLET);
+            // Flash success message form signup page
+            String flash = (String) session.getAttribute("flash_success");
+            String username = (String) session.getAttribute("flash_username");
+            if (flash != null) {
+                request.setAttribute("flash_success", flash);
+                request.setAttribute("flash_username", username);
+
+                session.removeAttribute("flash_success");
+                session.removeAttribute("flash_username");
+            }
         }
-
         request.getRequestDispatcher(PathStorage.LOGIN_PAGE).forward(request, response);
     }
 
     @Override
-    protected void doPost(
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         LoginRequestDTO loginRequest = buildLoginRequest(request);
+        BaseResponse<UserDTO> result = authService.login(loginRequest);
 
-        BaseResponse<UserDTO> userDTOResponse = authService.login(loginRequest);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        if (userDTOResponse.isFailure()) {
-            request.setAttribute("error", userDTOResponse.getMessage());
-            request.getRequestDispatcher(PathStorage.LOGIN_PAGE).forward(request, response);
-            return;
+        boolean isSuccess = result.isSuccess();
+
+        if (isSuccess) {
+            LOGGER.info("New user registered: {}", loginRequest.getUsernameOrEmail());
+
+            UserDTO loggedInUser = result.getData();
+            HttpSession session = request.getSession();
+            session.setAttribute("user", loggedInUser);
+
+            // TODO:Send Email to the user
+
+            boolean rememberMe = request.getParameter("rememberMe") != null;
+            if(rememberMe){
+            }
         }
 
-        // TODO: How to handle remember me?
-        String rememberMe = request.getParameter("rememberMe");
+        // Send AJAX response to JS
+        JsonObject json = Json.createObjectBuilder()
+                .add("success", isSuccess)
+                .add("message", result.getMessage())
+                .build();
 
-        UserDTO user = userDTOResponse.getData();
-        HttpSession session = request.getSession();
-        session.setAttribute("user", user);
-
-        response.sendRedirect(PathStorage.HOME_SERVLET);
+        response.getWriter().write(json.toString());
     }
 
     private LoginRequestDTO buildLoginRequest(HttpServletRequest req) {
         return LoginRequestDTO.builder()
-            .usernameOrEmail(req.getParameter("usernameOrEmail"))
-            .password(req.getParameter("password"))
-            .emailNotifications(req.getParameter("emailNotifications") != null)
-            .build();
+                .usernameOrEmail(req.getParameter("usernameOrEmail"))
+                .password(req.getParameter("password"))
+                .build();
     }
 }

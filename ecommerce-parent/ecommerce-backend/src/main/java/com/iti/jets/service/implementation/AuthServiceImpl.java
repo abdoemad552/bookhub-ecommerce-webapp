@@ -61,11 +61,6 @@ public class AuthServiceImpl extends ContextHandler implements AuthService {
                 return ResponseFactory.failure("Wrong password");
             }
 
-            if(request.getEmailNotifications() != null){
-                user.setEmailNotifications(request.getEmailNotifications());
-                userRepository.update(user);
-            }
-
             LOGGER.info("Login successful: {}", user.getUsername());
             return ResponseFactory.success("Login successful:", userMapper.toDTO(user));
         });
