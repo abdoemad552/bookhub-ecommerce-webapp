@@ -13,18 +13,15 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserBookTagId implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2027961110595616895L;
 
     @Column(name = "user_tag_id", nullable = false)
-    @EqualsAndHashCode.Include
     private Long userTagId;
 
     @Column(name = "book_id", nullable = false)
-    @EqualsAndHashCode.Include
     private Long bookId;
 
     @Override
