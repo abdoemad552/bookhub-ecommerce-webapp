@@ -57,8 +57,4 @@
     <welcome-file-list>
         <welcome-file>home</welcome-file>
     </welcome-file-list>
-
-    <listener>
-        <listener-class>com.iti.jets.listener.ApplicationStartupListener</listener-class>
-    </listener>
 </web-app>
