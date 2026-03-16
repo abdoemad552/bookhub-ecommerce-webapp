@@ -24,6 +24,7 @@ import org.hibernate.annotations.OnDeleteAction;
 public class CartItem {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 
