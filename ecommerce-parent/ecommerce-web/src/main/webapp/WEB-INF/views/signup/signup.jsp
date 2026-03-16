@@ -335,7 +335,7 @@
                         </button>
                         <button type="submit" id="submit-btn"
                                 class="btn-modern py-3.5 px-4 text-primary-foreground font-semibold text-base rounded-xl focus:outline-none uppercase tracking-wide relative">
-                            <span class="btn-text">Create Account</span>
+                            <span class="btn-text">Sign Up</span>
                             <span class="btn-spinner">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                      stroke-width="2.5" stroke-linecap="round">
