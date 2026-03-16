@@ -59,7 +59,7 @@
             </div>
 
             <!-- Flash success message from signup -->
-            <c:if test="${not empty requestScope.flash_success}">
+            <c:if test="${not empty requestScope.flash_message}">
                 <div id="flash-success"
                      class="alert-success flex items-start gap-3 w-full bg-emerald-500/10 border border-emerald-500/30
                             text-emerald-400 rounded-xl px-4 py-3.5 mb-6 animate-slide-down" role="alert">
@@ -75,7 +75,7 @@
 
                     <!-- Text -->
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-semibold leading-snug">${requestScope.flash_success}</p>
+                        <p class="text-sm font-semibold leading-snug">${requestScope.flash_message}</p>
                     </div>
                 </div>
             </c:if>

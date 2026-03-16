@@ -39,14 +39,22 @@ public class LoginServlet extends HttpServlet {
             }
 
             // Flash success message form signup page
-            String flash = (String) session.getAttribute("flash_success");
+            String flash = (String) session.getAttribute("flash_message");
             String username = (String) session.getAttribute("flash_username");
             if (flash != null) {
-                request.setAttribute("flash_success", flash);
+                request.setAttribute("flash_message", flash);
                 request.setAttribute("flash_username", username);
 
-                session.removeAttribute("flash_success");
+                session.removeAttribute("flash_message");
                 session.removeAttribute("flash_username");
+            }
+
+            // Flash login first message from admin page
+            String flashMessage = (String) session.getAttribute("flash_message");
+            if (flashMessage != null) {
+                request.setAttribute("flash_message", flash);
+
+                session.removeAttribute("flash_message");
             }
         }
         request.getRequestDispatcher(PathStorage.LOGIN_PAGE).forward(request, response);
