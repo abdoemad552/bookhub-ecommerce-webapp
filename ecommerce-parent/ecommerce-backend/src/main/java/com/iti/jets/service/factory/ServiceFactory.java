@@ -6,6 +6,7 @@ import com.iti.jets.repository.implementation.CategoryRepositoryImpl;
 import com.iti.jets.repository.implementation.UserRepositoryImpl;
 import com.iti.jets.repository.interfaces.CategoryRepository;
 import com.iti.jets.repository.interfaces.UserRepository;
+import com.iti.jets.service.extra.EmailService;
 import com.iti.jets.service.implementation.AuthServiceImpl;
 import com.iti.jets.service.implementation.CategoryServiceImpl;
 import com.iti.jets.service.implementation.UserServiceImpl;
@@ -27,6 +28,9 @@ public class ServiceFactory {
     private final UserService userService;
     private final CategoryService categoryService;
 
+    // Extra Services
+    private final EmailService emailService;
+
     private ServiceFactory() {
         // Repository
         this.userRepository = new UserRepositoryImpl();
@@ -36,6 +40,9 @@ public class ServiceFactory {
         this.authService = new AuthServiceImpl(userRepository, categoryRepository, UserMapper.getInstance());
         this.userService = new UserServiceImpl(userRepository, categoryRepository, UserMapper.getInstance());
         this.categoryService = new CategoryServiceImpl(categoryRepository, CategoryMapper.getInstance());
+
+        // Extra Services
+        this.emailService = new EmailService();
     }
 
     public static ServiceFactory getInstance() {
@@ -59,5 +66,9 @@ public class ServiceFactory {
 
     public CategoryService getCategoryService() {
         return categoryService;
+    }
+
+    public EmailService getEmailService() {
+        return emailService;
     }
 }

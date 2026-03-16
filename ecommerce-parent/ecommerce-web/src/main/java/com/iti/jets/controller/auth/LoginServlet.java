@@ -3,6 +3,7 @@ package com.iti.jets.controller.auth;
 import com.iti.jets.model.dto.request.LoginRequestDTO;
 import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
+import com.iti.jets.service.extra.EmailService;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.AuthService;
 import com.iti.jets.service.interfaces.UserService;
@@ -16,16 +17,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 public class LoginServlet extends HttpServlet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginServlet.class);
 
     private AuthService authService;
+    private EmailService emailService;
 
     @Override
     public void init() {
         authService = ServiceFactory.getInstance().getAuthService();
+        emailService = ServiceFactory.getInstance().getEmailService();
     }
 
     @Override
@@ -100,7 +104,11 @@ public class LoginServlet extends HttpServlet {
                 // Clear any old remember-me cookie
                 CookieHandler.clearCookie(response, CookieHandler.COOKIE_NAME, request.getContextPath());
             }
-            // TODO:Send Email to the user
+
+            // Send Confirmation Email to the user in a background thread
+            CompletableFuture.runAsync(() ->
+                    emailService.sendLoginNotification(loggedInUser)
+            );
         }
 
         // Send AJAX response to JS
