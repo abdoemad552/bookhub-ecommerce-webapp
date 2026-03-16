@@ -10,11 +10,11 @@
     </servlet>
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>com.iti.jets.controller.LoginServlet</servlet-class>
+        <servlet-class>com.iti.jets.controller.auth.LoginServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>SignupServlet</servlet-name>
-        <servlet-class>com.iti.jets.controller.SignupServlet</servlet-class>
+        <servlet-class>com.iti.jets.controller.auth.SignupServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>HomeServlet</servlet-name>
@@ -57,8 +57,4 @@
     <welcome-file-list>
         <welcome-file>home</welcome-file>
     </welcome-file-list>
-
-    <listener>
-        <listener-class>com.iti.jets.listener.ApplicationStartupListener</listener-class>
-    </listener>
 </web-app>

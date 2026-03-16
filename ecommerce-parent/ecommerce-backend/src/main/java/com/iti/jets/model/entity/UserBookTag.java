@@ -19,18 +19,25 @@ import org.hibernate.annotations.OnDeleteAction;
 public class UserBookTag {
 
     @EmbeddedId
-    @EqualsAndHashCode.Include
-    private UserBookTagId id;
+    private UserBookTagId id = new UserBookTagId();
 
     @MapsId("userTagId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_tag_id", nullable = false)
+    @EqualsAndHashCode.Include
     private UserTag userTag;
 
     @MapsId("bookId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "book_id", nullable = false)
+    @EqualsAndHashCode.Include
     private Book book;
+
+    public UserBookTag(UserTag userTag, Book book) {
+        this.userTag = userTag;
+        this.book = book;
+        this.id = new UserBookTagId();
+    }
 }

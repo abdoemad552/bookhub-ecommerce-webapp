@@ -1,12 +1,15 @@
-import {$, showAlert, hideAlert, markField, setHint, removeHint, getCatIcon} from './util.js';
-import {validateStep1, validateStep2, goToStep, updateStepUI, calcStrength, checkConfirm, currentStep} from './formValidation.js';
+import {$, showAlert, hideAlert, markField, setHint, removeHint, togglePw} from './util.js';
+import {validateStep1, validateStep2, goToStep, calcStrength, checkConfirm} from './formValidation.js';
 
 // Global variables
-const CONTEXT = document.querySelector('meta[name="ctx"]').content;
+const CONTEXT = '/ecommerce';
 const LOGIN = CONTEXT + '/login';
 const SIGNUP = CONTEXT + '/signup';
 const CHECK_AVAILABILITY = CONTEXT + '/checkAvailability';
 const CATEGORIES_URL = CONTEXT + '/categories';
+
+// Password visibility toggle (Make it globally accessible in inline attributes)
+window.togglePw = togglePw;
 
 // Load categories via AJAX when step 3 becomes visible
 let categoriesLoaded = false;
@@ -17,12 +20,14 @@ async function loadCategories() {
 
     try {
         const res = await fetch(CATEGORIES_URL, {
+            cache: "no-store",
             headers: {'X-Requested-With': 'XMLHttpRequest'}
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
-        const categories = await res.json(); // expected: [{id, name}, ...]
+        const categories = await res.json();
 
-        grid.innerHTML = ''; // clear skeletons
+        // clear skeletons
+        grid.innerHTML = '';
 
         if (!categories.length) {
             grid.innerHTML = '<div class="cat-load-error">No categories available yet.</div>';
@@ -31,13 +36,15 @@ async function loadCategories() {
         }
 
         categories.forEach(cat => {
-            const icon = getCatIcon(cat.name);
             const card = document.createElement('div');
             card.className = 'category-card';
             card.innerHTML = `
                 <input type="checkbox" id="cat-${cat.id}" name="categoryIds" value="${cat.id}">
                 <label class="category-label" for="cat-${cat.id}">
-                    <span class="cat-icon">${icon}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open w-6 h-6 text-primary" aria-hidden="true">
+                        <path d="M12 7v14"></path>
+                        <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
+                    </svg>
                     <span class="cat-name">${cat.name}</span>
                 </label>
                 <div class="category-check">
@@ -46,6 +53,7 @@ async function loadCategories() {
                         <polyline points="20 6 9 17 4 12"/>
                     </svg>
                 </div>`;
+
             // Update selected count on toggle
             card.querySelector('input').addEventListener('change', updateSelectedCount);
             grid.appendChild(card);
@@ -67,21 +75,6 @@ function updateSelectedCount() {
     const numEl = $('selected-num');
     if (numEl) numEl.textContent = checked;
 }
-
-// Password visibility toggle
-const S_COLORS = ['#ef4444', '#eab308', '#22c55e'];
-const S_LABELS = ['Fair', 'Good', 'Strong'];
-const EYE_OPEN = '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>';
-const EYE_CLOSE = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-10-8-10-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
-
-export function togglePw(id, btn) {
-    const input = $(id), isText = input.type === 'text';
-    input.type = isText ? 'password' : 'text';
-    btn.style.opacity = isText ? '1' : '0.55';
-    $('eye-' + id).innerHTML = isText ? EYE_OPEN : EYE_CLOSE;
-}
-// Make it globally accessible in inline attributes
-window.togglePw = togglePw;
 
 // Step 1 → 2
 $('btn-next-1').addEventListener('click', () => {
@@ -153,8 +146,8 @@ $('signup-form').addEventListener('submit', async function (e) {
     }
 });
 
-
 // Live field feedback
+const S_COLORS = ['#ef4444', '#eab308', '#22c55e'];
 $('password').addEventListener('input', function () {
     const pw = this.value, score = pw.length ? calcStrength(pw) : 0;
     ['seg1', 'seg2', 'seg3'].forEach((sid, i) =>
@@ -163,7 +156,7 @@ $('password').addEventListener('input', function () {
         markField('password', null);
     } else {
         const ok = score >= 1;
-        markField('password', ok ? 'ok' : 'bad');
+        markField('password', ok ? null : 'bad');
 
         const hint = $('hint-password');
         if (!ok) {
@@ -211,6 +204,29 @@ $('email').addEventListener('input', function () {
     }
 });
 
+$('creditCardLimit').addEventListener('input', function () {
+    const val = this.value.trim();
+
+    const MAX_LONG = 9223372036854775807n; // BigInt
+    let ok = false;
+
+    if (val !== '' && /^\d+$/.test(val)) {
+        try {
+            const num = BigInt(val);
+            ok = num >= 0n && num <= MAX_LONG;
+        } catch {
+            ok = false;
+        }
+    }
+
+    const hint = $('hint-creditLimit');
+    if (!ok) {
+        setHint(hint, 'Invalid Credit Limit');
+    } else {
+        removeHint(hint);
+    }
+});
+
 // Check username availability
 $('username').addEventListener('blur', async function () {
     const val = this.value.trim();
@@ -240,7 +256,7 @@ $('username').addEventListener('blur', async function () {
             markField('username', 'bad');
             setHint(hint, 'Username already taken');
         } else {
-            markField('username', 'ok');
+            markField('username', null);
             removeHint(hint);
         }
     } catch (err) {
@@ -277,10 +293,15 @@ $('email').addEventListener('blur', async function () {
             markField('email', 'bad');
             setHint(hint, 'Email address already exists');
         } else {
-            markField('email', 'ok');
+            markField('email', null);
             removeHint(hint);
         }
     } catch (err) {
         console.error('Network error checking email availability:', err);
     }
+});
+
+// Disable Key (Enter) from submitting the form
+$('signup-form').addEventListener('keydown', e => {
+    if (e.key === 'Enter') e.preventDefault();
 });

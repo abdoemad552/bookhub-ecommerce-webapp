@@ -1,4 +1,4 @@
-/* Login Card */
+/* Card */
 .card-modern {
     position: relative;
     overflow: hidden;
@@ -80,122 +80,189 @@
     height: 18px;
 }
 
-
-/* Step indicator */
-.step-indicator {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    margin-bottom: 32px;
-}
-
-.step-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: .8rem;
-    font-weight: 600;
-}
-
-.step-dot {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+/* Category grid */
+.category-grid {
     display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.category-card {
+    position: relative;
+    cursor: pointer;
+}
+
+.category-card input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.category-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    background: var(--card);
+    cursor: pointer;
+    transition: all .25s cubic-bezier(.34, 1.56, .64, 1);
+    text-align: center;
+    min-height: 80px;
+    user-select: none;
+}
+
+.category-label:hover {
+    border-color: var(--primary);
+    background: rgba(120, 53, 15, .04);
+    transform: translateY(-2px);
+}
+
+.category-card input:checked + .category-label {
+    border-color: var(--primary);
+    background: rgba(120, 53, 15, .08);
+    box-shadow: 0 0 0 3px rgba(120, 53, 15, .12);
+}
+
+.category-label .cat-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+.category-label .cat-name {
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--foreground);
+    line-height: 1.2;
+}
+
+.category-check {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    display: none;
     place-items: center;
-    font-size: .78rem;
-    font-weight: 700;
-    border: 2px solid var(--border);
+}
+
+.category-card input:checked ~ .category-check {
+    display: grid;
+}
+
+.category-check svg {
+    width: 10px;
+    height: 10px;
+    color: white;
+    stroke: white;
+}
+
+/* skeleton loader */
+.cat-skeleton {
+    border-radius: 14px;
+    background: linear-gradient(90deg, var(--border) 25%, rgba(120, 53, 15, .06) 50%, var(--border) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.7s infinite;
+    min-height: 80px;
+}
+
+/* Email notification toggle */
+.notif-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    background: var(--card);
+    margin-top: 24px;
+    transition: border-color .2s;
+}
+
+.notif-card:hover {
+    border-color: var(--primary);
+}
+
+.notif-text h4 {
+    font-size: .9rem;
+    font-weight: 600;
+    color: var(--foreground);
+    margin-bottom: 2px;
+}
+
+.notif-text p {
+    font-size: .75rem;
     color: var(--muted-foreground);
-    background: var(--background);
-    transition: all .4s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+/* Toggle switch */
+.toggle-wrap {
+    position: relative;
     flex-shrink: 0;
 }
 
-.step-item.active .step-dot {
-    border-color: var(--primary);
-    background: var(--primary);
-    color: var(--primary-foreground);
-    transform: scale(1.1);
+.toggle-wrap input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
 }
 
-.step-item.done .step-dot {
-    border-color: #16a34a;
-    background: #16a34a;
-    color: #fff;
-}
-
-.step-item.active .step-label {
-    color: var(--foreground);
-}
-
-.step-item.done .step-label {
-    color: #16a34a;
-}
-
-.step-label {
-    color: var(--muted-foreground);
-    transition: color .3s;
-    white-space: nowrap;
-}
-
-.step-connector {
-    flex: 1;
-    height: 2px;
-    margin: 0 10px;
-    background: var(--border);
-    position: relative;
-    overflow: hidden;
+.toggle-track {
+    display: block;
+    width: 44px;
+    height: 24px;
     border-radius: 99px;
+    background: var(--border);
+    cursor: pointer;
+    transition: background .25s;
+    position: relative;
 }
 
-.step-connector::after {
+.toggle-track::after {
     content: '';
     position: absolute;
-    inset: 0;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    transition: transform .25s cubic-bezier(.34, 1.56, .64, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+}
+
+.toggle-wrap input:checked + .toggle-track {
     background: var(--primary);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform .5s cubic-bezier(.34, 1.56, .64, 1);
-    border-radius: 99px;
 }
 
-.step-connector.filled::after {
-    transform: scaleX(1);
+.toggle-wrap input:checked + .toggle-track::after {
+    transform: translateX(20px);
 }
 
-/* Step panels */
-.step-panel {
-    display: none;
-    animation: stepIn .35s cubic-bezier(.34, 1.56, .64, 1) forwards;
+/* Step 3 skeleton/empty states */
+.cat-load-error {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--muted-foreground);
+    font-size: .85rem;
 }
 
-.step-panel.active {
-    display: block;
+.selected-count {
+    font-size: .75rem;
+    color: var(--muted-foreground);
+    margin-top: 8px;
 }
 
-@keyframes stepIn {
-    from {
-        opacity: 0;
-        transform: translateX(24px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes stepBack {
-    from {
-        opacity: 0;
-        transform: translateX(-24px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.step-panel.going-back {
-    animation: stepBack .35s cubic-bezier(.34, 1.56, .64, 1) forwards;
+.selected-count span {
+    font-weight: 700;
+    color: var(--primary);
 }

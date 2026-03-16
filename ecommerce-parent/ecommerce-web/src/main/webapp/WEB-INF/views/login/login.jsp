@@ -11,10 +11,14 @@
     <title>BookHub - Your Gateway to Endless Stories</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/authentication.css">
+
+    <script type="module" src="${pageContext.request.contextPath}/assets/js/login/login.js"></script>
+
 </head>
 
-<body class="font-serif antialiased">
+<body class="font-google-sans antialiased">
 
 <div class="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex items-center justify-center px-4 py-8 relative">
 
@@ -35,15 +39,48 @@
                             <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
                         </svg>
                     </div>
-                    <h1 class="text-3xl font-display text-gradient">BookHub</h1>
+                    <h1 class="text-3xl font-bold text-gradient">BookHub</h1>
                 </a>
             </div>
 
             <div class="animate-slide-down delay-2 mb-8">
-                <h2 class="text-4xl font-display text-foreground mb-2">Welcome Back</h2>
+                <h2 class="text-4xl font-bold text-foreground mb-2">Welcome Back</h2>
             </div>
 
-            <form action="login" method="post" class="space-y-6">
+            <!-- JS alert -->
+            <div id="js-alert" class="alert-banner alert-error" style="display:none;" role="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span id="js-alert-text"></span>
+            </div>
+
+            <!-- Flash success message from signup -->
+            <c:if test="${not empty requestScope.flash_message}">
+                <div id="flash-success"
+                     class="alert-success flex items-start gap-3 w-full bg-emerald-500/10 border border-emerald-500/30
+                            text-emerald-400 rounded-xl px-4 py-3.5 mb-6 animate-slide-down" role="alert">
+
+                    <!-- Icon -->
+                    <svg class="w-5 h-5 flex-shrink-0 mt-0.5"
+                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+
+                    <!-- Text -->
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold leading-snug">${requestScope.flash_message}</p>
+                    </div>
+                </div>
+            </c:if>
+
+            <form action="login" method="post" id="login-form" class="space-y-6">
 
                 <!-- Email/UserName Input -->
                 <div class="animate-slide-up delay-3 group">
@@ -56,23 +93,35 @@
                             <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path>
                             <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                         </svg>
-                        <input type="text" id="js-username" name="usernameOrEmail" placeholder="Email or Username"
+                        <input type="text" id="username" name="usernameOrEmail" placeholder="Email or Username"
+                               value="${requestScope.flash_username}"
                                class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
                     </div>
                 </div>
 
                 <!-- Password Input -->
-                <div class="animate-slide-up delay-4 group">
-                    <label class="label-modern block text-sm font-semibold text-foreground mb-3 uppercase tracking-wide">Password</label>
+                <div class="group mb-5">
+                    <label class="label-modern block text-sm font-semibold text-foreground mb-2 uppercase tracking-wide"
+                           for="password">Password</label>
                     <div class="relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10">
-                            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground icon-pulse pointer-events-none z-10"
+                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2">
+                            <rect width="18" height="11" x="3" y="11" rx="2"></rect>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                         </svg>
-                        <input type="password" id="js-password" name="password" placeholder="Password"
-                               class="input-modern w-full pl-12 pr-4 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
+                        <input type="password" id="password" name="password" placeholder="Enter your password"
+                               autocomplete="new-password"
+                               class="input-modern w-full pl-12 pr-11 py-3 rounded-xl text-foreground placeholder-muted-foreground focus:outline-none"/>
+                        <button type="button" id="submit-btn" class="pw-toggle" onclick="togglePw('password',this)"
+                                aria-label="Toggle password">
+                            <svg id="eye-password" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -82,32 +131,7 @@
                         <input type="checkbox" name="rememberMe" class="checkbox-modern">
                         <span>Remember me</span>
                     </label>
-
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="emailNotifications" class="checkbox-modern">
-                        <span>Send me updates</span>
-                    </label>
                 </div>
-
-                <!-- Error message container -->
-                <div id="js-error-message" class="hidden mt-2 text-sm text-red-600 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                         class="bi bi-info-circle flex-shrink-0" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
-                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"></path>
-                    </svg>
-                    <span class="error-text">Username and password are required</span>
-                </div>
-
-                <c:if test="${not empty requestScope.error}">
-                    <div id="server-error-message" class="mt-2 text-sm flex text-red-600 items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle flex-shrink-0" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
-                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"></path>
-                        </svg>
-                        <span class="error-text">${requestScope.error}</span>
-                    </div>
-                </c:if>
 
                 <!-- Log In Button -->
                 <button type="submit"
@@ -132,6 +156,5 @@
     </div>
 
 </div>
-<script src="${pageContext.request.contextPath}/assets/js/login/login.js"></script>
 </body>
 </html>

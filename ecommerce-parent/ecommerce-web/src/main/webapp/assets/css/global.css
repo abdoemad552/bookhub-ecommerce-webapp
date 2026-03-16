@@ -217,6 +217,7 @@ body {
     position: relative;
     overflow: hidden;
     border-radius: 1rem;
+    background-clip: padding-box;
 }
 
 .input-modern::before {
@@ -249,6 +250,43 @@ body {
 .input-modern.is-invalid {
     border-color: #dc2626 !important;
     box-shadow: 0 0 0 4px rgba(220, 38, 38, .09) !important;
+}
+
+/* Keep the same style when Browser autofill */
+.input-modern:-webkit-autofill,
+.input-modern:-webkit-autofill:hover {
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    box-shadow: 0 0 0 1000px transparent inset !important;
+    border-color: var(--border) !important;
+    background: linear-gradient(135deg, transparent 0%, rgba(120, 53, 15, 0.02) 100%);
+    -webkit-text-fill-color: inherit !important;
+    transition: background-color 9999s ease-in-out 0s,
+    border-color 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.input-modern:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 4px rgba(120, 53, 15, 0.1),
+    0 0 0 1000px transparent inset !important;
+    box-shadow: 0 0 0 4px rgba(120, 53, 15, 0.1),
+    0 0 0 1000px transparent inset !important;
+    border-color: var(--primary) !important;
+    -webkit-text-fill-color: inherit !important;
+    transition: background-color 9999s ease-in-out 0s,
+    border-color 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* Hide number input arrows — all browsers */
+.input-modern[type="number"]::-webkit-outer-spin-button,
+.input-modern[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.input-modern[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+    appearance: textfield;
 }
 
 /* Inline hint row */

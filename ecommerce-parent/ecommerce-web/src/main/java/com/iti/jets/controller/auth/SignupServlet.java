@@ -1,12 +1,10 @@
-package com.iti.jets.controller;
+package com.iti.jets.controller.auth;
 
 import com.iti.jets.model.dto.request.RegisterRequestDTO;
-import com.iti.jets.model.dto.response.CategoryDTO;
 import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.AuthService;
-import com.iti.jets.service.interfaces.CategoryService;
 import com.iti.jets.util.ParsingHelper;
 import com.iti.jets.util.PathStorage;
 import jakarta.json.Json;
@@ -19,8 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,12 +25,10 @@ public class SignupServlet extends HttpServlet {
     private static final Logger LOGGER = LoggerFactory.getLogger(SignupServlet.class);
 
     private AuthService authService;
-    private CategoryService categoryService;
 
     @Override
     public void init() {
         authService = ServiceFactory.getInstance().getAuthService();
-        categoryService = ServiceFactory.getInstance().getCategoryService();
     }
 
     @Override
@@ -70,7 +64,10 @@ public class SignupServlet extends HttpServlet {
 
         resp.getWriter().write(json.toString());
 
+        // Set up the flash message that consumed by login page
         if (isSuccess) {
+            req.getSession().setAttribute("flash_message", "Account created successfully. Please login");
+            req.getSession().setAttribute("flash_username", registerRequestDTO.getUsername());
             LOGGER.info("New user registered: {}", registerRequestDTO.getUsername());
         }
     }
