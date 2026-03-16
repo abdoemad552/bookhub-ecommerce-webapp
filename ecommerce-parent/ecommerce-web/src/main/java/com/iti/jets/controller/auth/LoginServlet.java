@@ -5,14 +5,13 @@ import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.AuthService;
+import com.iti.jets.service.interfaces.UserService;
+import com.iti.jets.util.CookieHandler;
 import com.iti.jets.util.PathStorage;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,17 +63,36 @@ public class LoginServlet extends HttpServlet {
         boolean isSuccess = result.isSuccess();
 
         if (isSuccess) {
-            LOGGER.info("New user registered: {}", loginRequest.getUsernameOrEmail());
+            LOGGER.info("New user log in: {}", loginRequest.getUsernameOrEmail());
 
             UserDTO loggedInUser = result.getData();
-            HttpSession session = request.getSession();
+
+            // Invalidate any old session first to prevent session fixation
+            HttpSession oldSession = request.getSession(false);
+            if (oldSession != null){
+                oldSession.invalidate();
+            }
+            // Create session for this user (valid 30 minutes)
+            HttpSession session = request.getSession(true);
+            session.setMaxInactiveInterval(60 * 30);
             session.setAttribute("user", loggedInUser);
 
-            // TODO:Send Email to the user
-
+            // Create cookie for this user (Valid 30 days)
             boolean rememberMe = request.getParameter("rememberMe") != null;
             if(rememberMe){
+                Cookie cookie = new Cookie(CookieHandler.COOKIE_NAME, String.valueOf(loggedInUser.getId()));
+                cookie.setPath(request.getContextPath());
+                cookie.setMaxAge(60 * 60 * 24 * 30);
+                cookie.setSecure(request.isSecure());
+                response.addCookie(cookie);
+                response.addCookie(cookie);
+
+                LOGGER.info("Remember-me cookie set for user: {}", loggedInUser.getUsername());
+            }else{
+                // Clear any old remember-me cookie
+                CookieHandler.clearCookie(response, CookieHandler.COOKIE_NAME, request.getContextPath());
             }
+            // TODO:Send Email to the user
         }
 
         // Send AJAX response to JS
