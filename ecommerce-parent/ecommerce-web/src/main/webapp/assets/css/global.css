@@ -7,6 +7,13 @@ input[type="password"]::-ms-reveal {
     display: none; /* hide the eye button */
 }
 
+/* Remove default clear (X) button in Chrome / Edge */
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+}
+
 /* Animations */
 @keyframes slideInUp {
     from {

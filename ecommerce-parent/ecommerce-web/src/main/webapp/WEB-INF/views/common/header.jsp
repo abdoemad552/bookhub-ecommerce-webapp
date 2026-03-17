@@ -242,18 +242,17 @@
                placeholder="Search about what you want"/>
 
         <!-- Close button -->
+        <!-- Close button -->
         <button id="close-search"
                 class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 p-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                 class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                 viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="3 6 5 6 21 6"></polyline>
                 <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
                 <path d="M10 11v6"></path>
                 <path d="M14 11v6"></path>
-                <line x1="9" y1="6" x2="9" y2="4"></line>
-                <line x1="15" y1="6" x2="15" y2="4"></line>
-                <line x1="6" y1="6" x2="18" y2="6"></line>
             </svg>
         </button>
     </div>
