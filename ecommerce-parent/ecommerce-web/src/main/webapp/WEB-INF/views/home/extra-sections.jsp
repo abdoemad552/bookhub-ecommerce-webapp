@@ -197,7 +197,7 @@
                 <div class="flex items-center gap-2.5">
                     <div class="tcard-avatar" style="background:linear-gradient(135deg,#78350f,#d97706)">S</div>
                     <div>
-                        <div class="text-sm font-semibold text-foreground">Sarah M.</div>
+                        <div class="text-sm font-semibold text-foreground">Sarah_F.</div>
                         <div class="text-xs text-muted-foreground">Fiction Lover</div>
                     </div>
                 </div>
@@ -231,9 +231,9 @@
                     service is top-notch. I ordered 12 books last month — all arrived perfectly packaged. Highly
                     recommend!"</p>
                 <div class="flex items-center gap-2.5">
-                    <div class="tcard-avatar" style="background:linear-gradient(135deg,#92400e,#b45309)">J</div>
+                    <div class="tcard-avatar" style="background:linear-gradient(135deg,#78350f,#d97706)">K</div>
                     <div>
-                        <div class="text-sm font-semibold text-foreground">James K.</div>
+                        <div class="text-sm font-semibold text-foreground">Khaled_M.</div>
                         <div class="text-xs text-muted-foreground">Science Enthusiast</div>
                     </div>
                 </div>
@@ -267,9 +267,9 @@
                     the holidays — BookHub made it effortless. Great filters, beautiful site, and the gift wrapping
                     was a lovely touch."</p>
                 <div class="flex items-center gap-2.5">
-                    <div class="tcard-avatar" style="background:linear-gradient(135deg,#3b1003,#78350f)">L</div>
+                    <div class="tcard-avatar" style="background:linear-gradient(135deg,#78350f,#d97706)">L</div>
                     <div>
-                        <div class="text-sm font-semibold text-foreground">Layla T.</div>
+                        <div class="text-sm font-semibold text-foreground">Layla_T.</div>
                         <div class="text-xs text-muted-foreground">Children's Books Fan</div>
                     </div>
                 </div>
