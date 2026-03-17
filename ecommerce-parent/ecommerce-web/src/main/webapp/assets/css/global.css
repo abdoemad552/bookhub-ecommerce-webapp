@@ -399,7 +399,9 @@ body {
 
 .link-modern {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     color: var(--primary);
     text-decoration: none;
     transition: color 0.3s ease;
@@ -422,6 +424,14 @@ body {
 
 .link-modern:hover::after {
     width: 100%;
+}
+
+.link-modern svg {
+    transition: transform 0.25s ease;
+}
+
+.link-modern:hover svg {
+    transform: translateX(3px);
 }
 
 /* Icons */
