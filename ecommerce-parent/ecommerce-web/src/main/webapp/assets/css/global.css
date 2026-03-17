@@ -3,6 +3,17 @@ body {
     overflow-x: hidden;
 }
 
+input[type="password"]::-ms-reveal {
+    display: none; /* hide the eye button */
+}
+
+/* Remove default clear (X) button in Chrome / Edge */
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+}
+
 /* Animations */
 @keyframes slideInUp {
     from {
@@ -399,7 +410,9 @@ body {
 
 .link-modern {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     color: var(--primary);
     text-decoration: none;
     transition: color 0.3s ease;
@@ -422,6 +435,14 @@ body {
 
 .link-modern:hover::after {
     width: 100%;
+}
+
+.link-modern svg {
+    transition: transform 0.25s ease;
+}
+
+.link-modern:hover svg {
+    transform: translateX(3px);
 }
 
 /* Icons */
