@@ -64,7 +64,6 @@ export function initSidebarFilter() {
                     .addClass('bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold')
                     .removeClass('hover:bg-primary/5 active:bg-primary/10 text-foreground');
 
-                // TODO: Get the previous toggled one and make the opposite...
                 $(`[data-category='${selectedCategory}']`)
                     .addClass('hover:bg-primary/5 active:bg-primary/10 text-foreground')
                     .removeClass('bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold');
@@ -93,7 +92,6 @@ export function initSidebarFilter() {
                     .addClass('bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold')
                     .removeClass('hover:bg-primary/5 active:bg-primary/10 text-foreground');
 
-                // TODO: Get the previous toggled one and make the opposite...
                 $(`[data-criteria='${sortCriteria}']`)
                     .addClass('hover:bg-primary/5 active:bg-primary/10 text-foreground')
                     .removeClass('bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold');
@@ -115,6 +113,10 @@ export function initSidebarFilter() {
                 .toggleClass('max-h-12 opacity-100', !isCategoriesOpen)
                 .toggleClass('max-h-0 opacity-0', isCategoriesOpen);
 
+            $('#category-chevron-down')
+                .toggleClass('rotate-180', isCategoriesOpen)
+                .toggleClass('rotate-0', !isCategoriesOpen);
+
             $('#categories-container')
                 .toggleClass('max-h-96 opacity-100', isCategoriesOpen)
                 .toggleClass('max-h-0 opacity-0', !isCategoriesOpen);
@@ -129,6 +131,10 @@ export function initSidebarFilter() {
                 .parent()
                 .toggleClass('max-h-12 opacity-100', !isSortOpen)
                 .toggleClass('max-h-0 opacity-0', isSortOpen);
+
+            $('#sort-chevron-down')
+                .toggleClass('rotate-180', isSortOpen)
+                .toggleClass('rotate-0', !isSortOpen);
 
             $('#sort-container')
                 .toggleClass('max-h-48 opacity-100', isSortOpen)

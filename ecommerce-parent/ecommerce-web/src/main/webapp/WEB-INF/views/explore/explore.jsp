@@ -18,7 +18,7 @@
     <div class="max-w-7xl mx-auto px-4 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div class="lg:col-span-1">
-                <jsp:include page="sidebar-filer.jsp"/>
+                <jsp:include page="sidebar-filter.jsp"/>
             </div>
             <div class="lg:col-span-3">
                 <div class="flex justify-between items-center mb-6">

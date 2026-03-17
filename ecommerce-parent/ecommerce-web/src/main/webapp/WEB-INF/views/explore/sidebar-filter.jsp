@@ -15,7 +15,7 @@
                 </svg>
                 Categories
             </span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down w-4 h-4 transition-transform duration-300 ease-in-out rotate-180" aria-hidden="true">
+            <svg id="category-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down w-4 h-4 transition-transform duration-300 ease-in-out" aria-hidden="true">
                 <path d="m6 9 6 6 6-6"></path>
             </svg>
         </button>
@@ -40,9 +40,9 @@
         <p class="text-sm text-muted-foreground mt-2">Up to <span id="selected-price-range"></span> EGP</p>
     </div>
     <div>
-        <button id="sort-controller" class="w-full font-bold text-foreground mb-2 flex items-center justify-between hover:text-primary transition-colors cursor-pointer">
+        <button id="sort-controller" class="w-full font-bold text-foreground mb-2 flex items-center justify-between hover:text-primary hover:bg-primary/10 rounded-lg p-2 transition-colors cursor-pointer">
             <span>Sort By</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down w-4 h-4 transition-transform duration-300 ease-in-out rotate-180" aria-hidden="true">
+            <svg id="sort-chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down w-4 h-4 transition-transform duration-300 ease-in-out" aria-hidden="true">
                 <path d="m6 9 6 6 6-6"></path>
             </svg>
         </button>
