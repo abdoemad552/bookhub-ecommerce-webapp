@@ -193,7 +193,7 @@
                     </svg>
                 </div>
                 <p class="text-sm text-muted-foreground leading-relaxed mb-4">"BookHub is my go-to for every book I
-                    need. Incredible selection, fast shipping, and I've discovered so many new favorites here!"</p>
+                    need. Incredible selection, fast shipping, and I've discovered so many new favorites here."</p>
                 <div class="flex items-center gap-2.5">
                     <div class="tcard-avatar" style="background:linear-gradient(135deg,#78350f,#d97706)">S</div>
                     <div>
@@ -228,8 +228,8 @@
                     </svg>
                 </div>
                 <p class="text-sm text-muted-foreground leading-relaxed mb-4">"Unbeatable prices and the customer
-                    service is top-notch. I ordered 12 books last month — all arrived perfectly packaged. Highly
-                    recommend!"</p>
+                    service is top-notch. I ordered 12 books last month, all arrived perfectly packaged. Highly
+                    recommend."</p>
                 <div class="flex items-center gap-2.5">
                     <div class="tcard-avatar" style="background:linear-gradient(135deg,#78350f,#d97706)">K</div>
                     <div>
@@ -264,7 +264,7 @@
                     </svg>
                 </div>
                 <p class="text-sm text-muted-foreground leading-relaxed mb-4">"Bought books for my whole family for
-                    the holidays — BookHub made it effortless. Great filters, beautiful site, and the gift wrapping
+                    the holidays. BookHub made it effortless. Great filters, beautiful site, and the gift wrapping
                     was a lovely touch."</p>
                 <div class="flex items-center gap-2.5">
                     <div class="tcard-avatar" style="background:linear-gradient(135deg,#78350f,#d97706)">L</div>
