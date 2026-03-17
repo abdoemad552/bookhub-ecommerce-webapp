@@ -1,7 +1,14 @@
 package com.iti.jets.repository.interfaces;
 
 import com.iti.jets.model.entity.Wishlist;
+import com.iti.jets.model.entity.WishlistId;
 import com.iti.jets.repository.generic.BaseRepository;
 
-public interface WishlistRepository extends BaseRepository<Wishlist, Long> {
+import java.util.Optional;
+
+public interface WishlistRepository extends BaseRepository<Wishlist, WishlistId> {
+
+    Optional<Wishlist> findByUserIdAndBookId(Integer userId, Integer bookId);
+
+    boolean existsByUserIdAndBookId(Integer userId, Integer bookId);
 }
