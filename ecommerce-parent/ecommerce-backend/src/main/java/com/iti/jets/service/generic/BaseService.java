@@ -3,15 +3,26 @@ package com.iti.jets.service.generic;
 import java.util.List;
 
 public interface BaseService<T, ID> {
-    T findById(ID id);
+    default T findById(ID id) {
+        return null;
+    }
 
-    List<T> findAll();
+    default List<T> findAll() {
+        return List.of();
+    }
 
-    List<T> findAll(int pageNumber, int pageSize);
+    default List<T> findAll(int pageNumber, int pageSize) {
+        return List.of();
+    }
 
-    void delete(ID id);
+    default void delete(ID id) {
+    }
 
-    long count();
+    default long count() {
+        return 0;
+    }
 
-    boolean existsById(ID id);
+    default boolean existsById(ID id) {
+        return false;
+    }
 }
