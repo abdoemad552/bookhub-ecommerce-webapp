@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
@@ -89,9 +90,11 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
                 }
             }
 
+            List<Order> orderBy = buildOrderBy(criteriaBuilder, bookRoot, filter);
+
             criteriaQuery.select(bookRoot)
                     .distinct(true)
-                    .orderBy(criteriaBuilder.asc(bookRoot.get("title")));
+                    .orderBy(orderBy);
 
             if (!predicates.isEmpty()) {
                 criteriaQuery.where(predicates.toArray(new Predicate[0]));
@@ -122,5 +125,26 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
                         .setMaxResults(12)
                         .getResultList()
         );
+    }
+
+    private List<Order> buildOrderBy(CriteriaBuilder criteriaBuilder, Root<Book> bookRoot, BookFilterDTO filter) {
+        String sortCriteria = filter == null || filter.getSortCriteria() == null
+                ? "featured"
+                : filter.getSortCriteria().trim().toLowerCase(Locale.ROOT);
+
+        List<Order> orderBy = new ArrayList<>();
+
+        switch (sortCriteria) {
+            case "price-low-to-high" -> orderBy.add(criteriaBuilder.asc(bookRoot.get("price")));
+            case "price-high-to-low" -> orderBy.add(criteriaBuilder.desc(bookRoot.get("price")));
+            case "rating" -> orderBy.add(criteriaBuilder.desc(criteriaBuilder.coalesce(bookRoot.get("averageRating"), 0.0)));
+            default -> {
+                orderBy.add(criteriaBuilder.desc(criteriaBuilder.coalesce(bookRoot.get("averageRating"), 0.0)));
+                orderBy.add(criteriaBuilder.desc(criteriaBuilder.coalesce(bookRoot.get("soldQuantity"), 0)));
+            }
+        }
+
+        orderBy.add(criteriaBuilder.asc(bookRoot.get("title")));
+        return orderBy;
     }
 }

@@ -16,4 +16,5 @@ public class BookFilterDTO {
     private double minPrice;
     private double maxPrice;
     private String searchQuery;
+    private String sortCriteria;
 }
