@@ -3,6 +3,10 @@ body {
     overflow-x: hidden;
 }
 
+input[type="password"]::-ms-reveal {
+    display: none; /* hide the eye button */
+}
+
 /* Animations */
 @keyframes slideInUp {
     from {

@@ -56,12 +56,26 @@
 
         <hr class="footer-rule">
 
-        <div class="footer-copy">
-            <span>© 2024 BookHub. All rights reserved.</span>
+        <div class="footer-copy ">
+            <div class="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="20" height="20"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     class="w-4 h-4">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M15 9a3 3 0 0 0-6 0v6a3 3 0 0 0 6 0"></path>
+                </svg>
+                <span>2026 BookHub. All rights reserved.</span>
+            </div>
             <div class="flex gap-4 flex-wrap">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Cookies</a>
+                <a href="#" class="hover:underline">Privacy Policy</a>
+                <a href="#" class="hover:underline">Terms of Service</a>
+                <a href="#" class="hover:underline">Cookies</a>
             </div>
         </div>
 
