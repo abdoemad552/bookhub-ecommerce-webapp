@@ -5,7 +5,10 @@ import com.iti.jets.service.generic.BaseService;
 
 public interface CartService extends BaseService<Cart, Long> {
 
-    int getItemsCount();
+    Cart findByUserId(Integer userId);
+
+    int getItemsCount(Integer userId);
+    
 
     boolean addToCart(Integer userId, Integer bookId);
 
