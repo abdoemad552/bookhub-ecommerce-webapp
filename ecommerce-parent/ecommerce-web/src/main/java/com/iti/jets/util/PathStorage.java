@@ -9,6 +9,8 @@ public class PathStorage {
     public static final String PROFILE_PAGE     = "/WEB-INF/views/profile/profile.jsp";
     public static final String EXPLORE_PAGE     = "/WEB-INF/views/explore/explore.jsp";
     public static final String CART_PAGE        = "/WEB-INF/views/cart/cart.jsp";
+    public static final String BOOK_INFO_PAGE   = "/WEB-INF/views/books/book-info.jsp";
+    public static final String BOOK_NOT_FOUND_PAGE = "/WEB-INF/views/books/book-not-found.jsp";
 
     // Inner Components
     public static final String BOOK_CARD    = "/WEB-INF/views/common/book-card.jsp";
