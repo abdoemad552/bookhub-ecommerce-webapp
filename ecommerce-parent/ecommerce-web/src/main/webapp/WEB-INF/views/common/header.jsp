@@ -23,23 +23,6 @@
                 <span class="text-xl font-bold text-foreground tracking-tight">Book<span class="text-primary">Hub</span></span>
             </a>
 
-            <!-- Desktop search -->
-            <div class="hidden md:flex items-center flex-1 max-w-xs mx-6">
-                <div class="relative w-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                         class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                         aria-hidden="true">
-                        <circle cx="11" cy="11" r="8"/>
-                        <path d="m21 21-4.34-4.34"/>
-                    </svg>
-                    <input type="search"
-                           class="nav-search w-full h-9 pl-9 pr-4 text-sm bg-muted/50 border border-border rounded-xl placeholder:text-muted-foreground text-foreground"
-                           placeholder="Search books, authors…"
-                           aria-label="Search books"/>
-                </div>
-            </div>
-
             <!-- Right actions -->
             <div class="flex items-center gap-3 flex-shrink-0">
 
@@ -241,7 +224,6 @@
                class="input-modern w-full h-10 pl-10 pr-14 text-sm bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
                placeholder="Search about what you want"/>
 
-        <!-- Close button -->
         <!-- Close button -->
         <button id="close-search"
                 class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 p-1">

@@ -1,5 +1,6 @@
 import {$, showAlert, hideAlert, markField, setHint, removeHint} from '../signup/util.js';
 import {validateStep1, validateStep2, goToStep} from '../signup/formValidation.js';
+import {initHeader} from "../common/header.js";
 
 // Global variables
 const CONTEXT = '/ecommerce';
@@ -47,6 +48,8 @@ async function loadAddresses() {
                         <polyline points="20 6 9 17 4 12"/>
                     </svg>
                 </div>`;
+
+            grid.appendChild(card);
         });
 
         addressesLoaded = true;
@@ -57,10 +60,11 @@ async function loadAddresses() {
 }
 
 function init(){
+    initHeader();
     loadAddresses();
 }
 
-$(document).on('DOMContentLoaded', () => init());
+document.addEventListener('DOMContentLoaded', init);
 
 // Disable Key (Enter) from submitting the form
 $('checkout-form').addEventListener('keydown', e => {

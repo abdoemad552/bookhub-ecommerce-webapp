@@ -17,11 +17,13 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/step-navigation.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/authentication.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/checkout.css">
+    <script type="module" src="${pageContext.request.contextPath}/assets/js/checkout/chackout.js"></script>
+
 </head>
 <body class="font-google-sans antialiased">
 
-<%--&lt;%&ndash; HEADER &ndash;%&gt;--%>
-<%--<jsp:include page="../common/header.jsp"/>--%>
+<%-- HEADER --%>
+<jsp:include page="../common/header.jsp"/>
 
 <div class="min-h-screen bg-gradient-to-br from-background via-background to-accent/5
             flex items-center justify-center px-4 py-8 relative">
