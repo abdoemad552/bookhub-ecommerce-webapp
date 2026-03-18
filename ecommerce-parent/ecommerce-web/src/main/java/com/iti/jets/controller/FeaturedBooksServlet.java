@@ -1,6 +1,9 @@
 package com.iti.jets.controller;
 
+import com.iti.jets.model.entity.Book;
 import com.iti.jets.mock.dto.BookCardDto;
+import com.iti.jets.service.factory.ServiceFactory;
+import com.iti.jets.service.interfaces.BookService;
 import com.iti.jets.util.PathStorage;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -9,25 +12,48 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FeaturedBooksServlet extends HttpServlet {
+
+    private BookService bookService;
+
+    @Override
+    public void init() {
+        bookService = ServiceFactory.getInstance().getBookService();
+    }
 
     public void doGet(
         HttpServletRequest request,
         HttpServletResponse response
     ) throws ServletException, IOException {
         response.setContentType("text/html");
-        
-        List<BookCardDto> books = List.of(
-            new BookCardDto(1, "Book1", "Author1", "about two or three lines and then the text should ots.", 4, 1000, "https://blog-cdn.reedsy.com/directories/gallery/248/large_65b0ae90317f7596d6f95bfdd6131398.jpg"),
-            new BookCardDto(2, "Book2", "Author2", "Under the stars I want a description part. This part should be about two or three lines and then the text should be clipped with dots.", 3, 1500, "https://blog-cdn.reedsy.com/directories/gallery/281/large_840e5e5eba909420719c977e31888e1a.jpg"),
-            new BookCardDto(3, "Book3", "Author3", "Under the stars I want a description part. This part should be about two or three lines and then the text should be clipped with dots.", 5, 1000, "https://blog-cdn.reedsy.com/directories/gallery/311/large_96abdb14e9e413f1f2ac2a8bd734c0c1.jpg"),
-            new BookCardDto(4, "Book3", "Author3", "Under the stars I want a description part. This part should be about two or three lines and then the text should be clipped with dots.", 5, 1000, "https://blog-cdn.reedsy.com/directories/gallery/248/large_65b0ae90317f7596d6f95bfdd6131398.jpg"),
-            new BookCardDto(5, "Book3", "Author3", "Under the stars I want a description part. This part should be about two or three lines and then the text should be clipped with dots.", 5, 1000, "https://blog-cdn.reedsy.com/directories/gallery/248/large_65b0ae90317f7596d6f95bfdd6131398.jpg"),
-            new BookCardDto(6, "Book3", "Author3", "Under the stars I want a description part. This part should be about two or three lines and then the text should be clipped with dots.", 5, 1000, "https://blog-cdn.reedsy.com/directories/gallery/248/large_65b0ae90317f7596d6f95bfdd6131398.jpg")
-        );
-        
+
+        List<BookCardDto> books = bookService.findAllFeatured()
+                .stream()
+                .map(this::toBookCardDto)
+                .toList();
+
         request.setAttribute("books", books);
+        request.setAttribute("bookCardVariant", "carousel");
         request.getRequestDispatcher(PathStorage.BOOK_CARD).forward(request, response);
+    }
+
+    private BookCardDto toBookCardDto(Book book) {
+        String authorNames = book.getBookAuthors()
+                .stream()
+                .map(bookAuthor -> bookAuthor.getAuthor().getName())
+                .collect(Collectors.joining(", "));
+
+        return new BookCardDto(
+                Math.toIntExact(book.getId()),
+                book.getTitle(),
+                authorNames,
+                book.getDescription(),
+                book.getAverageRating() == null ? 0 : Math.round(book.getAverageRating()),
+                book.getPrice() == null ? 0 : book.getPrice().doubleValue(),
+                book.getImageUrl(),
+                book.getStockQuantity() == null ? 0 : book.getStockQuantity()
+        );
     }
 }
