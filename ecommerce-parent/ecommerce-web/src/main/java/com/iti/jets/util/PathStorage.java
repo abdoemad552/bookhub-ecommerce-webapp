@@ -9,6 +9,7 @@ public class PathStorage {
     public static final String PROFILE_PAGE     = "/WEB-INF/views/profile/profile.jsp";
     public static final String EXPLORE_PAGE     = "/WEB-INF/views/explore/explore.jsp";
     public static final String CART_PAGE        = "/WEB-INF/views/cart/cart.jsp";
+    public static final String CHECKOUT_PAGE   = "/WEB-INF/views/checkout/checkout.jsp";
 
     // Inner Components
     public static final String BOOK_CARD    = "/WEB-INF/views/common/book-card.jsp";
@@ -23,5 +24,6 @@ public class PathStorage {
     public static final String LOGIN_SERVLET = "login";
     public static final String SIGNUP_SERVLET = "signup";
     public static final String PROFILE_SERVLET = "profile";
+    public static final String CHECKOUT_SERVLET = "checkout";
     public static final String ADMIN_DASHBOARD_SERVLET = "admin/dashboard";
 }

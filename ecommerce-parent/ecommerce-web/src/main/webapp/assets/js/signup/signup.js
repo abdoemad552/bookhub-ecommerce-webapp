@@ -53,7 +53,6 @@ async function loadCategories() {
                         <polyline points="20 6 9 17 4 12"/>
                     </svg>
                 </div>`;
-
             // Update selected count on toggle
             card.querySelector('input').addEventListener('change', updateSelectedCount);
             grid.appendChild(card);

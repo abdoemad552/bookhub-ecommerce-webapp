@@ -1,7 +1,11 @@
 package com.iti.jets.service.implementation;
 
+import com.iti.jets.mapper.AddressMapper;
 import com.iti.jets.mapper.UserMapper;
+import com.iti.jets.model.dto.response.AddressDTO;
+import com.iti.jets.model.dto.response.UserAddressesDTO;
 import com.iti.jets.model.dto.response.UserDTO;
+import com.iti.jets.model.entity.Address;
 import com.iti.jets.model.entity.User;
 import com.iti.jets.repository.interfaces.CategoryRepository;
 import com.iti.jets.repository.interfaces.UserRepository;
@@ -12,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UserServiceImpl extends ContextHandler implements UserService {
 
@@ -20,13 +26,16 @@ public class UserServiceImpl extends ContextHandler implements UserService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final UserMapper userMapper;
+    private final AddressMapper addressMapper;
+
 
     public UserServiceImpl(UserRepository userRepository,
                            CategoryRepository categoryRepository,
-                           UserMapper userMapper) {
+                           UserMapper userMapper, AddressMapper addressMapper) {
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.userMapper = userMapper;
+        this.addressMapper = addressMapper;
     }
 
     @Override
@@ -99,6 +108,25 @@ public class UserServiceImpl extends ContextHandler implements UserService {
                 return null;
             }
             return userMapper.toDTO(userOpt.get());
+        });
+    }
+
+    @Override
+    public UserAddressesDTO loadUserAddresses(Long id) {
+        return executeInContext(() -> {
+            Optional<User> userOpt = userRepository.findById(id);
+            if (userOpt.isEmpty()) {
+                return null;
+            }
+
+            User user = userOpt.get();
+            Set<Address> address = user.getAddresses();
+
+            Set<AddressDTO> addressDtos = address.stream()
+                    .map(addressMapper::toDTO)
+                    .collect(Collectors.toSet());
+
+            return new UserAddressesDTO(id, addressDtos);
         });
     }
 }

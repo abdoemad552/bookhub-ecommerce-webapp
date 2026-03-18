@@ -1,5 +1,6 @@
 package com.iti.jets.service.factory;
 
+import com.iti.jets.mapper.AddressMapper;
 import com.iti.jets.mapper.CategoryMapper;
 import com.iti.jets.mapper.UserMapper;
 import com.iti.jets.repository.implementation.CategoryRepositoryImpl;
@@ -38,7 +39,7 @@ public class ServiceFactory {
 
         // Service
         this.authService = new AuthServiceImpl(userRepository, categoryRepository, UserMapper.getInstance());
-        this.userService = new UserServiceImpl(userRepository, categoryRepository, UserMapper.getInstance());
+        this.userService = new UserServiceImpl(userRepository, categoryRepository, UserMapper.getInstance(), AddressMapper.INSTANCE);
         this.categoryService = new CategoryServiceImpl(categoryRepository, CategoryMapper.getInstance());
 
         // Extra Services

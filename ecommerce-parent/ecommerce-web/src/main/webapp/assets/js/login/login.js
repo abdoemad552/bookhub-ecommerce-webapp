@@ -4,6 +4,7 @@ import {$, showAlert, hideAlert, togglePw} from '../signup/util.js';
 const CONTEXT = '/ecommerce';
 const LOGIN = CONTEXT + '/login';
 const HOME = CONTEXT + '/home';
+const CHECKOUT = CONTEXT + '/checkout';
 
 const username = $('username');
 const password = $('password');
@@ -11,7 +12,7 @@ const password = $('password');
 // Password visibility toggle (Make it globally accessible in inline attributes)
 window.togglePw = togglePw;
 
-$('login-form').addEventListener('submit', async function(e){
+$('login-form').addEventListener('submit', async function (e) {
     e.preventDefault();
     hideAlert();
 
@@ -26,21 +27,21 @@ $('login-form').addEventListener('submit', async function(e){
         return;
     }
 
-    try{
+    try {
         const formData = new FormData(this);
         const params = new URLSearchParams(formData);
 
         const response = await fetch(LOGIN, {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            credentials: 'same-origin', // This allows browser to store cookies
+            credentials: 'same-origin',
             body: params
         });
 
         submitBtn.disabled = false;
         submitBtn.classList.remove('is-loading');
 
-        if(!response.ok){
+        if (!response.ok) {
             showAlert('Something went wrong. Please try again.');
             return;
         }
@@ -49,9 +50,9 @@ $('login-form').addEventListener('submit', async function(e){
         if (!data.success) {
             showAlert(data.message);
         } else {
-            window.location.href = HOME;
+            window.location.href = (data.redirectToHome) ? HOME : CHECKOUT;
         }
-    }catch(err){
+    } catch (err) {
         submitBtn.disabled = false;
         submitBtn.classList.remove('is-loading');
         showAlert('Network error. Please check your connection.');
@@ -69,8 +70,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const height = flash.offsetHeight;
 
         // Pin the height explicitly so the transition has a concrete start value
-        flash.style.height     = height + 'px';
-        flash.style.overflow   = 'hidden';
+        flash.style.height = height + 'px';
+        flash.style.overflow = 'hidden';
 
         // Let the browser register the fixed height before we start collapsing
         requestAnimationFrame(() => {
@@ -84,17 +85,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     'padding-bottom .4s ease .1s',
                 ].join(', ');
 
-                flash.style.opacity       = '0';
-                flash.style.transform     = 'translateY(-8px)';
-                flash.style.height        = '0';
-                flash.style.marginBottom  = '0';
-                flash.style.paddingTop    = '0';
+                flash.style.opacity = '0';
+                flash.style.transform = 'translateY(-8px)';
+                flash.style.height = '0';
+                flash.style.marginBottom = '0';
+                flash.style.paddingTop = '0';
                 flash.style.paddingBottom = '0';
             });
         });
 
         // Remove from DOM after all transitions finish
-        flash.addEventListener('transitionend', () => flash.remove(), { once: true });
+        flash.addEventListener('transitionend', () => flash.remove(), {once: true});
 
     }, 4000);
 });

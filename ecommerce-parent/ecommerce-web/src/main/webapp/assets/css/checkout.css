@@ -1,0 +1,91 @@
+/* address grid */
+.address-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.address-card {
+    position: relative;
+    cursor: pointer;
+}
+
+.address-card input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.address-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    background: var(--card);
+    cursor: pointer;
+    transition: all .25s cubic-bezier(.34, 1.56, .64, 1);
+    text-align: center;
+    min-height: 80px;
+    user-select: none;
+}
+
+.address-label:hover {
+    border-color: var(--primary);
+    background: rgba(120, 53, 15, .04);
+    transform: translateY(-2px);
+}
+
+.address-card input:checked + .address-label {
+    border-color: var(--primary);
+    background: rgba(120, 53, 15, .08);
+    box-shadow: 0 0 0 3px rgba(120, 53, 15, .12);
+}
+
+.address-label .address-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+.address-label .address-name {
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--foreground);
+    line-height: 1.2;
+}
+
+.address-check {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    display: none;
+    place-items: center;
+}
+
+.address-card input:checked ~ .address-check {
+    display: grid;
+}
+
+.address-check svg {
+    width: 10px;
+    height: 10px;
+    color: white;
+    stroke: white;
+}
+
+/* Step 3 skeleton/empty states */
+.address-load-error {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--muted-foreground);
+    font-size: .85rem;
+}
