@@ -21,6 +21,8 @@ public class CartRepositoryImpl extends BaseRepositoryImpl<Cart, Long> implement
                                         "LEFT JOIN FETCH c.user " +
                                         "LEFT JOIN FETCH c.items i " +
                                         "LEFT JOIN FETCH i.book " +
+                                        "LEFT JOIN FETCH i.book.bookAuthors ba " +
+                                        "LEFT JOIN FETCH ba.author " +
                                         "WHERE c.id = :id",
                                 getEntityClass()
                         )
@@ -54,6 +56,11 @@ public class CartRepositoryImpl extends BaseRepositoryImpl<Cart, Long> implement
     @Override
     public Optional<Cart> findByUserId(Integer userId) {
         return executeReadOnly(em -> findManagedCartByUserId(em, userId));
+    }
+
+    @Override
+    public boolean addToCart(Integer userId, Integer bookId) {
+        return addToCart(userId, bookId, 1);
     }
 
     @Override
@@ -103,33 +110,34 @@ public class CartRepositoryImpl extends BaseRepositoryImpl<Cart, Long> implement
 
 
     @Override
+    public boolean removeFromCart(Integer userId, Integer bookId) {
+        return removeFromCart(userId, bookId, 1);
+    }
+
+    @Override
     public boolean removeFromCart(Integer userId, Integer bookId, Integer quantity) {
         if (userId == null || bookId == null) {
             return false;
         }
 
         return executeInTransaction(em -> {
+            int safeQuantity = quantity == null || quantity <= 0 ? 1 : quantity;
             Cart cart = findManagedCartByUserId(em, userId).orElse(null);
 
             if (cart == null) {
                 return false;
             }
 
-            CartItem existingItem = cart.getItems()
-                    .stream()
-                    .filter(item -> item.getBook().getId().equals(Long.valueOf(bookId)))
-                    .findFirst()
-                    .orElse(null);
+            CartItem existingItem = findManagedCartItem(cart, bookId);
 
             if (existingItem == null) {
                 return false;
             }
 
-            if (quantity == null || quantity <= 0 || existingItem.getQuantity() <= quantity) {
-                cart.getItems().remove(existingItem);
-                em.remove(existingItem);
+            if (existingItem.getQuantity() <= safeQuantity) {
+                removeManagedCartItem(em, cart, existingItem);
             } else {
-                existingItem.setQuantity(existingItem.getQuantity() - quantity);
+                existingItem.setQuantity(existingItem.getQuantity() - safeQuantity);
             }
 
             recalculateTotalPrice(cart);
@@ -150,12 +158,31 @@ public class CartRepositoryImpl extends BaseRepositoryImpl<Cart, Long> implement
                                 "LEFT JOIN FETCH c.user " +
                                 "LEFT JOIN FETCH c.items i " +
                                 "LEFT JOIN FETCH i.book " +
+                                "LEFT JOIN FETCH i.book.bookAuthors ba " +
+                                "LEFT JOIN FETCH ba.author " +
                                 "WHERE c.user.id = :userId",
                         getEntityClass()
                 )
                 .setParameter("userId", Long.valueOf(userId))
                 .getResultStream()
                 .findFirst();
+    }
+
+    private CartItem findManagedCartItem(Cart cart, Integer bookId) {
+        if (cart == null || bookId == null) {
+            return null;
+        }
+
+        return cart.getItems()
+                .stream()
+                .filter(item -> item.getBook().getId().equals(Long.valueOf(bookId)))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private void removeManagedCartItem(EntityManager em, Cart cart, CartItem cartItem) {
+        cart.getItems().remove(cartItem);
+        em.remove(cartItem);
     }
 
     private Cart createCart(EntityManager em, User user) {

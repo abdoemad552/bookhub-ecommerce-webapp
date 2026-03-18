@@ -36,7 +36,7 @@ public class CartServiceImpl extends ContextHandler implements CartService {
 
     @Override
     public boolean addToCart(Integer userId, Integer bookId) {
-        return executeInContext(() -> cartRepository.addToCart(userId, bookId,1));
+        return executeInContext(() -> cartRepository.addToCart(userId, bookId));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class CartServiceImpl extends ContextHandler implements CartService {
 
     @Override
     public boolean removeFromCart(Integer userId, Integer bookId) {
-        return executeInContext(() -> cartRepository.removeFromCart(userId, bookId,1));
+        return executeInContext(() -> cartRepository.removeFromCart(userId, bookId));
     }
 
     @Override
