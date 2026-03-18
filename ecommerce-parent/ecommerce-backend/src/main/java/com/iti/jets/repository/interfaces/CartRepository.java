@@ -11,7 +11,11 @@ public interface CartRepository extends BaseRepository<Cart, Long> {
 
     Optional<Cart> findByUserId(Integer userId);
 
+    boolean addToCart(Integer userId, Integer bookId);
+
     boolean addToCart(Integer userId, Integer bookId, Integer quantity);
+
+    boolean removeFromCart(Integer userId, Integer bookId);
 
     boolean removeFromCart(Integer userId, Integer bookId, Integer quantity);
 }
