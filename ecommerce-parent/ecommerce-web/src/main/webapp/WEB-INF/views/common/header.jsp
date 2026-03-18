@@ -2,8 +2,12 @@
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/header-footer.css">
 
+<c:set var="showCategoryNavFlag" value="${param.showCategoryNav != null ? param.showCategoryNav : true}" />
+
 <!-- Spacing -->
-<div class="h-16"></div>
+<c:if test="${showCategoryNavFlag == 'true'}">
+    <div class="h-16"></div>
+</c:if>
 
 <!-- Main Nav -->
 <nav class="font-google-sans fixed top-0 left-0 w-full z-50 bg-card border-b border-border/70 backdrop-blur-md h-16 flex items-center">
@@ -155,55 +159,57 @@
 </nav>
 
 <%-- CATEGORY NAV — sticky just below the main nav --%>
-<nav class="sticky top-16 z-40 bg-card border-b border-border/60 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-center gap-1 overflow-x-auto py-2.5"
-             style="scrollbar-width:none;-ms-overflow-style:none;">
-            <a href="${pageContext.request.contextPath}/explore?category=All">
-                <button data-slot="button"
-                        class="cat-pill hover:text-accent-foreground inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-muted-foreground px-4 py-1.5 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
-                    All
-                </button>
-            </a>
-            <a href="${pageContext.request.contextPath}/explore?category=Fiction">
-                <button data-slot="button"
-                        class="cat-pill inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-muted-foreground px-4 py-1.5 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
-                    Fiction
-                </button>
-            </a>
-            <a href="${pageContext.request.contextPath}/explore?category=Fantasy">
-                <button data-slot="button"
-                        class="cat-pill inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-muted-foreground px-4 py-1.5 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
-                    Fantasy
-                </button>
-            </a>
-            <a href="${pageContext.request.contextPath}/explore?category=Self-Help">
-                <button data-slot="button"
-                        class="cat-pill inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-muted-foreground px-4 py-1.5 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
-                    Self-Help
-                </button>
-            </a>
-            <a href="${pageContext.request.contextPath}/explore?category=Non-Fiction">
-                <button data-slot="button"
-                        class="cat-pill inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-muted-foreground px-4 py-1.5 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
-                    Non-Fiction
-                </button>
-            </a>
-            <a href="${pageContext.request.contextPath}/explore?category=Romance">
-                <button data-slot="button"
-                        class="cat-pill inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-muted-foreground px-4 py-1.5 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
-                    Romance
-                </button>
-            </a>
-            <a href="${pageContext.request.contextPath}/explore?category=Mystery">
-                <button data-slot="button"
-                        class="cat-pill inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-muted-foreground px-4 py-1.5 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
-                    Mystery
-                </button>
-            </a>
+<c:if test="${showCategoryNavFlag == 'true'}">
+    <nav class="sticky top-16 z-40 bg-card border-b border-border/60 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-center gap-1 overflow-x-auto py-2.5"
+                 style="scrollbar-width:none;-ms-overflow-style:none;">
+                <a href="${pageContext.request.contextPath}/explore?category=All">
+                    <button data-slot="button"
+                            class="cat-pill hover:text-accent-foreground inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-muted-foreground px-4 py-1.5 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
+                        All
+                    </button>
+                </a>
+                <a href="${pageContext.request.contextPath}/explore?category=Fiction">
+                    <button data-slot="button"
+                            class="cat-pill inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-muted-foreground px-4 py-1.5 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
+                        Fiction
+                    </button>
+                </a>
+                <a href="${pageContext.request.contextPath}/explore?category=Fantasy">
+                    <button data-slot="button"
+                            class="cat-pill inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-muted-foreground px-4 py-1.5 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
+                        Fantasy
+                    </button>
+                </a>
+                <a href="${pageContext.request.contextPath}/explore?category=Self-Help">
+                    <button data-slot="button"
+                            class="cat-pill inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-muted-foreground px-4 py-1.5 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
+                        Self-Help
+                    </button>
+                </a>
+                <a href="${pageContext.request.contextPath}/explore?category=Non-Fiction">
+                    <button data-slot="button"
+                            class="cat-pill inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-muted-foreground px-4 py-1.5 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
+                        Non-Fiction
+                    </button>
+                </a>
+                <a href="${pageContext.request.contextPath}/explore?category=Romance">
+                    <button data-slot="button"
+                            class="cat-pill inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-muted-foreground px-4 py-1.5 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
+                        Romance
+                    </button>
+                </a>
+                <a href="${pageContext.request.contextPath}/explore?category=Mystery">
+                    <button data-slot="button"
+                            class="cat-pill inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-muted-foreground px-4 py-1.5 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1">
+                        Mystery
+                    </button>
+                </a>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
+</c:if>
 
 <!-- Mobile Search Overlay -->
 <div id="mobile-search"
