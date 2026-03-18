@@ -71,7 +71,7 @@
                         <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
                     </svg>
                     <h3 class="text-lg font-semibold text-foreground mb-2">Fast Shipping</h3>
-                    <p class="text-muted-foreground">Free shipping on orders over $50</p>
+                    <p class="text-muted-foreground">Free shipping on orders over 50 EGP</p>
                 </div>
             </div>
         </div>

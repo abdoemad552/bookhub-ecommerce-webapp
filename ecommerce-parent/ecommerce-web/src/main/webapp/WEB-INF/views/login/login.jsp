@@ -12,12 +12,15 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/authentication.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
 </head>
 
 <body class="font-serif antialiased">
 
-<div class="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex items-center justify-center px-4 py-8 relative">
+<div class="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex flex-col relative">
+    <jsp:include page="../common/header.jsp"/>
 
+    <main class="flex-1 flex items-center justify-center px-4 py-8 relative">
     <div class="w-full max-w-md relative z-10">
 
         <!-- Floating accent -->
@@ -130,7 +133,9 @@
 
         </div>
     </div>
+    </main>
 
+    <jsp:include page="../common/footer.jsp"/>
 </div>
 <script src="${pageContext.request.contextPath}/assets/js/login/login.js"></script>
 </body>

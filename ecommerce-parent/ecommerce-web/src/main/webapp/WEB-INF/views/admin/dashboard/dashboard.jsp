@@ -7,8 +7,10 @@
     <meta name="keywords" content="bookhub,admin,users,books,statistics"/>
     <title>BookHub - Admin Dashboard</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
 </head>
-<body class="font-sans antialiased">
+<body class="font-google-sans antialiased">
 <div class="min-h-screen bg-background">
     <jsp:include page="../../common/header.jsp" />
     <main class="max-w-7xl mx-auto px-4 py-12">
@@ -106,7 +108,7 @@
                                 <td class="px-4 py-3 text-sm">Atomic Habits</td>
                                 <td class="px-4 py-3 text-sm">James Clear</td>
                                 <td class="px-4 py-3 text-sm">Self-Help</td>
-                                <td class="px-4 py-3 text-sm">$18.00</td>
+                                <td class="px-4 py-3 text-sm">18.00 EGP</td>
                                 <td class="px-4 py-3 text-sm">52</td>
                                 <td class="px-4 py-3 text-sm space-x-2">
                                     <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border bg-background hover:bg-accent h-8 px-3">Edit</button>
@@ -120,7 +122,7 @@
                                 <td class="px-4 py-3 text-sm">The Pragmatic Programmer</td>
                                 <td class="px-4 py-3 text-sm">Andrew Hunt</td>
                                 <td class="px-4 py-3 text-sm">Technology</td>
-                                <td class="px-4 py-3 text-sm">$31.50</td>
+                                <td class="px-4 py-3 text-sm">31.50 EGP</td>
                                 <td class="px-4 py-3 text-sm">28</td>
                                 <td class="px-4 py-3 text-sm space-x-2">
                                     <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border bg-background hover:bg-accent h-8 px-3">Edit</button>
@@ -134,7 +136,7 @@
                                 <td class="px-4 py-3 text-sm">Dune</td>
                                 <td class="px-4 py-3 text-sm">Frank Herbert</td>
                                 <td class="px-4 py-3 text-sm">Fiction</td>
-                                <td class="px-4 py-3 text-sm">$21.00</td>
+                                <td class="px-4 py-3 text-sm">21.00 EGP</td>
                                 <td class="px-4 py-3 text-sm">13</td>
                                 <td class="px-4 py-3 text-sm space-x-2">
                                     <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border bg-background hover:bg-accent h-8 px-3">Edit</button>
@@ -207,7 +209,7 @@
                         </div>
                         <div class="border border-border rounded-lg p-5">
                             <p class="text-sm text-muted-foreground mb-1">Monthly Revenue</p>
-                            <p class="text-3xl font-bold text-foreground">$42,750</p>
+                            <p class="text-3xl font-bold text-foreground">42,750 EGP</p>
                             <p class="text-sm text-green-600 mt-1">+8.4% vs last month</p>
                         </div>
                     </div>
@@ -224,7 +226,7 @@
             </div>
         </div>
     </main>
-    <%@include file="../../common/footer.jsp"%>
+    <jsp:include page="../../common/footer.jsp" />
 </div>
 <script>
     const adminTabs = document.querySelectorAll(".admin-tab");
@@ -276,7 +278,7 @@
                     <td class="px-4 py-3 text-sm">${title}</td>
                     <td class="px-4 py-3 text-sm">${author}</td>
                     <td class="px-4 py-3 text-sm">${category}</td>
-                    <td class="px-4 py-3 text-sm">$${price}</td>
+                    <td class="px-4 py-3 text-sm">${price} EGP</td>
                     <td class="px-4 py-3 text-sm">${stock}</td>
                     <td class="px-4 py-3 text-sm space-x-2">
                         <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border bg-background hover:bg-accent h-8 px-3">Edit</button>
