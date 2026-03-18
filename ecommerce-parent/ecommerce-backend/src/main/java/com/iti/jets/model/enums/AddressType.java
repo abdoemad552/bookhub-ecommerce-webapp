@@ -4,7 +4,6 @@ public enum AddressType {
     HOME("Home"),
     WORK("Work"),
     SHIPPING("Shipping"),
-    BILLING("Billing"),
     ONLINE("Online");
 
     private final String prettyName;

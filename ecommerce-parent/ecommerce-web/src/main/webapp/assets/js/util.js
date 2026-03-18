@@ -1,3 +1,4 @@
+export const $ = id => document.getElementById(id);
 
 export function scrollH(element, direction, amount) {
     element.scrollBy({

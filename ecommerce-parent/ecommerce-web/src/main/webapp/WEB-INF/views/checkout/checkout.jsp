@@ -23,7 +23,9 @@
 <body class="font-google-sans antialiased">
 
 <%-- HEADER --%>
-<jsp:include page="../common/header.jsp"/>
+<jsp:include page="../common/header.jsp">
+    <jsp:param name="showCategoryNav" value="false"/>
+</jsp:include>
 
 <div class="min-h-screen bg-gradient-to-br from-background via-background to-accent/5
             flex items-center justify-center px-4 py-8 relative">
@@ -78,7 +80,6 @@
 
                         <!-- Address grid — populated by JS -->
                         <div class="address-grid" id="address-grid"></div>
-                        <div class="field-hint" id="hint-address"></div>
                     </div>
 
                     <!-- Step-1 Buttons -->
