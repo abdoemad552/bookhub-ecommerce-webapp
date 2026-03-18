@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
-<nav class="sticky top-0 z-50 bg-card border-b border-border">
+<nav class="font-google-sans sticky top-0 z-50 bg-card border-b border-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <a class="flex items-center gap-2" href="${pageContext.request.contextPath}">
@@ -19,7 +19,10 @@
                             <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
                         </svg>
                         <span class="hidden sm:inline ml-2">Cart</span>
-                        <span class="absolute -top-2 -right-2 w-5 h-5 bg-destructive text-destructive-foreground text-xs font-bold rounded-full flex items-center justify-center">0</span>
+                        <span id="header-cart-count"
+                              data-context-path="${pageContext.request.contextPath}"
+                              data-authenticated="${not empty sessionScope.user}"
+                              class="absolute -top-2 -right-2 w-5 h-5 bg-destructive text-destructive-foreground text-xs font-bold rounded-full flex items-center justify-center">0</span>
                     </button>
                 </a>
                 <c:choose>
@@ -85,7 +88,7 @@
         </div>
     </div>
 </nav>
-<nav class="sticky top-16 z-40 bg-card border-b border-border shadow-sm">
+<nav class="font-google-sans sticky top-16 z-40 bg-card border-b border-border shadow-sm">
     <div class="max-w-7xl mx-auto">
         <div class="px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-center gap-2 overflow-x-auto scrollbar-hide py-2">
@@ -128,7 +131,8 @@
         </div>
     </div>
 </nav>
+<script type="module">
+    import {initHeader} from "${pageContext.request.contextPath}/assets/js/common/header.js";
 
-<script>
-
+    initHeader();
 </script>
