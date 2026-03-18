@@ -1,137 +1,214 @@
-
-let books = null;
-
 let isCategoriesOpen = false;
 let isSortOpen = false;
-
-let searchQuery;
-let selectedCategory;
-let priceRange;
-let sortCriteria;
+let searchDebounceId = null;
 
 const categoriesMapping = {
-    "all":              "All Books",
-    "fiction":          "Fiction",
-    "science-fiction":  "Science Fiction",
-    "fantasy":          "Fantasy",
-    "self-help":        "Self-Help",
-    "non-fiction":      "Non-Fiction",
-    "biography":        "Biography"
+    all: "All Books",
+    fiction: "Fiction",
+    "science-fiction": "Science Fiction",
+    fantasy: "Fantasy",
+    "self-help": "Self-Help",
+    "non-fiction": "Non-Fiction",
+    biography: "Biography"
 };
 
 const sortCriteriaMapping = {
-    "featured":             "Featured",
-    "price-low-to-high":    "Price: Low to High",
-    "price-high-to-low":    "Price: High to Low",
-    "rating":               "Rating"
+    featured: "Featured",
+    "price-low-to-high": "Price: Low to High",
+    "price-high-to-low": "Price: High to Low",
+    rating: "Top Rated"
 };
 
-function handleSearchQueryChange() {
-    console.log("New search query: " + searchQuery);
+function getCurrentState() {
+    const selectedCategory = document.getElementById("selected-category")?.dataset.selectedCategoryValue || "all";
+    const selectedSortCriteria = document.getElementById("selected-sort-criteria")?.dataset.selectedSortCriteria || "featured";
+    const searchInput = document.getElementById("search-input");
+    const priceRangeInput = document.querySelector("#sidebar-filter .range-input");
+
+    return {
+        searchQuery: searchInput?.value?.trim() || "",
+        selectedCategory,
+        selectedSortCriteria,
+        selectedMaxPrice: priceRangeInput?.value || "50"
+    };
 }
 
-function handleCategoryChange() {
-    console.log("New category: " + selectedCategory);
+function applyFilters(nextState) {
+    const url = new URL(window.location.href);
+
+    if (nextState.selectedCategory && nextState.selectedCategory !== "all") {
+        const categoryButton = document.querySelector(`[data-category="${nextState.selectedCategory}"]`);
+        url.searchParams.set("category", categoryButton?.dataset.categoryValue || categoriesMapping[nextState.selectedCategory]);
+    } else {
+        url.searchParams.delete("category");
+    }
+
+    if (nextState.searchQuery) {
+        url.searchParams.set("query", nextState.searchQuery);
+    } else {
+        url.searchParams.delete("query");
+    }
+
+    if (nextState.selectedMaxPrice) {
+        url.searchParams.set("maxPrice", nextState.selectedMaxPrice);
+    } else {
+        url.searchParams.delete("maxPrice");
+    }
+
+    if (nextState.selectedSortCriteria && nextState.selectedSortCriteria !== "featured") {
+        url.searchParams.set("sort", nextState.selectedSortCriteria);
+    } else {
+        url.searchParams.delete("sort");
+    }
+
+    url.searchParams.delete("page");
+    window.location.assign(url.toString());
 }
 
-function handlePriceRangeChange() {
-    console.log("New price range: " + priceRange);
+function setSelectedCategory(categorySlug) {
+    const previousCategorySlug = document.getElementById("selected-category")?.dataset.selectedCategoryValue || "all";
+
+    $(`[data-category="${previousCategorySlug}"]`)
+        .addClass("hover:bg-primary/5 active:bg-primary/10 text-foreground")
+        .removeClass("bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold");
+
+    $(`[data-category="${categorySlug}"]`)
+        .addClass("bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold")
+        .removeClass("hover:bg-primary/5 active:bg-primary/10 text-foreground");
+
+    const selectedCategory = document.getElementById("selected-category");
+    if (selectedCategory) {
+        selectedCategory.dataset.selectedCategoryValue = categorySlug;
+        selectedCategory.textContent = categoriesMapping[categorySlug] || "All Books";
+    }
+
+    const gridSelectedCategory = document.getElementById("grid-selected-category");
+    if (gridSelectedCategory) {
+        gridSelectedCategory.textContent = categoriesMapping[categorySlug] || "All Books";
+    }
 }
 
-function handleSortChange() {
-    console.log("New sort criteria: " + sortCriteria);
+function setSelectedSortCriteria(sortCriteria) {
+    const previousSortCriteria = document.getElementById("selected-sort-criteria")?.dataset.selectedSortCriteria || "featured";
+
+    $(`[data-criteria="${previousSortCriteria}"]`)
+        .addClass("hover:bg-primary/5 active:bg-primary/10 text-foreground")
+        .removeClass("bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold");
+
+    $(`[data-criteria="${sortCriteria}"]`)
+        .addClass("bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold")
+        .removeClass("hover:bg-primary/5 active:bg-primary/10 text-foreground");
+
+    const selectedSortCriteria = document.getElementById("selected-sort-criteria");
+    if (selectedSortCriteria) {
+        selectedSortCriteria.dataset.selectedSortCriteria = sortCriteria;
+        selectedSortCriteria.textContent = sortCriteriaMapping[sortCriteria] || "Featured";
+    }
+}
+
+function bindSearchInput() {
+    const searchInput = document.getElementById("search-input");
+
+    if (!searchInput) {
+        return;
+    }
+
+    searchInput.addEventListener("input", function () {
+        clearTimeout(searchDebounceId);
+        searchDebounceId = setTimeout(() => {
+            applyFilters(getCurrentState());
+        }, 350);
+    });
+}
+
+function bindCategoryButtons(container) {
+    container.querySelectorAll(".category-btn")
+        .forEach((categoryButton) => {
+            categoryButton.addEventListener("click", function () {
+                const nextCategory = this.dataset.category;
+
+                if (document.getElementById("selected-category")?.dataset.selectedCategoryValue === nextCategory) {
+                    return;
+                }
+
+                setSelectedCategory(nextCategory);
+                applyFilters(getCurrentState());
+            });
+        });
+}
+
+function bindPriceRange(container) {
+    const rangeInput = container.querySelector(".range-input");
+
+    if (!rangeInput) {
+        return;
+    }
+
+    rangeInput.addEventListener("input", function () {
+        document.getElementById("selected-price-range").textContent = this.value;
+    });
+
+    rangeInput.addEventListener("change", function () {
+        applyFilters(getCurrentState());
+    });
+}
+
+function bindSortButtons(container) {
+    container.querySelectorAll(".sort-btn")
+        .forEach((sortButton) => {
+            sortButton.addEventListener("click", function () {
+                const nextSortCriteria = this.dataset.criteria;
+
+                if (document.getElementById("selected-sort-criteria")?.dataset.selectedSortCriteria === nextSortCriteria) {
+                    return;
+                }
+
+                setSelectedSortCriteria(nextSortCriteria);
+                applyFilters(getCurrentState());
+            });
+        });
+}
+
+function bindExpanders() {
+    document.getElementById("categories-controller")
+        ?.addEventListener("click", function () {
+            isCategoriesOpen = !isCategoriesOpen;
+
+            $("#selected-category")
+                .parent()
+                .toggleClass("max-h-12 opacity-100", !isCategoriesOpen)
+                .toggleClass("max-h-0 opacity-0", isCategoriesOpen);
+
+            $("#categories-container")
+                .toggleClass("max-h-96 opacity-100", isCategoriesOpen)
+                .toggleClass("max-h-0 opacity-0", !isCategoriesOpen);
+        });
+
+    document.getElementById("sort-controller")
+        ?.addEventListener("click", function () {
+            isSortOpen = !isSortOpen;
+
+            $("#selected-sort-criteria")
+                .parent()
+                .toggleClass("max-h-12 opacity-100", !isSortOpen)
+                .toggleClass("max-h-0 opacity-0", isSortOpen);
+
+            $("#sort-container")
+                .toggleClass("max-h-48 opacity-100", isSortOpen)
+                .toggleClass("max-h-0 opacity-0", !isSortOpen);
+        });
 }
 
 export function initSidebarFilter() {
-    const container = document.getElementById('sidebar-filter');
+    const container = document.getElementById("sidebar-filter");
 
-    searchQuery = '';
-    selectedCategory = 'all';
-    priceRange = 50;
-    sortCriteria = 'featured';
+    if (!container) {
+        return;
+    }
 
-    document.getElementById('search-input')
-        .addEventListener('blur', function () {
-            searchQuery = this.value;
-            handleSearchQueryChange();
-        });
-
-    container.querySelectorAll('.category-btn')
-        .forEach(function (categoryBtn) {
-            categoryBtn.addEventListener('click', function () {
-                if (selectedCategory === this.dataset.category) return;
-                $(this)
-                    .addClass('bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold')
-                    .removeClass('hover:bg-primary/5 active:bg-primary/10 text-foreground');
-
-                // TODO: Get the previous toggled one and make the opposite...
-                $(`[data-category='${selectedCategory}']`)
-                    .addClass('hover:bg-primary/5 active:bg-primary/10 text-foreground')
-                    .removeClass('bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold');
-
-                selectedCategory = this.dataset.category;
-                document.getElementById('selected-category').textContent = categoriesMapping[selectedCategory];
-                document.getElementById('grid-selected-category').textContent = categoriesMapping[selectedCategory];
-
-                handleCategoryChange();
-            });
-        });
-
-    container.querySelector('.range-input')
-        .addEventListener('input', function () {
-            priceRange = this.value;
-            document.getElementById('selected-price-range').textContent = priceRange;
-
-            handlePriceRangeChange();
-        });
-
-    container.querySelectorAll('.sort-btn')
-        .forEach(function (sortBtn) {
-            sortBtn.addEventListener('click', function () {
-                if (sortCriteria === this.dataset.criteria) return;
-                $(this)
-                    .addClass('bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold')
-                    .removeClass('hover:bg-primary/5 active:bg-primary/10 text-foreground');
-
-                // TODO: Get the previous toggled one and make the opposite...
-                $(`[data-criteria='${sortCriteria}']`)
-                    .addClass('hover:bg-primary/5 active:bg-primary/10 text-foreground')
-                    .removeClass('bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold');
-
-                sortCriteria = this.dataset.criteria;
-                document.getElementById('selected-sort-criteria').textContent = sortCriteriaMapping[sortCriteria];
-
-                handleSortChange();
-            })
-        });
-
-    document.getElementById('categories-controller')
-        .addEventListener('click', function () {
-            isCategoriesOpen = !isCategoriesOpen;
-            console.log(isCategoriesOpen);
-
-            $('#selected-category')
-                .parent()
-                .toggleClass('max-h-12 opacity-100', !isCategoriesOpen)
-                .toggleClass('max-h-0 opacity-0', isCategoriesOpen);
-
-            $('#categories-container')
-                .toggleClass('max-h-96 opacity-100', isCategoriesOpen)
-                .toggleClass('max-h-0 opacity-0', !isCategoriesOpen);
-        });
-
-    document.getElementById('sort-controller')
-        .addEventListener('click', function () {
-            isSortOpen = !isSortOpen;
-            console.log(isSortOpen);
-
-            $('#selected-sort-criteria')
-                .parent()
-                .toggleClass('max-h-12 opacity-100', !isSortOpen)
-                .toggleClass('max-h-0 opacity-0', isSortOpen);
-
-            $('#sort-container')
-                .toggleClass('max-h-48 opacity-100', isSortOpen)
-                .toggleClass('max-h-0 opacity-0', !isSortOpen);
-        })
+    bindSearchInput();
+    bindCategoryButtons(container);
+    bindPriceRange(container);
+    bindSortButtons(container);
+    bindExpanders();
 }
