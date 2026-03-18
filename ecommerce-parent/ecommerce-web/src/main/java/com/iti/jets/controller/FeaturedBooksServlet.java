@@ -26,8 +26,10 @@ public class FeaturedBooksServlet extends HttpServlet {
             new BookCardDto(5, "Book3", "Author3", "Under the stars I want a description part. This part should be about two or three lines and then the text should be clipped with dots.", 5, 1000, "https://blog-cdn.reedsy.com/directories/gallery/248/large_65b0ae90317f7596d6f95bfdd6131398.jpg"),
             new BookCardDto(6, "Book3", "Author3", "Under the stars I want a description part. This part should be about two or three lines and then the text should be clipped with dots.", 5, 1000, "https://blog-cdn.reedsy.com/directories/gallery/248/large_65b0ae90317f7596d6f95bfdd6131398.jpg")
         );
-        
+
+        boolean isH = request.getParameter("h") != null;
+
         request.setAttribute("books", books);
-        request.getRequestDispatcher(PathStorage.BOOK_CARD).forward(request, response);
+        request.getRequestDispatcher(isH ? PathStorage.BOOK_CARD_H : PathStorage.BOOK_CARD).forward(request, response);
     }
 }

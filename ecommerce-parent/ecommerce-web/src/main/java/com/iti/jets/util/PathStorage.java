@@ -12,6 +12,7 @@ public class PathStorage {
 
     // Inner Components
     public static final String BOOK_CARD    = "/WEB-INF/views/common/book-card.jsp";
+    public static final String BOOK_CARD_H  = "/WEB-INF/views/common/book-card-h.jsp";
     public static final String HEADER       = "/WEB-INF/views/common/header.jsp";
     public static final String FOOTER       = "/WEB-INF/views/common/footer.jsp";
 

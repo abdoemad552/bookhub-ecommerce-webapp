@@ -1,3 +1,6 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
+<c:import url="/categories/all"/>
 
 <div id="sidebar-filter" data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border shadow-sm p-6 sticky top-24">
     <div class="flex-1 relative mb-3">
@@ -23,21 +26,29 @@
             <div id="selected-category" class="px-3 py-2 bg-muted/50 rounded-lg border border-border text-sm text-primary font-medium truncate">All</div>
         </div>
         <div id="categories-container" class="overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0">
-            <div class="space-y-1 bg-muted/50 rounded-lg p-2 border border-border">
-                <button data-category="all"             class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold">All</button>
-                <button data-category="fiction"         class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Fiction</button>
-                <button data-category="science-fiction" class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Science Fiction</button>
-                <button data-category="fantasy"         class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Fantasy</button>
-                <button data-category="self-help"       class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Self-Help</button>
-                <button data-category="non-fiction"     class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Non-Fiction</button>
-                <button data-category="biography"       class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Biography</button>
+            <div class="space-y-1 bg-muted/50 rounded-lg p-2 border border-border overflow-y-auto max-h-64">
+                <button data-category="All" class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold">All</button>
+                <c:forEach items="${requestScope.categories}" var="category">
+                    <button data-category="${category.name}" class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">${category.name}</button>
+                </c:forEach>
             </div>
         </div>
     </div>
     <div class="mb-3">
         <h3 class="font-bold text-foreground mb-4">Price Range</h3>
-        <input type="range" min="0" max="50" class="range-input w-full" value="50"/>
-        <p class="text-sm text-muted-foreground mt-2">Up to <span id="selected-price-range"></span> EGP</p>
+        <div class="flex gap-3 items-end">
+            <div class="flex-1">
+                <label class="text-xs text-muted-foreground font-medium mb-1 block">Min</label>
+                <input id="min-price-input" type="number" min="0" max="999999" class="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="0" value="0"/>
+            </div>
+            <div class="flex-1">
+                <label class="text-xs text-muted-foreground font-medium mb-1 block">Max</label>
+                <input id="max-price-input" type="number" min="0" max="999999" class="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="50" value="999999"/>
+            </div>
+        </div>
+        <p class="text-sm text-muted-foreground mt-3">
+            <span id="min-price">0</span>.00 EGP - <span id="max-price">50</span>.00 EGP
+        </p>
     </div>
     <div>
         <button id="sort-controller" class="w-full font-bold text-foreground mb-2 flex items-center justify-between hover:text-primary hover:bg-primary/10 rounded-lg p-2 transition-colors cursor-pointer">
@@ -51,10 +62,10 @@
         </div>
         <div id="sort-container" class="overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0">
             <div class="space-y-1 bg-muted/50 rounded-lg p-2 border border-border">
-                <button data-criteria="featured"    class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold">Featured</button>
-                <button data-criteria="price-low-to-high"   class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Price: Low to High</button>
-                <button data-criteria="price-high-to-low"  class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Price: High to Low</button>
-                <button data-criteria="rating"      class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Top Rated</button>
+                <button data-criteria="Featured"             class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold">Featured</button>
+                <button data-criteria="Price: Low to High"   class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Price: Low to High</button>
+                <button data-criteria="Price: High to Low"   class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Price: High to Low</button>
+                <button data-criteria="Rating"               class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer hover:bg-primary/5 active:bg-primary/10 text-foreground">Top Rated</button>
             </div>
         </div>
     </div>
