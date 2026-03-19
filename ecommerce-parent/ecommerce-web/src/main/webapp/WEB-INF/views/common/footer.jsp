@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/header-footer.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home.css">
+
 <footer class="footer-root">
     <div class="section-inner" style="padding-top:3rem; padding-bottom:0;">
 

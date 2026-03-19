@@ -1,4 +1,3 @@
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -225,6 +224,5 @@
 <script type="module" src="${pageContext.request.contextPath}/assets/js/home/home.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/home/hero-slider.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/home/scroll-reveal.js"></script>
-
 </body>
 </html>

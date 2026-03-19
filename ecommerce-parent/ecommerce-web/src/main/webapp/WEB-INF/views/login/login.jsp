@@ -11,8 +11,8 @@
     <title>BookHub - Your Gateway to Endless Stories</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/authentication.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
 
     <script type="module" src="${pageContext.request.contextPath}/assets/js/login/login.js"></script>
 
