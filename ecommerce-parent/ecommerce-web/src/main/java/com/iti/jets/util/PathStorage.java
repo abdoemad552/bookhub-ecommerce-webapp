@@ -10,6 +10,7 @@ public class PathStorage {
     public static final String EXPLORE_PAGE         = "/WEB-INF/views/explore/explore.jsp";
     public static final String CART_PAGE            = "/WEB-INF/views/cart/cart.jsp";
     public static final String BOOK_INFO_PAGE       = "/WEB-INF/views/books/book-info.jsp";
+    public static final String AUTHOR_INFO_PAGE     = "/WEB-INF/views/authors/author-info.jsp";
     public static final String BOOK_NOT_FOUND_PAGE  = "/WEB-INF/views/error/book-not-found.jsp";
     public static final String NOT_FOUND_PAGE       = "/WEB-INF/views/error/page-not-found.jsp";
     public static final String CHECKOUT_PAGE        = "/WEB-INF/views/checkout/checkout.jsp";
