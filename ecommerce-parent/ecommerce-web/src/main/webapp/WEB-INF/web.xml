@@ -65,7 +65,7 @@
 
     <error-page>
         <error-code>403</error-code>
-        <location>/WEB-INF/views/error/page-not-found.jsp</location>
+        <location>/WEB-INF/views/error/forbidden.jsp</location>
     </error-page>
 
     <listener>
