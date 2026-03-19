@@ -20,4 +20,26 @@ export function initCategoriesCarousel() {
 
     $left.on('click', () => scrollH($pane[0], 'left', 280));
     $right.on('click', () => scrollH($pane[0], 'right', 280));
+
+    setTimeout(() => loadSkeleton(), 3000);
+}
+
+function loadSkeleton() {
+
+    let pane = document.getElementById('categories-pane');
+    if (!pane) return;
+    pane.querySelectorAll('.cat-skeleton').forEach(function (el) {
+        el.remove();
+    });
+    pane.querySelectorAll('.cat-real').forEach(function (el) {
+        el.style.display = '';
+        el.style.opacity = '0';
+        el.style.transition = 'opacity 0.4s ease';
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                el.style.opacity = '1';
+            });
+        });
+    });
+    pane.dispatchEvent(new Event('scroll'));
 }

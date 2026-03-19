@@ -1,4 +1,4 @@
-package com.iti.jets.controller;
+package com.iti.jets.controller.auth;
 
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.UserService;

@@ -108,9 +108,7 @@ public class Book {
     }
 
     public void addAuthor(Author author) {
-        BookAuthor bookAuthor = new BookAuthor();
-        bookAuthor.setBook(this);
-        bookAuthor.setAuthor(author);
+        BookAuthor bookAuthor = new BookAuthor(this, author);
         bookAuthors.add(bookAuthor);
     }
 
@@ -119,9 +117,7 @@ public class Book {
     }
 
     public void addTags(Tag tag) {
-        BookTag bookTag = new BookTag();
-        bookTag.setBook(this);
-        bookTag.setTag(tag);
+        BookTag bookTag = new BookTag(this, tag);
         bookTags.add(bookTag);
     }
 

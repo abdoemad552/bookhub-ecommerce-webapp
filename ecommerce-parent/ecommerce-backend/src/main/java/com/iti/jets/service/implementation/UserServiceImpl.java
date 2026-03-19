@@ -33,9 +33,9 @@ public class UserServiceImpl extends ContextHandler implements UserService {
     public UserDTO findById(Long id) {
         return executeInContext(() -> {
             Optional<User> userOpt = userRepository.findById(id);
-            if(userOpt.isPresent()){
+            if (userOpt.isPresent()) {
                 return userMapper.toDTO(userOpt.get());
-            }else{
+            } else {
                 return null;
             }
         });
@@ -89,5 +89,16 @@ public class UserServiceImpl extends ContextHandler implements UserService {
     @Override
     public boolean existsByEmail(String email) {
         return executeInContext(() -> userRepository.existsByEmail(email));
+    }
+
+    @Override
+    public UserDTO findByUsername(String username) {
+        return executeInContext(() -> {
+            Optional<User> userOpt = userRepository.findByUserName(username);
+            if (userOpt.isEmpty()) {
+                return null;
+            }
+            return userMapper.toDTO(userOpt.get());
+        });
     }
 }

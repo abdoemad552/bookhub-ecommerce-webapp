@@ -58,9 +58,7 @@ public class UserTag {
 
     public void addBook(Book book) {
         if (book != null) {
-            UserBookTag userBookTag = new UserBookTag();
-            userBookTag.setBook(book);
-            userBookTag.setUserTag(this);
+            UserBookTag userBookTag = new UserBookTag(this, book);
             books.add(userBookTag);
         }
     }

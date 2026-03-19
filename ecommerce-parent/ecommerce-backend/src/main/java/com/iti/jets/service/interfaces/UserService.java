@@ -8,4 +8,6 @@ public interface UserService extends BaseService<UserDTO, Long> {
     boolean existsByUserName(String username);
 
     boolean existsByEmail(String email);
+
+    UserDTO findByUsername(String username);
 }
