@@ -63,7 +63,12 @@
         <location>/WEB-INF/views/error/page-not-found.jsp</location>
     </error-page>
 
+    <error-page>
+        <error-code>403</error-code>
+        <location>/WEB-INF/views/error/page-not-found.jsp</location>
+    </error-page>
+
     <listener>
-        <listener-class>com.iti.jets.listener.ApplicationStartupListener</listener-class>
+        <listener-class>com.iti.jets.listener.AppInitializer</listener-class>
     </listener>
 </web-app>

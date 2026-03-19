@@ -2,12 +2,7 @@ package com.iti.jets.service.factory;
 
 import com.iti.jets.mapper.CategoryMapper;
 import com.iti.jets.mapper.UserMapper;
-import com.iti.jets.repository.implementation.BookRepositoryImpl;
-import com.iti.jets.repository.implementation.CartRepositoryImpl;
-import com.iti.jets.repository.implementation.CategoryRepositoryImpl;
-import com.iti.jets.repository.implementation.ReviewRepositoryImpl;
-import com.iti.jets.repository.implementation.UserRepositoryImpl;
-import com.iti.jets.repository.implementation.WishlistRepositoryImpl;
+import com.iti.jets.repository.implementation.*;
 import com.iti.jets.repository.interfaces.BookRepository;
 import com.iti.jets.repository.interfaces.CartRepository;
 import com.iti.jets.repository.interfaces.CategoryRepository;
@@ -56,9 +51,12 @@ public class ServiceFactory {
     private final EmailService emailService;
 
     private ServiceFactory() {
-        // Repository
         this.userRepository = new UserRepositoryImpl();
         this.categoryRepository = new CategoryRepositoryImpl();
+        this.bookRepository = new BookRepositoryImpl();
+        this.reviewRepository = new ReviewRepositoryImpl();
+        this.wishlistRepository = new WishlistRepositoryImpl();
+        this.cartRepository = new CartRepositoryImpl();
 
         // Service
         this.authService = new AuthServiceImpl(userRepository, categoryRepository, UserMapper.getInstance());
