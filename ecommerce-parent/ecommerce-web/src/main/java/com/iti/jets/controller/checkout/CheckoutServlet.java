@@ -1,5 +1,7 @@
 package com.iti.jets.controller.checkout;
 
+import com.iti.jets.model.enums.AddressType;
+import com.iti.jets.model.enums.Government;
 import com.iti.jets.util.PathStorage;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,6 +29,8 @@ public class CheckoutServlet extends HttpServlet {
             return;
         }
 
+        req.setAttribute("governments", Government.values());
+        req.setAttribute("addressType", AddressType.values());
         req.getRequestDispatcher(PathStorage.CHECKOUT_PAGE).forward(req, resp);
     }
 

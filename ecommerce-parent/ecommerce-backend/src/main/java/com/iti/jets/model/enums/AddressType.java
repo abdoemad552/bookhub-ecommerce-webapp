@@ -1,10 +1,9 @@
 package com.iti.jets.model.enums;
 
 public enum AddressType {
-    HOME("Home"),
-    WORK("Work"),
     SHIPPING("Shipping"),
-    ONLINE("Online");
+    HOME("Home"),
+    WORK("Work");
 
     private final String prettyName;
 

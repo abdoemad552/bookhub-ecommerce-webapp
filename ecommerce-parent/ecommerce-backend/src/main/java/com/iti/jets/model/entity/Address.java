@@ -10,6 +10,11 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "addresses", indexes = {
         @Index(name = "idx_addresses_user", columnList = "user_id")
+}, uniqueConstraints = {
+        @UniqueConstraint(
+                name = "uk_user_address_type",
+                columnNames = {"user_id", "address_type"}
+        )
 })
 @NoArgsConstructor
 @AllArgsConstructor

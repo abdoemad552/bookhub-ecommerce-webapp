@@ -1,4 +1,25 @@
-/* address grid */
+/* ════════════════════════════════════════
+   ADDRESS SECTION LABEL
+════════════════════════════════════════ */
+.addr-section-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+}
+
+.addr-section-label svg {
+    flex-shrink: 0;
+    color: var(--primary);
+}
+
+/* ════════════════════════════════════════
+   ADDRESS GRID
+════════════════════════════════════════ */
 .address-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -11,6 +32,8 @@
     cursor: pointer;
 }
 
+/* Hidden radio — same approach as category-card checkboxes */
+.address-card input[type="radio"],
 .address-card input[type="checkbox"] {
     position: absolute;
     opacity: 0;
@@ -18,6 +41,7 @@
     height: 0;
 }
 
+/* Card label — mirrors .category-label exactly */
 .address-label {
     display: flex;
     flex-direction: column;
@@ -47,18 +71,24 @@
     box-shadow: 0 0 0 3px rgba(120, 53, 15, .12);
 }
 
-.address-label .address-icon {
-    font-size: 1.6rem;
-    line-height: 1;
-}
-
-.address-label .address-name {
+.address-label .cat-name {
     font-size: .75rem;
     font-weight: 600;
     color: var(--foreground);
     line-height: 1.2;
 }
 
+
+.address-label svg {
+    color: var(--muted-foreground);
+    transition: color 0.2s;
+}
+
+.address-label:hover svg {
+    color: var(--primary);
+}
+
+/* Check badge — mirrors .category-check */
 .address-check {
     position: absolute;
     top: 7px;
@@ -78,16 +108,15 @@
 .address-check svg {
     width: 10px;
     height: 10px;
-    color: white;
-    stroke: white;
+    color: var(--primary-foreground);
+    stroke: var(--primary-foreground);
 }
-
 
 .address-card input[type="radio"] {
     display: none;
 }
 
-/* Step 3 skeleton/empty states */
+/* Empty / error state */
 .address-load-error {
     text-align: center;
     padding: 32px 16px;
@@ -95,7 +124,63 @@
     font-size: .85rem;
 }
 
-/* ── Overlay ─────────────────────────────────────────── */
+/* ─── "New Address" card variant ─────────────────────────────────────────── */
+.address-card--new .address-label--new {
+    border-style: dashed;
+    background: var(--card);
+}
+
+.address-card--new .address-label--new svg {
+    color: var(--muted-foreground);
+    transition: color 0.2s;
+}
+
+.address-card--new .address-label--new:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(120, 53, 15, .03);
+}
+
+.address-card--new .address-label--new:hover svg {
+    color: var(--primary);
+}
+
+.address-card--new input:checked + .address-label--new {
+    border-style: solid;
+    border-color: var(--primary);
+    background: rgba(120, 53, 15, .06);
+    box-shadow: 0 0 0 3px rgba(120, 53, 15, .10);
+    color: var(--primary);
+}
+
+.address-card--new input:checked + .address-label--new svg {
+    color: var(--primary);
+}
+
+/* ════════════════════════════════════════
+   NEW ADDRESS PANEL (replaces accordion)
+════════════════════════════════════════ */
+.new-addr-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity    0.28s ease,
+    margin-top 0.28s ease;
+    opacity: 0;
+    margin-top: 0;
+}
+
+.new-addr-panel.open {
+    max-height: 900px;
+    opacity: 1;
+    margin-top: 16px;
+}
+
+/* ════════════════════════════════════════
+   ADDRESS DETAIL POPUP
+════════════════════════════════════════ */
+
+/* Overlay */
 #address-popup-overlay {
     position: fixed;
     inset: 0;
@@ -117,7 +202,7 @@
     pointer-events: all;
 }
 
-/* ── Popup card ──────────────────────────────────────── */
+/* Popup card — mirrors .card-modern surface + shadow */
 .addr-popup {
     position: relative;
     background: #ffffff;
@@ -134,7 +219,7 @@
     transform: translateY(0) scale(1);
 }
 
-/* ── Close button ────────────────────────────────────── */
+/* Close button */
 .addr-popup__close {
     position: absolute;
     top: 18px;
@@ -143,8 +228,8 @@
     height: 34px;
     border: none;
     border-radius: 50%;
-    background:#f4f4f5;
-    color: #71717a;
+    background: var(--muted);
+    color: var(--muted-foreground);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -153,11 +238,11 @@
 }
 
 .addr-popup__close:hover {
-    background: #e4e4e7;
-    color: #09090b;
+    background: var(--border);
+    color: var(--foreground);
 }
 
-/* ── Pop-Up Header ──────────────────────────────────────────── */
+/* Header */
 .addr-popup__header {
     display: flex;
     align-items: center;
@@ -165,6 +250,7 @@
     margin-bottom: 28px;
 }
 
+/* Icon wrap — warm primary tint like .category-card checked state */
 .addr-popup__icon-wrap {
     width: 52px;
     height: 52px;
@@ -178,8 +264,8 @@
 }
 
 .addr-popup__icon-wrap svg {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
 }
 
 .addr-popup__eyebrow {
@@ -187,7 +273,7 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.07em;
-    color: #a1a1aa;
+    color: var(--muted-foreground);
     margin: 0 0 3px;
 }
 
@@ -199,7 +285,7 @@
     line-height: 1.2;
 }
 
-/* ── Detail rows ─────────────────────────────────────── */
+/* Detail rows — bordered list */
 .addr-popup__details {
     list-style: none;
     margin: 0;
@@ -215,34 +301,266 @@
     gap: 12px;
     padding: 12px 16px;
     border-bottom: 1px solid #e4e4e7;
+    transition: background 0.15s;
 }
 
 .addr-popup__row:last-child {
     border-bottom: none;
 }
 
+.addr-popup__row:hover {
+    background: rgba(120, 53, 15, .03);
+}
+
+/* Row icon chip */
 .addr-popup__row-icon {
     width: 30px;
     height: 30px;
     border-radius: 8px;
-    background: #f4f4f5;
+    background: var(--muted);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: #71717a;
+    color: var(--muted-foreground);
 }
 
 .addr-popup__row-label {
-    font-size: 12.5px;
-    color: #71717a;
+    font-size: 12px;
+    color: var(--muted-foreground);
     min-width: 88px;
     flex-shrink: 0;
 }
 
 .addr-popup__row-value {
-    font-size: 13.5px;
-    font-weight: 500;
-    color: #09090b;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--foreground);
     word-break: break-word;
 }
+
+/* ════════════════════════════════════════
+   NEW ADDRESS FORM
+════════════════════════════════════════ */
+.new-addr-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    background: rgba(120, 53, 15, .02);
+}
+
+/* Two-column row */
+.naf-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.naf-row .naf-field     { flex: 1; }
+.naf-row .naf-field--sm { flex: 0 0 115px; }
+
+/* Field wrapper */
+.naf-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* Label */
+.naf-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--foreground);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.naf-optional {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--muted-foreground);
+    font-size: 11px;
+}
+
+/* ── Select ──────────────────────────── */
+.naf-select-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.naf-select-icon {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted-foreground);
+    pointer-events: none;
+    display: flex;
+    z-index: 1;
+    transition: color 0.3s;
+}
+
+.naf-select-chevron {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted-foreground);
+    pointer-events: none;
+    display: flex;
+    transition: color 0.3s;
+}
+
+/* Select — extends .input-modern pattern */
+.naf-select {
+    width: 100%;
+    padding: 10px 32px 10px 34px;
+    border: 1.5px solid var(--border);
+    border-radius: 1rem;
+    background: linear-gradient(135deg, transparent 0%, rgba(120, 53, 15, 0.02) 100%);
+    color: var(--foreground);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-sizing: border-box;
+}
+
+.naf-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(120, 53, 15, 0.1);
+    background: linear-gradient(135deg, transparent 0%, rgba(120, 53, 15, 0.04) 100%);
+}
+
+.naf-select-wrap:focus-within .naf-select-icon,
+.naf-select-wrap:focus-within .naf-select-chevron {
+    color: var(--primary);
+}
+
+.naf-select.error {
+    border-color: var(--destructive);
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, .09);
+}
+
+/* ── Text input — extends .input-modern ─ */
+.naf-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.naf-input-icon {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted-foreground);
+    pointer-events: none;
+    display: flex;
+    transition: color 0.3s;
+}
+
+.naf-input-icon--top {
+    top: 12px;
+    transform: none;
+}
+
+.naf-input {
+    width: 100%;
+    padding: 10px 12px 10px 34px;
+    border: 1.5px solid var(--border);
+    border-radius: 1rem;
+    background: linear-gradient(135deg, transparent 0%, rgba(120, 53, 15, 0.02) 100%);
+    color: var(--foreground);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-sizing: border-box;
+}
+
+.naf-input::placeholder {
+    color: var(--muted-foreground);
+}
+
+.naf-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(120, 53, 15, 0.1);
+    background: linear-gradient(135deg, transparent 0%, rgba(120, 53, 15, 0.04) 100%);
+}
+
+.naf-input-wrap:focus-within .naf-input-icon {
+    color: var(--primary);
+}
+
+.naf-input.error {
+    border-color: var(--destructive);
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, .09);
+}
+
+.naf-textarea {
+    resize: vertical;
+    min-height: 78px;
+    padding-top: 10px;
+}
+
+/* Inline error — matches .field-hint.hint-error */
+.naf-error {
+    font-size: .72rem;
+    color: var(--destructive);
+    min-height: 18px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Save button */
+.naf-save-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    width: fit-content;
+    border: 1.5px solid var(--border);
+    border-radius: 0.625rem;
+    background: var(--muted);
+    color: var(--muted-foreground);
+    font-size: 12.5px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.naf-save-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-foreground);
+}
+
+.naf-save-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.naf-save-btn .naf-spinner {
+    width: 13px;
+    height: 13px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: nafSpin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes nafSpin { to { transform: rotate(360deg); } }

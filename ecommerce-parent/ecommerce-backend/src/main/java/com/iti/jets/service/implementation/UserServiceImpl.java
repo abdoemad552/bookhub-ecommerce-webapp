@@ -1,8 +1,12 @@
 package com.iti.jets.service.implementation;
 
 import com.iti.jets.mapper.UserMapper;
+import com.iti.jets.model.dto.request.AddressRequestDTO;
 import com.iti.jets.model.dto.response.UserAddressesDTO;
 import com.iti.jets.model.dto.response.UserDTO;
+import com.iti.jets.model.dto.response.factory.BaseResponse;
+import com.iti.jets.model.dto.response.factory.ResponseFactory;
+import com.iti.jets.model.entity.Address;
 import com.iti.jets.model.entity.User;
 import com.iti.jets.repository.interfaces.CategoryRepository;
 import com.iti.jets.repository.interfaces.UserRepository;
@@ -13,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class UserServiceImpl extends ContextHandler implements UserService {
 
@@ -111,7 +116,41 @@ public class UserServiceImpl extends ContextHandler implements UserService {
                 return null;
             }
 
-            return  userMapper.toUserAddressesDTO(userOpt.get());
+            return userMapper.toUserAddressesDTO(userOpt.get());
+        });
+    }
+
+    @Override
+    public BaseResponse<Void> saveNewUserAddress(Long userId, AddressRequestDTO addressRequestDto) {
+        return executeInContext(() -> {
+            Optional<User> userOpt = userRepository.findById(userId);
+            if (userOpt.isEmpty()) {
+                return ResponseFactory.failure("Invalid user");
+            }
+
+            User user = userOpt.get();
+            Address newAddress = userMapper.toAddressEntity(addressRequestDto);
+
+            Optional<Address> existingAddress = user.getAddresses()
+                    .stream()
+                    .filter(addr -> addr.getAddressType().equals(newAddress.getAddressType()))
+                    .findFirst();
+
+            if (existingAddress.isPresent()) {
+                // Update the existing address fields
+                Address existing = existingAddress.get();
+                existing.setGovernment(newAddress.getGovernment());
+                existing.setCity(newAddress.getCity());
+                existing.setStreet(newAddress.getStreet());
+                existing.setBuildingNo(newAddress.getBuildingNo());
+                existing.setDescription(newAddress.getDescription());
+            } else {
+                // Insert new address
+                user.addAddress(newAddress);
+            }
+
+            userRepository.update(user);
+            return ResponseFactory.success("Address saved successfully");
         });
     }
 }

@@ -1,12 +1,18 @@
 package com.iti.jets.controller.checkout;
 
+import com.iti.jets.model.dto.request.AddressRequestDTO;
 import com.iti.jets.model.dto.response.AddressDTO;
 import com.iti.jets.model.dto.response.UserAddressesDTO;
 import com.iti.jets.model.dto.response.UserDTO;
+import com.iti.jets.model.dto.response.factory.BaseResponse;
+import com.iti.jets.model.enums.AddressType;
+import com.iti.jets.model.enums.Government;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.UserService;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +47,7 @@ public class AddressServlet extends HttpServlet {
 
         // Load all data needed for the current user (like addresses)
         var session = req.getSession(false);
-        if(session == null || session.getAttribute("user") == null){
+        if (session == null || session.getAttribute("user") == null) {
             return;
         }
 
@@ -64,5 +70,42 @@ public class AddressServlet extends HttpServlet {
 
         PrintWriter out = resp.getWriter();
         out.write(jsonArray.build().toString());
+    }
+
+    /**
+     * POST request from JS to save new address
+     * for the current user
+     *
+     */
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+
+        var session = req.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            return;
+        }
+        UserDTO currentUser = (UserDTO) session.getAttribute("user");
+
+        AddressRequestDTO addressRequestDto = buildRequestDto(req);
+        BaseResponse<Void> result = userService.saveNewUserAddress(currentUser.getId(), addressRequestDto);
+
+        JsonObjectBuilder jsonObject = Json.createObjectBuilder()
+                .add("success", result.isSuccess())
+                .add("message", result.getMessage());
+
+        resp.getWriter().write(jsonObject.build().toString());
+    }
+
+    private AddressRequestDTO buildRequestDto(HttpServletRequest req) {
+        return AddressRequestDTO.builder()
+                .addressType(AddressType.valueOf(req.getParameter("addressType")))
+                .government(Government.valueOf(req.getParameter("government")))
+                .city(req.getParameter("city"))
+                .street(req.getParameter("street"))
+                .buildingNo(req.getParameter("buildingNo"))
+                .description(req.getParameter("description"))
+                .build();
     }
 }

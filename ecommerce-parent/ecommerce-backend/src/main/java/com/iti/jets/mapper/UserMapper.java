@@ -1,5 +1,6 @@
 package com.iti.jets.mapper;
 
+import com.iti.jets.model.dto.request.AddressRequestDTO;
 import com.iti.jets.model.dto.response.*;
 import com.iti.jets.model.entity.Address;
 import com.iti.jets.model.entity.Category;
@@ -88,6 +89,17 @@ public class UserMapper {
                 .id(category.getId())
                 .name(category.getName())
                 .description(category.getDescription())
+                .build();
+    }
+
+    public Address toAddressEntity(AddressRequestDTO addressRequestDto){
+        return Address.builder()
+                .street(addressRequestDto.getStreet())
+                .addressType(addressRequestDto.getAddressType())
+                .buildingNo(addressRequestDto.getBuildingNo())
+                .city(addressRequestDto.getCity())
+                .description(addressRequestDto.getDescription())
+                .government(addressRequestDto.getGovernment())
                 .build();
     }
 
