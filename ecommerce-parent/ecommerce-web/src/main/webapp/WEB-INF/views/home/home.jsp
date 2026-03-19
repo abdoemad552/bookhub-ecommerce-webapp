@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
 <html lang="en">
 <head>
     <meta charSet="utf-8"/>
