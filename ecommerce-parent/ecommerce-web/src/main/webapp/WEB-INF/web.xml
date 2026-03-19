@@ -58,6 +58,11 @@
         <welcome-file>home</welcome-file>
     </welcome-file-list>
 
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/views/error/page-not-found.jsp</location>
+    </error-page>
+
     <listener>
         <listener-class>com.iti.jets.listener.ApplicationStartupListener</listener-class>
     </listener>
