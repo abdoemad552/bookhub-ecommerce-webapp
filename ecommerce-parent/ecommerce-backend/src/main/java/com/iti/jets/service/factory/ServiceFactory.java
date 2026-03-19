@@ -1,5 +1,6 @@
 package com.iti.jets.service.factory;
 
+import com.iti.jets.mapper.CartMapper;
 import com.iti.jets.mapper.CategoryMapper;
 import com.iti.jets.mapper.UserMapper;
 import com.iti.jets.repository.implementation.*;
@@ -65,7 +66,7 @@ public class ServiceFactory {
         this.bookService = new BookServiceImpl(bookRepository);
         this.reviewService = new ReviewServiceImpl(reviewRepository, userRepository, bookRepository);
         this.wishlistService = new WishlistServiceImpl(wishlistRepository, userRepository, bookRepository);
-        this.cartService = new CartServiceImpl(cartRepository);
+        this.cartService = new CartServiceImpl(cartRepository, CartMapper.getInstance());
 
         // Extra Services
         this.emailService = new EmailService();

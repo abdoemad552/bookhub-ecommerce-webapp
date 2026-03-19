@@ -75,7 +75,6 @@ public class AddressServlet extends HttpServlet {
     /**
      * POST request from JS to save new address
      * for the current user
-     *
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
