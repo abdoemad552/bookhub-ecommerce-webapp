@@ -28,27 +28,9 @@
         </div>
 
         <c:choose>
-            <c:when test="${empty sessionScope.user}">
-                <section class="min-h-[50vh] flex items-center justify-center">
-                    <div class="max-w-lg w-full rounded-[24px] border border-[#e6e0d7] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.05)] p-8 text-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7b3527" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 mx-auto mb-4" aria-hidden="true">
-                            <circle cx="8" cy="21" r="1"></circle>
-                            <circle cx="19" cy="21" r="1"></circle>
-                            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
-                        </svg>
-                        <h2 class="text-[1.7rem] font-semibold text-[#111111] mb-3">Sign in to view your cart</h2>
-                        <p class="text-[#68707d] leading-8 mb-6">Your saved cart items are linked to your account, so sign in first and we’ll bring them back instantly.</p>
-                        <a href="${pageContext.request.contextPath}/login">
-                            <button type="button" class="inline-flex items-center justify-center whitespace-nowrap text-[0.92rem] font-medium transition-all cursor-pointer h-9 rounded-[14px] px-3.5 text-white bg-[#7b3527] hover:bg-[#6e2f23]">
-                                Sign In
-                            </button>
-                        </a>
-                    </div>
-                </section>
-            </c:when>
             <c:when test="${isCartEmpty}">
                 <section id="cart-empty-state" class="min-h-[50vh] flex items-center justify-center">
-                    <div class="max-w-lg w-full rounded-[24px] border border-[#e6e0d7] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.05)] p-8 text-center">
+                    <div class="max-w-lg w-full rounded-3xl border border-[#e6e0d7] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.05)] p-8 text-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b39d95" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 mx-auto mb-4" aria-hidden="true">
                             <circle cx="8" cy="21" r="1"></circle>
                             <circle cx="19" cy="21" r="1"></circle>
@@ -69,14 +51,14 @@
                     <div class="space-y-4">
                         <div id="cart-items-list" class="space-y-4">
                             <c:forEach items="${cartItems}" var="item">
-                                <article class="cart-item-card rounded-[24px] border border-[#e6e0d7] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.05)] p-4 md:p-5"
+                                <article class="cart-item-card rounded-3xl border border-[#e6e0d7] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.05)] p-4 md:p-5"
                                          data-cart-item
                                          data-book-id="${item.book.id}"
                                          data-unit-price="${item.book.price}"
                                          data-quantity="${item.quantity}">
                                     <div class="flex flex-col md:flex-row gap-4">
                                         <a href="${pageContext.request.contextPath}/books/${item.book.id}" class="shrink-0">
-                                            <div class="w-full md:w-[124px] aspect-[4/5] rounded-[18px] overflow-hidden border border-[#ece7de] bg-[#eef2ec] flex items-center justify-center">
+                                            <div class="w-full md:w-31 aspect-4/5 rounded-[18px] overflow-hidden border border-[#ece7de] bg-[#eef2ec] flex items-center justify-center">
                                                 <c:choose>
                                                     <c:when test="${not empty item.book.imageUrl}">
                                                         <img src="${item.book.imageUrl}" alt="${item.book.title}" class="w-full h-full object-cover"/>
@@ -116,7 +98,7 @@
                                             </div>
 
                                             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                                                <div class="h-[44px] w-full md:w-[146px] rounded-[15px] border border-[#e6e0d7] bg-[#fcfbf9] flex items-center justify-between px-4">
+                                                <div class="h-11 w-full md:w-36.5 rounded-[15px] border border-[#e6e0d7] bg-[#fcfbf9] flex items-center justify-between px-4">
                                                     <button type="button" data-cart-decrease-btn class="text-[1.15rem] leading-none text-[#111111] cursor-pointer">-</button>
                                                     <span class="text-[0.96rem] font-medium text-[#111111]" data-cart-quantity-value>${item.quantity}</span>
                                                     <button type="button" data-cart-increase-btn class="text-[1.15rem] leading-none text-[#111111] cursor-pointer">+</button>
@@ -124,7 +106,7 @@
 
                                                 <button type="button"
                                                         data-cart-remove-btn
-                                                        class="inline-flex items-center justify-center whitespace-nowrap text-[0.92rem] font-medium transition-all cursor-pointer h-[44px] rounded-[15px] px-3.5 border border-[#e6e0d7] bg-white text-[#111111] shadow-[0_2px_6px_rgba(15,23,42,0.04)] hover:bg-[#fcfbf9]">
+                                                        class="inline-flex items-center justify-center whitespace-nowrap text-[0.92rem] font-medium transition-all cursor-pointer h-11 rounded-[15px] px-3.5 border border-[#e6e0d7] bg-white text-[#111111] shadow-[0_2px_6px_rgba(15,23,42,0.04)] hover:bg-[#fcfbf9]">
                                                     Remove
                                                 </button>
                                             </div>
@@ -134,7 +116,7 @@
                             </c:forEach>
                         </div>
 
-                        <section id="cart-empty-state" class="hidden min-h-[18rem] items-center justify-center rounded-[24px] border border-[#e6e0d7] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.05)] p-8 text-center">
+                        <section id="cart-empty-state" class="hidden min-h-72 items-center justify-center rounded-3xl border border-[#e6e0d7] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.05)] p-8 text-center">
                             <div>
                                 <h2 class="text-[1.55rem] font-semibold text-[#111111] mb-3">Your cart is empty</h2>
                                 <p class="text-[#68707d] leading-8 mb-6">Looks like you removed everything. Let’s find something new to read.</p>
@@ -147,7 +129,7 @@
                         </section>
                     </div>
 
-                    <aside class="rounded-[24px] border border-[#e6e0d7] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.05)] px-6 py-6 h-fit">
+                    <aside class="rounded-3xl border border-[#e6e0d7] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.05)] px-6 py-6 h-fit">
                         <h2 class="text-[1.55rem] font-semibold tracking-[-0.03em] text-[#111111]">Order Summary</h2>
                         <div class="mt-6 space-y-4">
                             <div class="flex items-center justify-between gap-6 text-[0.98rem]">
@@ -169,9 +151,30 @@
                             <span class="text-[1.55rem] font-semibold text-[#7b3527]" id="cart-total-value" data-money-value="${cartTotalPrice}">${cartTotalPrice}</span>
                         </div>
 
-                        <button type="button" class="mt-6 inline-flex items-center justify-center whitespace-nowrap text-[0.92rem] font-medium transition-all cursor-not-allowed opacity-60 w-full h-[48px] rounded-[15px] px-4 text-white bg-[#7b3527]">
-                            Checkout Soon
-                        </button>
+                        <div class="mt-6">
+                            <button id="checkout-btn" data-is-guest="${empty sessionScope.user}" type="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-[0.92rem] font-medium transition-all w-full h-12 rounded-2xl px-4 text-primary-foreground bg-primary hover:bg-primary/95 active:bg-primary/90 cursor-pointer">
+                                <c:choose>
+                                    <c:when test="${empty sessionScope.user}">
+                                        <!-- Lock Icon -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect width="18" height="11" x="3" y="11" rx="2"></rect>
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                        </svg>
+                                        <span>Login to Checkout</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        Checkout
+                                    </c:otherwise>
+                                </c:choose>
+                            </button>
+
+                            <!-- Helper Text -->
+                            <c:if test="${empty sessionScope.user}">
+                                <p class="mt-3 text-sm text-[#68707d] text-center">
+                                    Sign in to complete your purchase and sync your cart.
+                                </p>
+                            </c:if>
+                        </div>
 
                         <div class="mt-6 space-y-4">
                             <div class="flex items-start gap-3">
