@@ -20,10 +20,10 @@
           class="max-w-7xl mx-auto px-4 py-8 md:py-10 space-y-12">
         <section class="grid grid-cols-1 xl:grid-cols-[minmax(0,40rem)_minmax(0,1fr)] gap-8 xl:gap-12 items-start">
             <div class="flex justify-center xl:justify-start">
-                <div class="w-full max-w-[440px] aspect-square rounded-[26px] border border-[#e6e0d7] bg-[#eef2ec] shadow-[0_2px_10px_rgba(15,23,42,0.06)] overflow-hidden flex items-center justify-center">
+                <div class="w-full max-w-110 aspect-square rounded-lg border border-[#e6e0d7] bg-[#eef2ec] shadow-[0_2px_10px_rgba(15,23,42,0.06)] overflow-hidden flex items-center justify-center">
                     <c:choose>
-                        <c:when test="${not empty book.imageUrl}">
-                            <img src="${book.imageUrl}" alt="${book.title}" class="w-full h-full object-contain p-6"/>
+                        <c:when test="${false}">
+                            <img src="https://blog-cdn.reedsy.com/directories/gallery/396/large_a134a0dc3dc2b5ea5505360015725a0f.jpg" alt="${book.title}" class="w-full h-full object-contain p-6"/>
                         </c:when>
                         <c:otherwise>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b39d95" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-32 h-32" aria-hidden="true">
@@ -35,20 +35,20 @@
                 </div>
             </div>
 
-            <div class="max-w-[700px] justify-self-start xl:pt-2 space-y-6">
+            <div class="max-w-175 justify-self-start xl:pt-2 space-y-6">
                 <div class="space-y-2.5">
                     <c:if test="${not empty book.category}">
-                        <p class="text-[14px] font-semibold text-[#7b3527]">${book.category.name}</p>
+                        <p class="text-sm font-semibold text-primary">${book.category.name}</p>
                     </c:if>
-                    <h1 class="text-[2.15rem] md:text-[3.1rem] leading-[1.04] font-semibold tracking-[-0.04em] text-[#111111]">${book.title}</h1>
-                    <p class="text-[1.12rem] md:text-[1.42rem] leading-tight text-[#5e6570]">
+                    <h1 class="text-4xl md:text-6xl leading-[1.04] font-semibold tracking-[-0.04em] text-[#111111]">${book.title}</h1>
+                    <p class="text-[1.12rem] md:text-[1.42rem] leading-tight text-muted-foreground">
                         by
                         <c:forEach items="${book.bookAuthors}" var="bookAuthor" varStatus="status">
-                            <span>${bookAuthor.author.name}</span><c:if test="${not status.last}">, </c:if>
+                            <a href="${pageContext.request.contextPath}/authors/${bookAuthor.author.id}" class="hover:underline hover:text-primary font-semibold transition-colors duration-150 ease-in-out">${bookAuthor.author.name}</a><c:if test="${not status.last}">, </c:if>
                         </c:forEach>
                     </p>
                     <div class="flex flex-wrap items-center gap-3 pt-2">
-                        <div id="book-average-rating-stars" class="flex items-center gap-1 text-[#d67724]">
+                        <div id="book-average-rating-stars" class="flex items-center gap-1 text-accent">
                             <c:forEach begin="1" end="${bookAverageRating}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6" aria-hidden="true">
                                     <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
@@ -68,17 +68,17 @@
                     <p class="text-[2.3rem] md:text-[2.85rem] leading-none font-semibold tracking-[-0.04em] text-[#7b3527]">${book.price} EGP</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-[10rem_minmax(0,1fr)] gap-3">
-                        <div class="h-[48px] rounded-[14px] border border-[#e6e0d7] bg-white shadow-[0_2px_6px_rgba(15,23,42,0.04)] flex items-center justify-between px-4">
-                            <button id="quantity-decrease-btn" type="button" class="text-[1.15rem] leading-none text-[#111111] cursor-pointer">-</button>
-                            <span id="book-quantity-value" class="text-[1.08rem] font-medium text-[#111111]">1</span>
-                            <button id="quantity-increase-btn" type="button" class="text-[1.15rem] leading-none text-[#111111] cursor-pointer">+</button>
+                        <div class="flex items-center justify-between h-12 px-2 rounded-lg border border-border bg-background shadow-sm">
+                            <button id="quantity-decrease-btn" type="button" class="flex items-center justify-center w-10 h-10 rounded-md text-lg font-semibold text-muted-foreground hover:bg-accent hover:text-accent-foreground active:scale-90 active:bg-primary/20 focus:outline-none focus:ring-2 focus:ring-ring/50 transition-all duration-150 cursor-pointer">-</button>
+                            <span id="book-quantity-value" class="text-lg font-semibold text-foreground select-none">1</span>
+                            <button id="quantity-increase-btn" type="button" class="flex items-center justify-center w-10 h-10 rounded-md text-lg font-semibold text-muted-foreground hover:bg-accent hover:text-accent-foreground active:scale-90 active:bg-primary/20 focus:outline-none focus:ring-2 focus:ring-ring/50 transition-all duration-150 cursor-pointer">+</button>
                         </div>
 
                         <button id="book-info-add-to-cart"
                                 type="button"
                                 data-book-id="${book.id}"
                                 data-out-of-stock="${book.stockQuantity le 0}"
-                                class="inline-flex items-center justify-center whitespace-nowrap text-[0.88rem] md:text-[0.94rem] font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed h-[48px] rounded-[14px] gap-2.5 px-4 text-white bg-[#7b3527] hover:bg-[#6e2f23]"
+                                class="inline-flex items-center justify-center whitespace-nowrap text-[0.88rem] md:text-[0.94rem] font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed h-12 rounded-xl gap-2.5 px-4 text-primary-foreground bg-primary hover:bg-primary/95 active:bg-primary/90"
                                 <c:if test="${book.stockQuantity le 0}">disabled="disabled"</c:if>>
                             <span data-add-to-cart-icon class="flex items-center gap-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5" aria-hidden="true">
@@ -99,8 +99,8 @@
                                 type="button"
                                 data-book-id="${book.id}"
                                 data-in-wishlist="${isInWishlist}"
-                                class="inline-flex items-center justify-center whitespace-nowrap text-[0.86rem] font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed h-[42px] rounded-[14px] gap-2 px-3.5 border border-[#e6e0d7] bg-white text-[#111111] shadow-[0_2px_6px_rgba(15,23,42,0.04)] hover:bg-[#fcfbf9]">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="${isInWishlist ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart w-5 h-5 ${isInWishlist ? 'text-[#7b3527]' : 'text-[#111111]'}" aria-hidden="true">
+                                        class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed h-10.5 rounded-xl gap-2 px-3.5 border border-muted-foreground/30 bg-white text-foreground shadow-[0_2px_6px_rgba(15,23,42,0.04)] hover:bg-background">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="${isInWishlist ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart w-5 h-5 ${isInWishlist ? 'text-primary' : 'text-foreground'}" aria-hidden="true">
                                 <path d="m12 21-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18z"></path>
                             </svg>
                             <span>Save</span>
@@ -168,7 +168,7 @@
             </div>
         </section>
 
-        <section class="rounded-[24px] border border-[#e6e0d7] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.05)] px-7 md:px-8 py-8 md:py-9">
+        <section class="rounded-3xl border border-[#e6e0d7] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.05)] px-7 md:px-8 py-8 md:py-9">
             <h2 class="text-[1.75rem] md:text-[1.95rem] leading-tight font-semibold tracking-[-0.03em] text-[#111111]">About This Book</h2>
             <p class="mt-7 text-[1.05rem] leading-8 text-[#68707d]">${book.description}</p>
         </section>
@@ -191,11 +191,13 @@
             </c:choose>
         </section>
 
-        <section class="grid grid-cols-1 xl:grid-cols-[1.45fr_1fr] gap-6">
-            <div class="rounded-[24px] border border-[#e6e0d7] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.05)] px-6 py-6">
+        <section class="grid grid-cols-1 xl:grid-cols-[1.45fr_1fr] gap-6 items-start">
+
+            <!-- Reviews (LEFT) -->
+            <div class="rounded-3xl border border-border bg-card shadow-sm px-6 py-6">
                 <div class="flex items-center justify-between gap-4 mb-5">
-                    <h2 class="text-[1.55rem] font-semibold tracking-[-0.03em] text-[#111111]">Reviews</h2>
-                    <span id="book-reviews-total" class="text-[1rem] text-[#68707d]">${bookReviewCount} reviews</span>
+                    <h2 class="text-xl font-semibold tracking-tight text-foreground">Reviews</h2>
+                    <span class="text-sm text-muted-foreground">${bookReviewCount} reviews</span>
                 </div>
 
                 <div id="reviews-list" class="space-y-4">
@@ -242,7 +244,8 @@
                 </c:if>
             </div>
 
-            <aside class="rounded-[24px] border border-[#e6e0d7] bg-white shadow-[0_2px_10px_rgba(15,23,42,0.05)] px-6 py-6">
+            <aside class="rounded-3xl border border-border bg-card shadow-sm px-6 py-6">
+
                 <h2 class="text-[1.55rem] font-semibold tracking-[-0.03em] text-[#111111] mb-4">Write a Review</h2>
                 <div id="review-action-content">
                     <c:choose>
@@ -259,14 +262,17 @@
                             <form id="book-review-form" class="space-y-4">
                                 <input type="hidden" name="bookId" value="${book.id}">
                                 <div>
-                                    <label for="review-rating" class="block text-sm font-medium text-[#111111] mb-2">Rating</label>
-                                    <select id="review-rating" name="rating" class="w-full rounded-[15px] border border-[#e6e0d7] bg-[#fcfbf9] px-4 py-2.5 text-[#111111] outline-none focus:border-[#7b3527] focus:ring-4 focus:ring-[#7b3527]/10">
-                                        <option value="5">5 stars</option>
-                                        <option value="4">4 stars</option>
-                                        <option value="3">3 stars</option>
-                                        <option value="2">2 stars</option>
-                                        <option value="1">1 star</option>
-                                    </select>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Rating</label>
+
+                                    <!-- Stars -->
+                                    <div id="rating-stars" class="flex items-center gap-1 cursor-pointer select-none">
+                                        <c:forEach begin="1" end="5" var="i">
+                                            <svg data-value="${i}" class="w-7 h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
+                                        </c:forEach>
+                                    </div>
+
+                                    <!-- Hidden input for form -->
+                                    <input type="hidden" id="review-rating" name="rating" value="0">
                                 </div>
                                 <div>
                                     <label for="review-comment" class="block text-sm font-medium text-[#111111] mb-2">Comment</label>

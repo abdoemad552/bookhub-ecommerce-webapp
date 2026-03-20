@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charSet="utf-8"/>
@@ -17,17 +16,7 @@
 
     <main class="flex-1 flex items-center justify-center px-4 py-16">
         <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border shadow-sm p-8 text-center w-full max-w-md">
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 width="24"
-                 height="24"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2"
-                 stroke-linecap="round"
-                 stroke-linejoin="round"
-                 class="w-12 h-12 text-muted-foreground mx-auto mb-4"
-                 aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 text-muted-foreground mx-auto mb-4" aria-hidden="true">
                 <path d="M12 7v14"></path>
                 <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
             </svg>
@@ -50,10 +39,7 @@
 
     <jsp:include page="../common/footer.jsp"/>
 </div>
-<script type="module">
-    import {initHeader} from "${pageContext.request.contextPath}/assets/js/common/header.js";
-
-    initHeader();
-</script>
+<script src="${pageContext.request.contextPath}/assets/js/jquery/jquery.js"></script>
+<script type="module" src="${pageContext.request.contextPath}/assets/js/error/book-not-found.js"></script>
 </body>
 </html>

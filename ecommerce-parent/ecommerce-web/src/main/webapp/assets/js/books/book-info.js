@@ -71,16 +71,21 @@ function renderReviewCard(review) {
 function renderReviewForm(bookId) {
     return `
         <form id="book-review-form" class="space-y-4">
-            <input type="hidden" name="bookId" value="${escapeHtml(bookId)}">
+            <input type="hidden" name="bookId" value="${bookId}">
             <div>
-                <label for="review-rating" class="block text-sm font-medium text-[#111111] mb-2">Rating</label>
-                <select id="review-rating" name="rating" class="w-full rounded-[16px] border border-[#e6e0d7] bg-[#fcfbf9] px-4 py-3 text-[#111111] outline-none focus:border-[#7b3527] focus:ring-4 focus:ring-[#7b3527]/10">
-                    <option value="5">5 stars</option>
-                    <option value="4">4 stars</option>
-                    <option value="3">3 stars</option>
-                    <option value="2">2 stars</option>
-                    <option value="1">1 star</option>
-                </select>
+                <label class="block text-sm font-medium text-foreground mb-2">Rating</label>
+
+                <!-- Stars -->
+                <div id="rating-stars" class="flex items-center gap-1 cursor-pointer select-none">
+                    <svg data-value="1" class="w-7 h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
+                    <svg data-value="2" class="w-7 h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
+                    <svg data-value="3" class="w-7 h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
+                    <svg data-value="4" class="w-7 h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
+                    <svg data-value="5" class="w-7 h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
+                </div>
+
+                <!-- Hidden input for form -->
+                <input type="hidden" id="review-rating" name="rating" value="0">
             </div>
             <div>
                 <label for="review-comment" class="block text-sm font-medium text-[#111111] mb-2">Comment</label>
@@ -206,9 +211,50 @@ async function handleWishlistToggle(button, bookId) {
     }
 }
 
+function initStars() {
+    const stars = document.querySelectorAll('#rating-stars svg');
+    const input = document.getElementById('review-rating');
+
+    let currentRating = 0;
+
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            const value = parseInt(star.dataset.value);
+            currentRating = value;
+            input.value = value;
+
+            updateStars(value);
+        });
+
+        // Optional: hover preview
+        star.addEventListener('mouseenter', () => {
+            updateStars(parseInt(star.dataset.value));
+        });
+
+        star.addEventListener('mouseleave', () => {
+            updateStars(currentRating);
+        });
+    });
+
+    function updateStars(rating) {
+        stars.forEach(star => {
+            const value = parseInt(star.dataset.value);
+
+            if (value <= rating) {
+                star.classList.remove('text-muted-foreground');
+                star.classList.add('text-accent');
+            } else {
+                star.classList.remove('text-accent');
+                star.classList.add('text-muted-foreground');
+            }
+        });
+    }
+}
+
 function bindReviewControls(bookId) {
     const reviewForm = document.getElementById("book-review-form");
     if (reviewForm) {
+        initStars();
         reviewForm.addEventListener("submit", (event) => {
             event.preventDefault();
             handleReviewSubmit(reviewForm, bookId);
