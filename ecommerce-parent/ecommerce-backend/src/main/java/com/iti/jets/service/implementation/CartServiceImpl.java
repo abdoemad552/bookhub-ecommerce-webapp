@@ -1,6 +1,9 @@
 package com.iti.jets.service.implementation;
 
+import com.iti.jets.model.entity.Book;
 import com.iti.jets.model.entity.Cart;
+import com.iti.jets.model.entity.CartItem;
+import com.iti.jets.repository.interfaces.BookRepository;
 import com.iti.jets.repository.interfaces.CartRepository;
 import com.iti.jets.service.generic.ContextHandler;
 import com.iti.jets.service.interfaces.CartService;
@@ -10,9 +13,14 @@ import java.util.List;
 public class CartServiceImpl extends ContextHandler implements CartService {
 
     private final CartRepository cartRepository;
+    private final BookRepository bookRepository;
 
-    public CartServiceImpl(CartRepository cartRepository) {
+    public CartServiceImpl(
+        CartRepository cartRepository,
+        BookRepository bookRepository
+    ) {
         this.cartRepository = cartRepository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -32,6 +40,17 @@ public class CartServiceImpl extends ContextHandler implements CartService {
     @Override
     public int getItemsCount(Integer userId) {
         return executeInContext(() -> cartRepository.getItemsCount(userId));
+    }
+
+    @Override
+    public CartItem createTransientCartItem(Integer bookId, Integer amount) {
+        return executeInContext(() -> {
+            CartItem cartItem = new CartItem();
+            Book book = bookRepository.findById(Long.valueOf(bookId)).orElse(null);
+            cartItem.setBook(book);
+            cartItem.setQuantity(amount);
+            return cartItem;
+        });
     }
 
     @Override

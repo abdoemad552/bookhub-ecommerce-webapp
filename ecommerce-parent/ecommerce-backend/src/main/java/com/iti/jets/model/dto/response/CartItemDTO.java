@@ -7,7 +7,7 @@ public class CartItemDTO {
     private int quantity;
     private String bookTitle;
     private String bookCoverUrl;
-    private List<AuthorDTO> authors;
+    private List<AuthorDTO> bookAuthors;
     private double price;
     private int amount;
 }

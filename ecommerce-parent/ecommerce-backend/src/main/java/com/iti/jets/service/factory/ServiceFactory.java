@@ -65,7 +65,7 @@ public class ServiceFactory {
         this.bookService = new BookServiceImpl(bookRepository);
         this.reviewService = new ReviewServiceImpl(reviewRepository, userRepository, bookRepository);
         this.wishlistService = new WishlistServiceImpl(wishlistRepository, userRepository, bookRepository);
-        this.cartService = new CartServiceImpl(cartRepository);
+        this.cartService = new CartServiceImpl(cartRepository, bookRepository);
 
         // Extra Services
         this.emailService = new EmailService();
