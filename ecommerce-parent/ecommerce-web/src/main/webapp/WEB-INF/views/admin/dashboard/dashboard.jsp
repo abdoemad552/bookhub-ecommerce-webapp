@@ -1,304 +1,107 @@
+<%@ taglib prefix="c" uri="jakarta.tags.functions" %>
+
 <html lang="en">
 <head>
     <meta charSet="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes"/>
-    <meta name="description" content="BookHub admin dashboard for users, books, and platform statistics."/>
+    <title>BookHub - Your Gateway to Endless Stories</title>
+    <meta name="description" content="Discover thousands of books across every genre. Shop for bestsellers, classics, and hidden gems with BookHub."/>
     <meta name="generator" content="BookHub"/>
-    <meta name="keywords" content="bookhub,admin,users,books,statistics"/>
-    <title>BookHub - Admin Dashboard</title>
+    <meta name="keywords" content="books,bookstore,ebook,bestsellers,fiction,non-fiction"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
+    <script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body class="font-google-sans antialiased">
-<div class="min-h-screen bg-background">
-    <jsp:include page="../../common/header.jsp" />
-    <main class="max-w-7xl mx-auto px-4 py-12">
-        <h1 class="text-4xl font-bold text-foreground mb-12">Admin Dashboard</h1>
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <div class="lg:col-span-1">
-                <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border shadow-sm p-6">
-                    <div class="flex items-center gap-4 mb-2 pb-6 border-b border-border">
-                        <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-primary" aria-hidden="true">
-                                <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Z"></path>
-                                <path d="M19 21a7 7 0 0 0-14 0"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-foreground">Admin Panel</p>
-                            <p class="text-sm text-muted-foreground">bookhub-admin@bookhub.com</p>
-                        </div>
-                    </div>
-                    <nav class="space-y-2">
-                        <button type="button" data-tab="users-panel" class="admin-tab w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors bg-primary text-background">View All Users</button>
-                        <button type="button" data-tab="books-panel" class="admin-tab w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-accent text-foreground">All Books</button>
-                        <button type="button" data-tab="add-book-panel" class="admin-tab w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-accent text-foreground">Add Book</button>
-                        <button type="button" data-tab="stats-panel" class="admin-tab w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-accent text-foreground">Statistics</button>
-                    </nav>
+<div class="min-h-screen bg-background overflow-y-scroll">
+    <div class="bg-card border-b border-border sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2 min-w-0">
+                <div class="w-9 h-9 shrink-0 rounded-lg bg-linear-to-br from-primary to-primary/70 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-column w-4 h-4 text-primary-foreground" aria-hidden="true">
+                        <path d="M3 3v16a2 2 0 0 0 2 2h16"></path>
+                        <path d="M18 17V9"></path>
+                        <path d="M13 17V5"></path>
+                        <path d="M8 17v-3"></path>
+                    </svg>
+                </div>
+                <div class="min-w-0">
+                    <span class="text-base font-bold text-foreground block leading-tight">Admin Dashboard</span>
+                    <p class="text-xs text-muted-foreground hidden sm:block">BookHub Management</p>
                 </div>
             </div>
-
-            <div class="lg:col-span-3">
-                <div id="users-panel" class="admin-panel bg-card text-card-foreground rounded-xl border shadow-sm p-8">
-                    <h2 class="text-2xl font-bold text-foreground mb-6">All Users</h2>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full border border-border rounded-lg overflow-hidden">
-                            <thead class="bg-accent/40">
-                            <tr>
-                                <th class="text-left px-4 py-3 text-sm font-semibold text-foreground">Name</th>
-                                <th class="text-left px-4 py-3 text-sm font-semibold text-foreground">Email</th>
-                                <th class="text-left px-4 py-3 text-sm font-semibold text-foreground">Phone</th>
-                                <th class="text-left px-4 py-3 text-sm font-semibold text-foreground">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr class="border-t border-border">
-                                <td class="px-4 py-3 text-sm">Sarah Johnson</td>
-                                <td class="px-4 py-3 text-sm">sarah.j@example.com</td>
-                                <td class="px-4 py-3 text-sm">+1 (312) 111-9012</td>
-                                <td class="px-4 py-3 text-sm">
-                                    <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border bg-background hover:bg-accent h-8 px-3">Order History</button>
-                                </td>
-                            </tr>
-                            <tr class="border-t border-border">
-                                <td class="px-4 py-3 text-sm">Omar Khaled</td>
-                                <td class="px-4 py-3 text-sm">omar.k@example.com</td>
-                                <td class="px-4 py-3 text-sm">+1 (646) 555-1324</td>
-                                <td class="px-4 py-3 text-sm">
-                                    <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border bg-background hover:bg-accent h-8 px-3">Order History</button>
-                                </td>
-                            </tr>
-                            <tr class="border-t border-border">
-                                <td class="px-4 py-3 text-sm">Lena Morgan</td>
-                                <td class="px-4 py-3 text-sm">lena.m@example.com</td>
-                                <td class="px-4 py-3 text-sm">+1 (415) 908-2244</td>
-                                <td class="px-4 py-3 text-sm">
-                                    <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border bg-background hover:bg-accent h-8 px-3">Order History</button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div id="books-panel" class="admin-panel hidden bg-card text-card-foreground rounded-xl border shadow-sm p-8">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl font-bold text-foreground">All Books</h2>
-                        <button id="open-add-book" type="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium text-primary-foreground h-9 px-4 py-2 bg-primary hover:bg-primary/90">Add Book</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full border border-border rounded-lg overflow-hidden">
-                            <thead class="bg-accent/40">
-                            <tr>
-                                <th class="text-left px-4 py-3 text-sm font-semibold text-foreground">Cover</th>
-                                <th class="text-left px-4 py-3 text-sm font-semibold text-foreground">Title</th>
-                                <th class="text-left px-4 py-3 text-sm font-semibold text-foreground">Author</th>
-                                <th class="text-left px-4 py-3 text-sm font-semibold text-foreground">Category</th>
-                                <th class="text-left px-4 py-3 text-sm font-semibold text-foreground">Price</th>
-                                <th class="text-left px-4 py-3 text-sm font-semibold text-foreground">Stock</th>
-                                <th class="text-left px-4 py-3 text-sm font-semibold text-foreground">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody id="books-table-body">
-                            <tr class="border-t border-border">
-                                <td class="px-4 py-3 text-sm">
-                                    <img src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=160&q=80" alt="Atomic Habits cover" class="w-12 h-16 object-cover rounded border border-border"/>
-                                </td>
-                                <td class="px-4 py-3 text-sm">Atomic Habits</td>
-                                <td class="px-4 py-3 text-sm">James Clear</td>
-                                <td class="px-4 py-3 text-sm">Self-Help</td>
-                                <td class="px-4 py-3 text-sm">18.00 EGP</td>
-                                <td class="px-4 py-3 text-sm">52</td>
-                                <td class="px-4 py-3 text-sm space-x-2">
-                                    <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border bg-background hover:bg-accent h-8 px-3">Edit</button>
-                                    <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-red-200 text-red-600 bg-background hover:bg-red-50 h-8 px-3">Delete</button>
-                                </td>
-                            </tr>
-                            <tr class="border-t border-border">
-                                <td class="px-4 py-3 text-sm">
-                                    <img src="https://images.unsplash.com/photo-1526243741027-444d633d7365?auto=format&fit=crop&w=160&q=80" alt="The Pragmatic Programmer cover" class="w-12 h-16 object-cover rounded border border-border"/>
-                                </td>
-                                <td class="px-4 py-3 text-sm">The Pragmatic Programmer</td>
-                                <td class="px-4 py-3 text-sm">Andrew Hunt</td>
-                                <td class="px-4 py-3 text-sm">Technology</td>
-                                <td class="px-4 py-3 text-sm">31.50 EGP</td>
-                                <td class="px-4 py-3 text-sm">28</td>
-                                <td class="px-4 py-3 text-sm space-x-2">
-                                    <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border bg-background hover:bg-accent h-8 px-3">Edit</button>
-                                    <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-red-200 text-red-600 bg-background hover:bg-red-50 h-8 px-3">Delete</button>
-                                </td>
-                            </tr>
-                            <tr class="border-t border-border">
-                                <td class="px-4 py-3 text-sm">
-                                    <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&fit=crop&w=160&q=80" alt="Dune cover" class="w-12 h-16 object-cover rounded border border-border"/>
-                                </td>
-                                <td class="px-4 py-3 text-sm">Dune</td>
-                                <td class="px-4 py-3 text-sm">Frank Herbert</td>
-                                <td class="px-4 py-3 text-sm">Fiction</td>
-                                <td class="px-4 py-3 text-sm">21.00 EGP</td>
-                                <td class="px-4 py-3 text-sm">13</td>
-                                <td class="px-4 py-3 text-sm space-x-2">
-                                    <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border bg-background hover:bg-accent h-8 px-3">Edit</button>
-                                    <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-red-200 text-red-600 bg-background hover:bg-red-50 h-8 px-3">Delete</button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div id="add-book-panel" class="admin-panel hidden bg-card text-card-foreground rounded-xl border shadow-sm p-8">
-                    <h2 class="text-2xl font-bold text-foreground mb-6">Add a New Book</h2>
-                    <form id="add-book-form" action="#" method="post" class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-semibold text-foreground mb-2">Title</label>
-                            <input type="text" name="title" class="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Book title"/>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-foreground mb-2">Author</label>
-                            <input type="text" name="author" class="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Author name"/>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-foreground mb-2">Tags</label>
-                            <input type="text" name="tags" class="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. bestseller, award-winning, classic"/>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-foreground mb-2">Category</label>
-                            <input type="text" name="category" class="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Category"/>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-foreground mb-2">Description</label>
-                            <textarea name="description" rows="4" class="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Book description"></textarea>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-semibold text-foreground mb-2">Price</label>
-                                <input type="number" step="0.01" min="0" name="price" class="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" placeholder="0.00"/>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-foreground mb-2">Stock</label>
-                                <input type="number" min="0" name="stock" class="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" placeholder="0"/>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-foreground mb-2">Cover Image</label>
-                            <input id="cover-image-input" type="file" name="coverImage" accept="image/*" class="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"/>
-                        </div>
-                        <button type="submit" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium text-primary-foreground h-9 px-4 py-2 bg-primary hover:bg-primary/90">Save Book</button>
-                    </form>
-                </div>
-
-                <div id="stats-panel" class="admin-panel hidden bg-card text-card-foreground rounded-xl border shadow-sm p-8">
-                    <h2 class="text-2xl font-bold text-foreground mb-6">Statistics</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div class="border border-border rounded-lg p-5">
-                            <p class="text-sm text-muted-foreground mb-1">Total Users</p>
-                            <p class="text-3xl font-bold text-foreground">1,284</p>
-                            <p class="text-sm text-green-600 mt-1">+5.1% this month</p>
-                        </div>
-                        <div class="border border-border rounded-lg p-5">
-                            <p class="text-sm text-muted-foreground mb-1">Total Books</p>
-                            <p class="text-3xl font-bold text-foreground">4,912</p>
-                            <p class="text-sm text-green-600 mt-1">+87 this week</p>
-                        </div>
-                        <div class="border border-border rounded-lg p-5">
-                            <p class="text-sm text-muted-foreground mb-1">Orders This Month</p>
-                            <p class="text-3xl font-bold text-foreground">2,436</p>
-                            <p class="text-sm text-foreground mt-1">Average: 81 orders/day</p>
-                        </div>
-                        <div class="border border-border rounded-lg p-5">
-                            <p class="text-sm text-muted-foreground mb-1">Monthly Revenue</p>
-                            <p class="text-3xl font-bold text-foreground">42,750 EGP</p>
-                            <p class="text-sm text-green-600 mt-1">+8.4% vs last month</p>
-                        </div>
-                    </div>
-                    <div class="border border-border rounded-lg p-5">
-                        <h3 class="font-semibold text-foreground mb-3">Top Categories</h3>
-                        <ul class="space-y-2 text-sm">
-                            <li class="flex justify-between"><span>Fiction</span><span class="font-semibold">34%</span></li>
-                            <li class="flex justify-between"><span>Technology</span><span class="font-semibold">22%</span></li>
-                            <li class="flex justify-between"><span>Self-Help</span><span class="font-semibold">18%</span></li>
-                            <li class="flex justify-between"><span>Business</span><span class="font-semibold">14%</span></li>
-                        </ul>
-                    </div>
-                </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <a href="${pageContext.request.contextPath}/">
+                    <button data-slot="button" class="items-center justify-center whitespace-nowrap text-sm font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground active:bg-accent/80 active:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 dark:active:bg-input/40 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 hidden sm:flex">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open w-4 h-4 mr-2" aria-hidden="true">
+                            <path d="M12 7v14"></path>
+                            <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
+                        </svg>
+                        View Store
+                    </button>
+                    <button data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground active:bg-accent/80 active:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 dark:active:bg-input/40 rounded-md gap-1.5 has-[&gt;svg]:px-2.5 sm:hidden h-9 w-9 p-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open w-4 h-4" aria-hidden="true">
+                            <path d="M12 7v14"></path>
+                            <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
+                        </svg>
+                    </button>
+                </a>
+                <button data-slot="button" class="items-center justify-center whitespace-nowrap text-sm font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground active:bg-accent/80 active:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 dark:active:bg-input/40 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 hidden sm:flex">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out w-4 h-4 mr-2" aria-hidden="true">
+                        <path d="m16 17 5-5-5-5"></path>
+                        <path d="M21 12H9"></path>
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    </svg>
+                    Sign Out
+                </button>
+                <button data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground active:bg-accent/80 active:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 dark:active:bg-input/40 rounded-md gap-1.5 has-[&gt;svg]:px-2.5 sm:hidden h-9 w-9 p-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out w-4 h-4" aria-hidden="true">
+                        <path d="m16 17 5-5-5-5"></path>
+                        <path d="M21 12H9"></path>
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    </svg>
+                </button>
             </div>
         </div>
-    </main>
-    <jsp:include page="../../common/footer.jsp" />
+        <div id="page-controls" class="max-w-7xl mx-auto px-4">
+            <div class="flex">
+                <button id="overview-ctrl-btn" class="flex flex-1 sm:flex-none items-center justify-center sm:justify-start gap-2 px-3 sm:px-4 py-3 text-sm font-medium transition-colors relative hover:bg-primary/15 rounded-t-2xl text-primary cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-column w-4 h-4 shrink-0" aria-hidden="true">
+                        <path d="M3 3v16a2 2 0 0 0 2 2h16"></path>
+                        <path d="M18 17V9"></path>
+                        <path d="M13 17V5"></path>
+                        <path d="M8 17v-3"></path>
+                    </svg>
+                    <span class="hidden sm:inline">Overview</span>
+                    <span class="active-border absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></span>
+                </button>
+                <button id="products-ctrl-btn" class="flex flex-1 sm:flex-none items-center justify-center sm:justify-start gap-2 px-3 sm:px-4 py-3 text-sm font-medium transition-colors relative hover:bg-primary/10 rounded-t-2xl text-muted-foreground hover:text-primary cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open w-4 h-4 shrink-0" aria-hidden="true">
+                        <path d="M12 7v14"></path>
+                        <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
+                    </svg>
+                    <span class="hidden sm:inline">Products</span>
+                </button>
+                <button id="user-management-ctrl-btn" class="flex flex-1 sm:flex-none items-center justify-center sm:justify-start gap-2 px-3 sm:px-4 py-3 text-sm font-medium transition-colors relative hover:bg-primary/10 rounded-t-2xl text-muted-foreground hover:text-primary cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users w-4 h-4 shrink-0" aria-hidden="true">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <path d="M16 3.128a4 4 0 0 1 0 7.744"></path>
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                    </svg>
+                    <span class="hidden sm:inline">User Management</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="main-content" class="max-w-7xl mx-auto px-4 py-6">
+
+    </div>
 </div>
-<script>
-    const adminTabs = document.querySelectorAll(".admin-tab");
-    const adminPanels = document.querySelectorAll(".admin-panel");
-    const openAddBookButton = document.getElementById("open-add-book");
-    const addBookForm = document.getElementById("add-book-form");
-    const booksTableBody = document.getElementById("books-table-body");
-
-    function showAdminPanel(tabId) {
-        adminPanels.forEach((panel) => {
-            panel.classList.toggle("hidden", panel.id !== tabId);
-        });
-        adminTabs.forEach((btn) => {
-            const isActive = btn.dataset.tab === tabId;
-            btn.classList.toggle("bg-primary", isActive);
-            btn.classList.toggle("text-background", isActive);
-            btn.classList.toggle("hover:bg-accent", !isActive);
-            btn.classList.toggle("text-foreground", !isActive);
-        });
-    }
-
-    adminTabs.forEach((tab) => {
-        tab.addEventListener("click", () => showAdminPanel(tab.dataset.tab));
-    });
-
-    if (openAddBookButton) {
-        openAddBookButton.addEventListener("click", () => showAdminPanel("add-book-panel"));
-    }
-
-    if (addBookForm && booksTableBody) {
-        addBookForm.addEventListener("submit", (event) => {
-            event.preventDefault();
-
-            const formData = new FormData(addBookForm);
-            const title = formData.get("title") || "Untitled";
-            const author = formData.get("author") || "Unknown";
-            const category = formData.get("category") || "General";
-            const price = formData.get("price") || "0";
-            const stock = formData.get("stock") || "0";
-            const file = formData.get("coverImage");
-
-            const addRow = (imageSrc) => {
-                const newRow = document.createElement("tr");
-                newRow.className = "border-t border-border";
-                newRow.innerHTML = `
-                    <td class="px-4 py-3 text-sm">
-                        <img src="${imageSrc}" alt="${title} cover" class="w-12 h-16 object-cover rounded border border-border"/>
-                    </td>
-                    <td class="px-4 py-3 text-sm">${title}</td>
-                    <td class="px-4 py-3 text-sm">${author}</td>
-                    <td class="px-4 py-3 text-sm">${category}</td>
-                    <td class="px-4 py-3 text-sm">${price} EGP</td>
-                    <td class="px-4 py-3 text-sm">${stock}</td>
-                    <td class="px-4 py-3 text-sm space-x-2">
-                        <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border bg-background hover:bg-accent h-8 px-3">Edit</button>
-                        <button type="button" class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-red-200 text-red-600 bg-background hover:bg-red-50 h-8 px-3">Delete</button>
-                    </td>
-                `;
-                booksTableBody.prepend(newRow);
-                addBookForm.reset();
-                showAdminPanel("books-panel");
-            };
-
-            if (file && file.size > 0) {
-                const reader = new FileReader();
-                reader.onload = () => addRow(reader.result);
-                reader.readAsDataURL(file);
-            } else {
-                addRow("https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=160&q=80");
-            }
-        });
-    }
-</script>
+<script type="module" src="${pageContext.request.contextPath}/assets/js/admin/dashboard/overview.js"></script>
+<script type="module" src="${pageContext.request.contextPath}/assets/js/admin/dashboard/products.js"></script>
+<script type="module" src="${pageContext.request.contextPath}/assets/js/admin/dashboard/user-management.js"></script>
+<script type="module" src="${pageContext.request.contextPath}/assets/js/admin/dashboard/dashboard.js"></script>
 </body>
 </html>
