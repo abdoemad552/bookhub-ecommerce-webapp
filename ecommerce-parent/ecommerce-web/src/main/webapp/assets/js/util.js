@@ -1,3 +1,5 @@
+const CONTEXT_PATH = "/ecommerce";
+
 export const $ = id => document.getElementById(id);
 
 export function scrollH(element, direction, amount) {
@@ -12,4 +14,8 @@ export function scrollV(element, direction, amount) {
         top: direction === 'top' ? -amount : amount,
         behavior: 'smooth'
     });
+}
+
+export function getContextPath() {
+    return CONTEXT_PATH;
 }

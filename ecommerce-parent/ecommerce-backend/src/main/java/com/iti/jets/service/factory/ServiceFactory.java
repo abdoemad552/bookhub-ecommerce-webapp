@@ -3,27 +3,10 @@ package com.iti.jets.service.factory;
 import com.iti.jets.mapper.CategoryMapper;
 import com.iti.jets.mapper.UserMapper;
 import com.iti.jets.repository.implementation.*;
-import com.iti.jets.repository.interfaces.BookRepository;
-import com.iti.jets.repository.interfaces.CartRepository;
-import com.iti.jets.repository.interfaces.CategoryRepository;
-import com.iti.jets.repository.interfaces.ReviewRepository;
-import com.iti.jets.repository.interfaces.UserRepository;
-import com.iti.jets.repository.interfaces.WishlistRepository;
+import com.iti.jets.repository.interfaces.*;
 import com.iti.jets.service.extra.EmailService;
-import com.iti.jets.service.implementation.AuthServiceImpl;
-import com.iti.jets.service.implementation.BookServiceImpl;
-import com.iti.jets.service.implementation.CartServiceImpl;
-import com.iti.jets.service.implementation.CategoryServiceImpl;
-import com.iti.jets.service.implementation.ReviewServiceImpl;
-import com.iti.jets.service.implementation.UserServiceImpl;
-import com.iti.jets.service.implementation.WishlistServiceImpl;
-import com.iti.jets.service.interfaces.AuthService;
-import com.iti.jets.service.interfaces.BookService;
-import com.iti.jets.service.interfaces.CartService;
-import com.iti.jets.service.interfaces.CategoryService;
-import com.iti.jets.service.interfaces.ReviewService;
-import com.iti.jets.service.interfaces.UserService;
-import com.iti.jets.service.interfaces.WishlistService;
+import com.iti.jets.service.implementation.*;
+import com.iti.jets.service.interfaces.*;
 
 
 public class ServiceFactory {
@@ -37,6 +20,7 @@ public class ServiceFactory {
     private final ReviewRepository reviewRepository;
     private final WishlistRepository wishlistRepository;
     private final CartRepository cartRepository;
+    private final StatsRepository statsRepository;
 
     // Service
     private final AuthService authService;
@@ -46,6 +30,7 @@ public class ServiceFactory {
     private final ReviewService reviewService;
     private final WishlistService wishlistService;
     private final CartService cartService;
+    private final StatsService statsService;
 
     // Extra Services
     private final EmailService emailService;
@@ -57,6 +42,7 @@ public class ServiceFactory {
         this.reviewRepository = new ReviewRepositoryImpl();
         this.wishlistRepository = new WishlistRepositoryImpl();
         this.cartRepository = new CartRepositoryImpl();
+        this.statsRepository = new StatsRepositoryImpl();
 
         // Service
         this.authService = new AuthServiceImpl(userRepository, categoryRepository, UserMapper.getInstance());
@@ -66,6 +52,7 @@ public class ServiceFactory {
         this.reviewService = new ReviewServiceImpl(reviewRepository, userRepository, bookRepository);
         this.wishlistService = new WishlistServiceImpl(wishlistRepository, userRepository, bookRepository);
         this.cartService = new CartServiceImpl(cartRepository);
+        this.statsService = new StatsServiceImpl(statsRepository);
 
         // Extra Services
         this.emailService = new EmailService();
@@ -108,6 +95,10 @@ public class ServiceFactory {
 
     public CartService getCartService() {
         return cartService;
+    }
+
+    public StatsService getStatsService() {
+        return statsService;
     }
 
     public EmailService getEmailService() {
