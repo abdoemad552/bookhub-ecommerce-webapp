@@ -1,5 +1,13 @@
 package com.iti.jets.model.dto.response;
 
+import lombok.*;
+
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class BookAddResponseDTO {
-    private Integer bookId;
+    private Long bookId;
+    private String imagePath;
 }

@@ -70,16 +70,16 @@ public class AdminBooksServlet extends HttpServlet {
             return;
         }
 
-        BookAddResponseDTO result = bookService.addBook(addRequest);
+        Optional<BookAddResponseDTO> result = bookService.addBook(addRequest);
 
-        if (result == null) {
+        if (result.isEmpty()) {
             writeError(response, HttpServletResponse.SC_CONFLICT,
                 "A book with ISBN '" + addRequest.getIsbn() + "' already exists.");
             return;
         }
 
         // 3. Respond 201 Created
-        writeJson(response, HttpServletResponse.SC_CREATED, result);
+        writeJson(response, HttpServletResponse.SC_CREATED, result.get());
     }
 
     @Override
@@ -92,11 +92,11 @@ public class AdminBooksServlet extends HttpServlet {
 
     // ── Response helpers ──────────────────────────────────────────────────────
 
-    private void writeJson(HttpServletResponse resp, int status, Object body)
+    private void writeJson(HttpServletResponse response, int status, Object body)
         throws IOException {
-        resp.setStatus(status);
-        resp.setContentType("application/json;charset=UTF-8");
-        jsonb.toJson(body, resp.getWriter());
+        response.setStatus(status);
+        response.setContentType("application/json;charset=UTF-8");
+        jsonb.toJson(body, response.getWriter());
     }
 
     private void writeError(HttpServletResponse resp, int status, String message)

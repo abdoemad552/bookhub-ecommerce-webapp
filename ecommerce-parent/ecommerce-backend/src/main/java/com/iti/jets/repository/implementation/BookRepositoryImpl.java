@@ -127,6 +127,16 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
         );
     }
 
+    @Override
+    public Optional<Book> findByIsbn(String isbn) {
+        return executeReadOnly(em -> em
+            .createQuery("SELECT b FROM Book b WHERE b.isbn = :isbn", Book.class)
+            .setParameter("isbn", isbn)
+            .getResultStream()
+            .findFirst()
+        );
+    }
+
     private List<Order> buildOrderBy(CriteriaBuilder criteriaBuilder, Root<Book> bookRoot, BookFilterDTO filter) {
         String sortCriteria = filter == null || filter.getSortCriteria() == null
                 ? "featured"

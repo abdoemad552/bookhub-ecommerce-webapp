@@ -47,6 +47,7 @@ export function validateBookForm($dialog) {
 
     // ── Required fields ───────────────────────────────────────────────────────
 
+    // TODO: We need stronger validations...
     const isbn = $dialog.find('#book-isbn').val().trim();
     if (!isbn) { fieldError($dialog, 'book-isbn', 'ISBN is required.'); ok = false; }
 

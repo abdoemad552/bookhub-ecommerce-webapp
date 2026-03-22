@@ -7,6 +7,7 @@ import com.iti.jets.model.entity.Book;
 import com.iti.jets.service.generic.BaseService;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BookService extends BaseService<Book, Long> {
 
@@ -14,5 +15,5 @@ public interface BookService extends BaseService<Book, Long> {
 
     List<Book> findAllFeatured();
 
-    BookAddResponseDTO addBook(BookAddRequestDTO addRequest);
+    Optional<BookAddResponseDTO> addBook(BookAddRequestDTO addRequest);
 }
