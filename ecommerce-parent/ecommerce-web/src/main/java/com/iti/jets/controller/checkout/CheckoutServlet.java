@@ -78,7 +78,7 @@ public class CheckoutServlet extends HttpServlet {
         }
 
         UserDTO currentUser = (UserDTO) session.getAttribute("user");
-        PlaceOrderRequestDTO placeOrderRequestDTO = buildPlaceOrderRequestDto(currentUser.getId());
+        PlaceOrderRequestDTO placeOrderRequestDTO = buildPlaceOrderRequestDto(currentUser.getId(), req);
         BaseResponse<String> result = orderService.placeOrder(placeOrderRequestDTO);
 
         JsonObjectBuilder jsonObject = Json.createObjectBuilder();
@@ -103,7 +103,7 @@ public class CheckoutServlet extends HttpServlet {
         resp.getWriter().write(jsonObject.build().toString());
     }
 
-    private PlaceOrderRequestDTO buildPlaceOrderRequestDto(Long userId) {
+    private PlaceOrderRequestDTO buildPlaceOrderRequestDto(Long userId, HttpServletRequest req) {
         BaseResponse<CartDTO> result = cartService.loadOrderSummary(userId);
 
         if (result.isFailure()) {
@@ -127,6 +127,12 @@ public class CheckoutServlet extends HttpServlet {
                 .status(OrderStatus.PROCESSING)
                 .totalPrice(cart.getTotalPrice())
                 .items(orderItems)
+                .government(Government.valueOf(req.getParameter("government").toUpperCase()))
+                .addressType(AddressType.valueOf(req.getParameter("addressType").toUpperCase()))
+                .city(req.getParameter("city"))
+                .street(req.getParameter("street"))
+                .buildingNo(req.getParameter("buildingNo"))
+                .description(req.getParameter("description"))
                 .build();
     }
 }

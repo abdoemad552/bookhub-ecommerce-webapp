@@ -210,10 +210,24 @@ $('checkout-form').addEventListener('submit', async function (e) {
     submitBtn.classList.add('is-loading');
 
     try {
+        // Find the full address object from the cached array
+        const radio = document.querySelector('#address-grid input[type="radio"]:checked');
+        const selectedAddr = addressesData.find(a => String(a.id) === radio?.value);
+
+        const params = new URLSearchParams({
+            addressId:   selectedAddr?.id          ?? '',
+            government:  selectedAddr?.government  ?? '',
+            addressType: selectedAddr?.addressType ?? '',
+            city:        selectedAddr?.city        ?? '',
+            street:      selectedAddr?.street      ?? '',
+            buildingNo:  selectedAddr?.buildingNo  ?? '',
+            description: selectedAddr?.description ?? '',
+        });
+
         const response = await fetch(CHECKOUT_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: null,
+            body: params.toString(),
         });
 
         submitBtn.disabled = false;
@@ -228,10 +242,8 @@ $('checkout-form').addEventListener('submit', async function (e) {
         if (!data.success) {
             showAlert(data.message);
         } else {
-            // Reset the cart badge count
             initHeader();
-            const orderId = data.orderId;
-            window.location.href = `${ORDER_CONFIRMATION}?orderId=${orderId}`;
+            window.location.href = `${ORDER_CONFIRMATION}?orderId=${data.orderId}`;
         }
     } catch (err) {
         submitBtn.disabled = false;

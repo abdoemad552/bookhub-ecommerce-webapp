@@ -5,10 +5,7 @@ import com.iti.jets.model.dto.response.OrderDTO;
 import com.iti.jets.model.dto.response.OrderItemDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.model.dto.response.factory.ResponseFactory;
-import com.iti.jets.model.entity.Book;
-import com.iti.jets.model.entity.Order;
-import com.iti.jets.model.entity.OrderItem;
-import com.iti.jets.model.entity.User;
+import com.iti.jets.model.entity.*;
 import com.iti.jets.model.enums.OrderStatus;
 import com.iti.jets.repository.interfaces.BookRepository;
 import com.iti.jets.repository.interfaces.CartRepository;
@@ -65,7 +62,6 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
 
             // Delete the current active cart for this user
             cartRepository.deleteByUserId(userOpt.get().getId());
-
 
             // Form the order code from ID
             String orderCode = "ORD-" + orderEntity.getCreatedAt().getYear() + "-" + orderEntity.getId();
@@ -200,11 +196,24 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
     }
 
     private Order buildOrderEntity(PlaceOrderRequestDTO request, User user) {
+
+        // Build Shipping address
+        Address shippingAddress = Address.builder()
+                .government(request.getGovernment())
+                .addressType(request.getAddressType())
+                .city(request.getCity())
+                .street(request.getStreet())
+                .buildingNo(request.getBuildingNo())
+                .description(request.getDescription())
+                .build();
+
+        // Build order entity
         Order orderEntity = Order.builder()
                 .user(user)
                 .createdAt(request.getCreatedAt())
                 .status(request.getStatus())
                 .totalPrice(BigDecimal.valueOf(request.getTotalPrice()))
+                .shippingAddress(shippingAddress)
                 .build();
 
         // Persist the order first to generate its ID
