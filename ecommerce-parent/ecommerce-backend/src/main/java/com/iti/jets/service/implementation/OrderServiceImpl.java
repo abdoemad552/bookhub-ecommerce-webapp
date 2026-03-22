@@ -58,6 +58,7 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
             // Delete the current active cart for this user
             cartRepository.deleteByUserId(userOpt.get().getId());
 
+
             // Form the order code from ID
             String orderCode = "ORD-" + orderEntity.getCreatedAt().getYear() + "-" + orderEntity.getId();
             return ResponseFactory.success("Order Saved Successfully", orderCode);
@@ -87,6 +88,11 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
                     .quantity(item.getQuantity())
                     .build()
             );
+
+            // Update book data
+            book.setStockQuantity(book.getStockQuantity() - item.getQuantity());
+            book.setStockQuantity(book.getStockQuantity() + item.getQuantity());
+            bookRepository.update(book);
         }
 
         return orderEntity;
