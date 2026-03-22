@@ -1,6 +1,8 @@
 package com.iti.jets.service.implementation;
 
+import com.iti.jets.model.dto.request.BookAddRequestDTO;
 import com.iti.jets.model.dto.request.BookFilterDTO;
+import com.iti.jets.model.dto.response.BookAddResponseDTO;
 import com.iti.jets.model.entity.Book;
 import com.iti.jets.repository.interfaces.BookRepository;
 import com.iti.jets.service.generic.ContextHandler;
@@ -44,5 +46,11 @@ public class BookServiceImpl extends ContextHandler implements BookService {
     @Override
     public List<Book> findAllFeatured() {
         return executeInContext(() -> bookRepository.findAllFeatured());
+    }
+
+    @Override
+    public BookAddResponseDTO addBook(BookAddRequestDTO addRequest) {
+        // TODO: Implement it...
+        return null;
     }
 }
