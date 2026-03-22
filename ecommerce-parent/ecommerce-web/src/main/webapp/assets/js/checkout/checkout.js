@@ -1,4 +1,4 @@
-import { initHeader }           from '../common/header.js';
+import { initHeader } from '../common/header.js';
 import { showAlert, hideAlert } from '../signup/util.js';
 
 import {
@@ -29,6 +29,7 @@ const CHECKOUT_URL = CONTEXT + '/checkout';
 const ORDER_CONFIRMATION = CONTEXT + '/order-confirmation';
 
 // Module-level state
+let cartCountBadge = 0;
 export let addressesData = [];  // cache of loaded addresses
 let paymentData   = null;        // cached payment meta for Step 2 validation
 let order = null;
@@ -137,6 +138,40 @@ function tryGoToStep3() {
     renderReviewStep(order);
 }
 
+function showEmptyCart() {
+    // Hide the stepper and the form entirely
+    document.querySelector('.step-indicator').style.display = 'none';
+    $('checkout-form').style.display = 'none';
+    $('checkout-cancel-section').style.display = 'none';
+
+    // Inject empty state into the card container
+    document.querySelector('.card-modern').insertAdjacentHTML('beforeend', `
+        <div class="empty-cart-state">
+            <div class="empty-cart-state__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+            </div>
+            <h2 class="empty-cart-state__title">Your cart is empty</h2>
+            <p class="empty-cart-state__sub">
+                Looks like you haven't added anything yet.<br>
+                Explore our collection and find your next great read.
+            </p>
+            <a href="${CONTEXT}/explore" class="btn-modern empty-cart-state__btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2.5"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="M21 21l-4.35-4.35"/>
+                </svg>
+                Explore Books
+            </a>
+        </div>`);
+}
+
 // Init
 async function init() {
     initHeader();
@@ -150,6 +185,10 @@ async function init() {
 
     // Order summary data
     order = await fetchOrderSummary();
+    if (!order || !order.items || order.items.length === 0) {
+        showEmptyCart();
+        return;
+    }
 
     // Step 2
     paymentData = readPaymentMeta(order);

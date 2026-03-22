@@ -488,11 +488,13 @@
 
       </form>
 
-      <div class="divider-modern mt-6">
-        <span class="select-none">Do you want to cancel this process?</span>
-      </div>
-      <div class="text-center animate-fade-in" style="animation-delay:.6s;">
-        <a href="${pageContext.request.contextPath}/cart" class="link-modern text-sm font-semibold">Back to Cart</a>
+      <div id="checkout-cancel-section">
+        <div class="divider-modern mt-6">
+          <span class="select-none">Do you want to cancel this process?</span>
+        </div>
+        <div class="text-center animate-fade-in" style="animation-delay:.6s;">
+          <a href="${pageContext.request.contextPath}/cart" class="link-modern text-sm font-semibold">Back to Cart</a>
+        </div>
       </div>
 
     </div>
