@@ -31,18 +31,6 @@
       <!-- Right actions -->
       <div class="flex items-center gap-3 flex-shrink-0">
 
-        <!-- Mobile search button -->
-        <button id="open-search"
-                class="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-xl border border-border bg-background text-muted-foreground hover:text-foreground hover:bg-muted transition-colors flex-shrink-0"
-                aria-label="Search">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-               aria-hidden="true">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="m21 21-4.34-4.34"/>
-          </svg>
-        </button>
-
         <!-- Cart -->
         <a class="relative flex-shrink-0" href="${pageContext.request.contextPath}/cart">
           <button data-slot="button"
@@ -214,38 +202,3 @@
     </div>
   </nav>
 </c:if>
-
-<!-- Mobile Search Overlay -->
-<div id="mobile-search"
-     class="fixed top-16 left-0 w-full z-0 bg-card border-b border-border px-4 py-3 transform -translate-y-full opacity-0 transition-all duration-300">
-
-  <div class="relative max-w-7xl mx-auto">
-    <!-- Search icon -->
-    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-         viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="2.5"
-         class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
-      <circle cx="11" cy="11" r="8"/>
-      <path d="m21 21-4.34-4.34"/>
-    </svg>
-
-    <!-- Search input -->
-    <input type="search"
-           class="input-modern w-full h-10 pl-10 pr-14 text-sm bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
-           placeholder="Search about what you want"/>
-
-    <!-- Close button -->
-    <button id="close-search"
-            class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 p-1">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-           viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="3 6 5 6 21 6"></polyline>
-        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
-        <path d="M10 11v6"></path>
-        <path d="M14 11v6"></path>
-      </svg>
-    </button>
-  </div>
-</div>
