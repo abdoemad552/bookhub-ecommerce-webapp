@@ -20,7 +20,7 @@ export function updateCartItemsCount(count) {
 async function loadCartItemsCount() {
     const cartCountBadge = getCartCountBadge();
 
-    if (!cartCountBadge || cartCountBadge.dataset.authenticated !== 'true') {
+    if (!cartCountBadge) {
         return;
     }
 

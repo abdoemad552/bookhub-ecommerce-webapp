@@ -145,9 +145,9 @@ export async function addToCart(bookId, amount = 1, $btn = null) {
         } finally {
             setTimeout(() => {
                 setButtonState($btn, BUTTON_STATE.DEFAULT);
-            }, 1000);
+            }, 500);
         }
-    }, 3000);
+    }, 500);
 }
 
 let initialized = false;

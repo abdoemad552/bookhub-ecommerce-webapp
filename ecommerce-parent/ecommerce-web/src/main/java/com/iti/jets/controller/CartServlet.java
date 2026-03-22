@@ -41,7 +41,13 @@ public class CartServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
 
             UserDTO user = getSessionUser(request);
-            int count = user == null ? 0 : cartService.getItemsCount(Math.toIntExact(user.getId()));
+
+            int count;
+            if (user == null) {
+                count = getSessionCartItemsCount(request);
+            } else {
+                count = cartService.getItemsCount(Math.toIntExact(user.getId()));
+            }
 
             JsonObject json = Json.createObjectBuilder()
                     .add("count", count)
@@ -103,7 +109,7 @@ public class CartServlet extends HttpServlet {
         Integer amount = parseInteger(request.getParameter("amount"));
 
         if (bookId == null) {
-            writeJsonResponse(response, HttpServletResponse.SC_BAD_REQUEST, false, "Book id is required.", 0, null, null);
+            writeJsonResponse(request, response, HttpServletResponse.SC_BAD_REQUEST, false, "Book id is required.", 0, null, null);
             return;
         }
 
@@ -123,6 +129,7 @@ public class CartServlet extends HttpServlet {
                 .sum();
 
             writeJsonResponse(
+                request,
                 response,
                 HttpServletResponse.SC_OK,
                 true,
@@ -146,6 +153,7 @@ public class CartServlet extends HttpServlet {
         String message = success ? "Book added to cart successfully." : "Unable to add this book to the cart.";
 
         writeJsonResponse(
+            request,
             response,
             success ? HttpServletResponse.SC_OK : HttpServletResponse.SC_BAD_REQUEST,
             success,
@@ -162,7 +170,7 @@ public class CartServlet extends HttpServlet {
         Integer amount = parseInteger(request.getParameter("amount"));
 
         if (bookId == null) {
-            writeJsonResponse(response, HttpServletResponse.SC_BAD_REQUEST, false, "Book id is required.", 0, null, null);
+            writeJsonResponse(request, response, HttpServletResponse.SC_BAD_REQUEST, false, "Book id is required.", 0, null, null);
             return;
         }
 
@@ -172,7 +180,7 @@ public class CartServlet extends HttpServlet {
             Map<Integer, Integer> sessionCart = getSessionCart(request);
 
             if (!sessionCart.containsKey(bookId)) {
-                writeJsonResponse(response, HttpServletResponse.SC_BAD_REQUEST, false, "Item not found in cart.", 0, null, 0);
+                writeJsonResponse(request, response, HttpServletResponse.SC_BAD_REQUEST, false, "Item not found in cart.", 0, null, 0);
                 return;
             }
 
@@ -196,6 +204,7 @@ public class CartServlet extends HttpServlet {
                 : "Cart updated successfully.";
 
             writeJsonResponse(
+                request,
                 response,
                 HttpServletResponse.SC_OK,
                 true,
@@ -221,6 +230,7 @@ public class CartServlet extends HttpServlet {
             : "Unable to update the cart.";
 
         writeJsonResponse(
+            request,
             response,
             success ? HttpServletResponse.SC_OK : HttpServletResponse.SC_BAD_REQUEST,
             success,
@@ -271,6 +281,23 @@ public class CartServlet extends HttpServlet {
         }
     }
 
+    private double getSessionCartTotalPrice(HttpServletRequest request) {
+        return getSessionCart(request).entrySet()
+            .stream()
+            .mapToDouble(entry -> {
+                CartItem cartItem = cartService.createTransientCartItem(entry.getKey(), entry.getValue());
+                if (cartItem == null) return 0.0;
+                else return cartItem.getBook().getPrice().doubleValue() * entry.getValue();
+            })
+            .sum();
+    }
+
+    private int getSessionCartItemsCount(HttpServletRequest request) {
+        return getSessionCart(request).values()
+            .stream()
+            .mapToInt(Integer::intValue)
+            .sum();
+    }
 
     private Integer parseInteger(String value) {
         try {
@@ -280,7 +307,7 @@ public class CartServlet extends HttpServlet {
         }
     }
 
-    private void writeJsonResponse(HttpServletResponse response,
+    private void writeJsonResponse(HttpServletRequest request, HttpServletResponse response,
                                    int statusCode,
                                    boolean success,
                                    String message,
@@ -295,7 +322,7 @@ public class CartServlet extends HttpServlet {
                 .add("success", success)
                 .add("message", message)
                 .add("count", count)
-                .add("totalPrice", cart == null ? 0.0 : cart.getTotalPrice())
+                .add("totalPrice", cart == null ? getSessionCartTotalPrice(request) : cart.getTotalPrice())
                 .add("itemQuantity", itemQuantity == null ? 0 : itemQuantity);
 
         JsonObject json = jsonBuilder.build();
