@@ -95,3 +95,29 @@ dialog.is-open::backdrop {
 .dialog-panel::-webkit-scrollbar { width: 4px; }
 .dialog-panel::-webkit-scrollbar-track { background: transparent; }
 .dialog-panel::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 9999px; }
+
+/* ── Panel: flex column so header/footer are fixed, form scrolls ── */
+.dialog-panel {
+    display: flex;
+    flex-direction: column;
+    max-height: 90svh;        /* cap on desktop */
+}
+
+/* ── Form body: the only scrolling region ── */
+.dialog-panel form {
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;            /* critical — lets a flex child shrink below content size */
+}
+
+/* ── Mobile: tighter cap since bottom sheet already reserves space ── */
+@media (max-width: 639px) {
+    .dialog-panel {
+        max-height: 92svh;
+    }
+}
+
+/* ── Thin scrollbar on the form ── */
+.dialog-panel form::-webkit-scrollbar       { width: 4px; }
+.dialog-panel form::-webkit-scrollbar-track { background: transparent; }
+.dialog-panel form::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 9999px; }

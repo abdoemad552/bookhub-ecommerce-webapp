@@ -4,7 +4,7 @@
 <head>
     <meta charSet="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes"/>
-    <title>BookHub - Your Gateway to Endless Stories</title>
+    <title>Admin Dashboard</title>
     <meta name="description" content="Discover thousands of books across every genre. Shop for bestsellers, classics, and hidden gems with BookHub."/>
     <meta name="generator" content="BookHub"/>
     <meta name="keywords" content="books,bookstore,ebook,bestsellers,fiction,non-fiction"/>
@@ -15,7 +15,7 @@
     <script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body class="font-google-sans antialiased">
-<div class="min-h-screen bg-background overflow-y-scroll">
+<div class="min-h-screen bg-background">
     <div class="bg-card border-b border-border sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
             <div class="flex items-center gap-2 min-w-0">
