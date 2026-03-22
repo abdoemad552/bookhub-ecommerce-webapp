@@ -10,6 +10,7 @@ import jakarta.mail.internet.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 
 public class EmailService {
 
@@ -85,7 +86,9 @@ public class EmailService {
                 BookHub Team
                 """.formatted(user.getUsername());
 
-        sendEmail(user.getEmail(), subject, body);
+        CompletableFuture.runAsync(() ->
+                sendEmail(user.getEmail(), subject, body)
+        );
     }
 
     public void sendPlaceOrderNotification(UserDTO user, String orderId, double totalPrice) {
@@ -123,6 +126,8 @@ public class EmailService {
                 totalPrice
         );
 
-        sendEmail(user.getEmail(), subject, body);
+        CompletableFuture.runAsync(() ->
+                sendEmail(user.getEmail(), subject, body)
+        );
     }
 }

@@ -104,9 +104,7 @@ public class LoginServlet extends HttpServlet {
 
             // Send Confirmation Email to the user in a background thread
             if (loggedInUser.getEmailNotifications()) {
-                CompletableFuture.runAsync(() ->
-                        emailService.sendLoginNotification(loggedInUser)
-                );
+                emailService.sendLoginNotification(loggedInUser);
             }
         }
 
