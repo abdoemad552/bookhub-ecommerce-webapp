@@ -1,11 +1,10 @@
 package com.iti.jets.model.enums;
 
 public enum OrderStatus {
-    PENDING("Pending"),
-    PAID("Paid"),
-    CANCELLED("Canceled"),
-    SHIPPED("Shipped"),
-    DELIVERED("Delivered");
+    CONFIRMED("Confirmed"),
+    PROCESSING("Processing"),
+    DELIVERED("Delivered"),
+    CANCELLED("Canceled");
 
     private final String prettyName;
 

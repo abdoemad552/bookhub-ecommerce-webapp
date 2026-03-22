@@ -2,7 +2,7 @@ package com.iti.jets.model.dto.response;
 
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -13,5 +13,5 @@ import java.util.List;
 public class CartDTO {
     private double totalPrice;
     private double shippingPrice;
-//    private List<CartItemDTO> items;
+    private Set<CartItemDTO> items;
 }
