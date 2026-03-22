@@ -13,8 +13,7 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/checkout.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/order-payment-review.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/order-confirmation.css">
-  <script type="module"
-          src="${pageContext.request.contextPath}/assets/js/checkout/orderConfirmation.js"></script>
+  <script type="module" src="${pageContext.request.contextPath}/assets/js/confirmation/orderConfirmation.js"></script>
 </head>
 
 <body class="font-google-sans antialiased">
@@ -25,7 +24,7 @@
 
 <main class="oc-page">
 
-  <%-- Ambient background orbs (reuses bg from checkout page) --%>
+  <%-- Ambient background orbs --%>
   <div class="absolute -top-20 -right-20 w-72 h-72 bg-accent/10 rounded-full blur-3xl
               animate-float opacity-25 pointer-events-none"></div>
   <div class="absolute bottom-0 -left-20 w-56 h-56 bg-primary/8 rounded-full blur-3xl
@@ -33,9 +32,7 @@
 
   <div class="oc-shell">
 
-    <%-- ══════════════════════════════════════════════
-         HERO  — badge + order ID
-    ══════════════════════════════════════════════ --%>
+    <%-- HERO  — badge + order ID --%>
     <div class="oc-hero oc-reveal oc-reveal--1">
       <div class="oc-hero__badge">
         <div class="oc-hero__pulse"></div>
@@ -45,20 +42,31 @@
         </svg>
       </div>
       <h1 class="oc-hero__title">Order Placed!</h1>
-      <p class="oc-hero__sub">
-        Thank you for your purchase. We'll get your books on their way soon.
-      </p>
-      <%-- Order-ID pill --%>
-      <div class="oc-hero__id-wrap">
-        <span class="oc-hero__id-label">Order ID</span>
-        <span class="oc-hero__id" id="oc-order-id">—</span>
+      <p class="oc-hero__sub">Thanks for Choosing BookHub.</p>
+    </div>
+
+    <%-- Order ID card — same width as all other cards --%>
+    <div class="card-modern oc-reveal oc-reveal--2" style="padding:20px;">
+      <div class="oc-order-id-card">
+        <div class="oc-order-id-card__left">
+          <div class="oc-order-id-card__icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </div>
+          <div>
+            <div class="oc-order-id-card__label">Order Reference</div>
+            <div class="oc-order-id-card__value" id="oc-order-id">—</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <%-- ══════════════════════════════════════════════
-         STATUS TRACKER
-         Uses card-modern surface + addr-section-label style
-    ══════════════════════════════════════════════ --%>
+    <%-- STATUS TRACKER --%>
     <div class="card-modern oc-reveal oc-reveal--2" style="padding:20px;">
 
       <%-- label reuses addr-section-label --%>
@@ -99,7 +107,7 @@
           </div>
           <div class="oc-tracker__info">
             <span class="oc-tracker__name">Processing</span>
-            <span class="oc-tracker__desc">We're preparing your books</span>
+            <span class="oc-tracker__desc">We're preparing your books (Delivered within 5 working days)</span>
           </div>
         </div>
 
@@ -123,10 +131,7 @@
       <div class="oc-status-skeleton" id="oc-status-skeleton"></div>
     </div>
 
-    <%-- ══════════════════════════════════════════════
-         ORDER ITEMS + SUMMARY
-         Reuses rev-items, rev-item, rev-summary classes entirely
-    ══════════════════════════════════════════════ --%>
+    <%-- ORDER ITEMS + SUMMARY --%>
     <div class="card-modern oc-reveal oc-reveal--4" style="padding:20px;">
 
       <div class="addr-section-label" style="margin-bottom:14px;">
@@ -162,13 +167,10 @@
       </div>
     </div>
 
-    <%-- ══════════════════════════════════════════════
-         ACTIONS
-         Reuses btn-modern + btn-back from global.css
-    ══════════════════════════════════════════════ --%>
+    <%-- ACTIONS --%>
     <div class="nav-row has-back oc-reveal oc-reveal--5" style="margin-top:0;">
 
-      <a href="${pageContext.request.contextPath}/orders" class="orders-btn">
+      <a href="${pageContext.request.contextPath}/profile" class="orders-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -191,7 +193,7 @@
       </a>
     </div>
 
-  </div><%-- /.oc-shell --%>
+  </div>
 </main>
 
 </body>

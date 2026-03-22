@@ -230,7 +230,8 @@ $('checkout-form').addEventListener('submit', async function (e) {
         } else {
             // Reset the cart badge count
             initHeader();
-            window.location.href = ORDER_CONFIRMATION;
+            const orderId = data.orderId;
+            window.location.href = `${ORDER_CONFIRMATION}?orderId=${orderId}`;
         }
     } catch (err) {
         submitBtn.disabled = false;

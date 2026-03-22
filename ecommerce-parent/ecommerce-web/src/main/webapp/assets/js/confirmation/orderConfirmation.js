@@ -1,108 +1,24 @@
-/**
- * orderConfirmation.js
- *
- * Compatible with OrderServlet GET /order response shape:
- * {
- *   subtotal: number,
- *   shipping: number,
- *   limit:    number,
- *   items: [{ bookId, title, quantity, price }]
- * }
- *
- * Structure mirrors checkout.js:
- *   readMeta()        — reads static JSP EL data from #oc-meta (address, orderId)
- *   render*()         — pure DOM writers, no fetch calls
- *   fetchOrder()      — fetches items + summary from GET /order
- *   fetchStatus()     — fetches live order status from GET /order-status
- *   init()            — orchestrator: renders static data immediately,
- *                       then fires fetchOrder + fetchStatus in parallel
- */
+import {initHeader} from '../common/header.js';
+import {showAlert} from "../signup/util.js";
 
-import { initHeader } from '../common/header.js';
-
-// ─── DOM helper ───────────────────────────────────────────────────────────────
-
+// DOM helper
 const $ = id => document.getElementById(id);
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+// Constants
+const CONTEXT = '/ecommerce';
+const CONFIRMATION_URL = CONTEXT + '/order-confirmation';
 
-const meta       = $('oc-meta');
-const CONTEXT    = meta?.dataset.context ?? '/ecommerce';
-const ORDER_URL  = CONTEXT + '/order';        // GET — returns items + summary
-const STATUS_URL = CONTEXT + '/order-status'; // GET ?orderId=X — returns { status }
-
-// ─── Formatter ────────────────────────────────────────────────────────────────
-
+// Formatter
 const fmt = new Intl.NumberFormat('en-EG', {
     style: 'currency', currency: 'EGP', minimumFractionDigits: 2,
 }).format;
 
-// ─── Data reader (static — no network) ───────────────────────────────────────
-
-/**
- * Reads address + orderId from the hidden #oc-meta element
- * populated by JSP EL on page load.
- * Items and totals come from fetchOrder() instead.
- */
-function readMeta() {
-    if (!meta) return null;
-    return {
-        orderId: meta.dataset.orderId || '—',
-        address: {
-            type:        meta.dataset.addressType        || '',
-            street:      meta.dataset.addressStreet      || '',
-            buildingNo:  meta.dataset.addressBuilding    || '',
-            city:        meta.dataset.addressCity        || '',
-            government:  meta.dataset.addressGovernment  || '',
-            description: meta.dataset.addressDescription || '',
-        },
-    };
-}
-
-// ─── Async fetches ────────────────────────────────────────────────────────────
-
-/**
- * Fetches the full order from OrderServlet.
- * Returns: { subtotal, shipping, limit, items: [{ bookId, title, quantity, price }] }
- */
-async function fetchOrder() {
-    try {
-        const res = await fetch(ORDER_URL, { method: 'GET', credentials: 'include' });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return await res.json();
-    } catch (err) {
-        console.error('Failed to fetch order:', err);
-        return null;
-    }
-}
-
-/**
- * Fetches live order status.
- * Returns one of: "confirmed" | "processing" | "delivered"
- */
-async function fetchStatus(orderId) {
-    try {
-        const res = await fetch(
-            `${STATUS_URL}?orderId=${encodeURIComponent(orderId)}`,
-            { method: 'GET', credentials: 'include' }
-        );
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
-        return data.status ?? 'confirmed';
-    } catch (err) {
-        console.error('Failed to fetch order status:', err);
-        return 'confirmed'; // safe fallback
-    }
-}
-
-// ─── Render: hero ─────────────────────────────────────────────────────────────
-
+// Render: hero
 function renderHero(orderId) {
-    $('oc-order-id').textContent = `#${orderId}`;
+    $('oc-order-id').textContent = '#' + orderId;
 }
 
-// ─── Render: address ─────────────────────────────────────────────────────────
-
+// Render: address
 const ADDRESS_ICONS = {
     Home: `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2
@@ -123,10 +39,6 @@ const ADDRESS_ICONS = {
                  1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5
                  1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5z"/>
     </svg>`,
-    Online: `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m7.5-6.923c-.67.204-1.335.82-1.887
-                 1.855q-.215.403-.395.872c.705.157 1.472.257 2.282.287z"/>
-    </svg>`,
 };
 
 function renderAddress(addr) {
@@ -144,32 +56,24 @@ function renderAddress(addr) {
         </div>`;
 }
 
-// ─── Render: items + summary ─────────────────────────────────────────────────
-
-const BOOK_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-</svg>`;
-
-/** Renders item list skeleton while fetch is in-flight */
-function renderItemsSkeleton() {
-    $('oc-items-list').innerHTML = `
-        <li class="oc-item-skeleton"></li>
-        <li class="oc-item-skeleton" style="opacity:.6;"></li>
-        <li class="oc-item-skeleton" style="opacity:.35;"></li>`;
-}
-
+// Render: items + summary
 /**
  * Renders items from the OrderServlet JSON.
  * item shape: { bookId, title, quantity, price }
  */
+const BOOK_ICON = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+</svg>`;
+
 function renderItems(order) {
     const list = $('oc-items-list');
 
     if (!order || !order.items || order.items.length === 0) {
         list.innerHTML = `
-            <li class="oc-item" style="justify-content:center;
+            <li class="rev-item" style="justify-content:center;
                 color:var(--muted-foreground);font-size:13px;padding:20px;">
                 No items found.
             </li>`;
@@ -177,41 +81,42 @@ function renderItems(order) {
     }
 
     list.innerHTML = order.items.map(item => `
-        <li class="oc-item">
-            <div class="oc-item__icon">${BOOK_ICON}</div>
-            <div class="oc-item__body">
-                <div class="oc-item__title" title="${item.title}">${item.title}</div>
-                <div class="oc-item__qty">
-                    Qty ${item.quantity} &times; ${fmt(item.price)}
-                </div>
+    <a class="rev-item" href="${CONTEXT}/books/${item.bookId}">
+        <div class="rev-item__icon">${BOOK_ICON}</div>
+        <div class="rev-item__body">
+            <div class="rev-item__title" title="${item.title}">${item.title}</div>
+            <div class="rev-item__qty">
+                Qty ${item.quantity} &times; ${fmt(item.price)}
             </div>
-            <div class="oc-item__total">${fmt(item.price * item.quantity)}</div>
-        </li>`).join('');
+        </div>
+        <div class="rev-item__price-block">
+            <div class="rev-item__unit-price">${fmt(item.price)} each</div>
+            <div class="rev-item__total-price">${fmt(item.price * item.quantity)}</div>
+        </div>
+    </a>`).join('');
 
-    // Summary — use values from the server, not recalculated
     $('oc-subtotal').textContent = fmt(order.subtotal);
     $('oc-shipping').textContent = order.shipping === 0 ? 'Free' : fmt(order.shipping);
-    $('oc-total').textContent    = fmt(order.subtotal + order.shipping);
+    $('oc-total').textContent = fmt(order.subtotal + order.shipping);
 }
 
-// ─── Render: status tracker ───────────────────────────────────────────────────
-
+// Render: status tracker
 const STATUS_MAP = {
-    confirmed:  { done: [],                                  active: 'ots-confirmed'  },
-    processing: { done: ['ots-confirmed'],                   active: 'ots-processing' },
-    delivered:  { done: ['ots-confirmed', 'ots-processing'], active: 'ots-delivered'  },
+    confirmed: {done: [], active: 'ots-confirmed'},
+    processing: {done: ['ots-confirmed'], active: 'ots-processing'},
+    delivered: {done: ['ots-confirmed', 'ots-processing'], active: 'ots-delivered'},
 };
 
 const LINE_MAP = {
-    confirmed:  [],
+    confirmed: [],
     processing: ['otl-1'],
-    delivered:  ['otl-1', 'otl-2'],
+    delivered: ['otl-1', 'otl-2'],
 };
 
 function renderStatus(statusRaw) {
-    const status  = (statusRaw ?? '').toLowerCase().trim();
+    const status = (statusRaw ?? '').toLowerCase().trim();
     const mapping = STATUS_MAP[status] ?? STATUS_MAP.confirmed;
-    const lines   = LINE_MAP[status]   ?? [];
+    const lines = LINE_MAP[status] ?? [];
 
     mapping.done.forEach(id => $(id)?.classList.add('done'));
     $(mapping.active)?.classList.add('active');
@@ -222,29 +127,46 @@ function renderStatus(statusRaw) {
     $('oc-tracker').classList.add('visible');
 }
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
+async function fetchOrderData(orderId) {
+    try {
+        const params = new URLSearchParams();
+        params.append('orderId', orderId);
 
+        const res = await fetch(CONFIRMATION_URL, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params.toString()
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return await res.json();
+    } catch (err) {
+        console.error('Failed to fetch order:', err);
+        return null;
+    }
+}
+
+// Init
 async function init() {
     initHeader();
 
-    const data = readMeta();
+    // Get order ID
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('orderId');
+
+    const data = await fetchOrderData(orderId);
     if (!data) return;
+    if (data.error != null) {
+        showAlert(data.error);
+        return
+    }
 
-    // Render static data immediately — no network wait
-    renderHero(data.orderId);
-    renderAddress(data.address);
-
-    // Show item skeletons while fetching
-    renderItemsSkeleton();
-
-    // Fire both requests in parallel — neither blocks the other
-    const [order, status] = await Promise.all([
-        fetchOrder(),
-        fetchStatus(data.orderId),
-    ]);
-
-    renderItems(order);
-    renderStatus(status);
+    // Render
+    renderHero(data.orderCode);
+    renderItems(data);
+    renderStatus(data.status);
 }
 
 document.addEventListener('DOMContentLoaded', init);
