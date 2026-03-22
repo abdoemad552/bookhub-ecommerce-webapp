@@ -47,14 +47,16 @@ public class OrderConfirmationServlet extends HttpServlet {
         String orderIdParam = req.getParameter("orderId");
 
         if (orderIdParam == null || orderIdParam.isBlank()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing orderId");
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            req.getRequestDispatcher(PathStorage.NOT_FOUND_PAGE).forward(req, resp);
             return;
         }
 
         try {
             Long orderId = Long.parseLong(orderIdParam);
         } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid orderId");
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            req.getRequestDispatcher(PathStorage.NOT_FOUND_PAGE).forward(req, resp);
             return;
         }
 
