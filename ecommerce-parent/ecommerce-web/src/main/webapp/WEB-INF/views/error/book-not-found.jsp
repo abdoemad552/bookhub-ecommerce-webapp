@@ -12,7 +12,10 @@
 </head>
 <body class="font-google-sans antialiased">
 <div class="min-h-screen bg-background flex flex-col">
-    <jsp:include page="../common/header.jsp"/>
+    <%-- HEADER --%>
+    <jsp:include page="../common/header.jsp">
+        <jsp:param name="showCategoryNav" value="false"/>
+    </jsp:include>
 
     <main class="flex-1 flex items-center justify-center px-4 py-16">
         <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border shadow-sm p-8 text-center w-full max-w-md">

@@ -18,4 +18,6 @@ public interface CartRepository extends BaseRepository<Cart, Long> {
     boolean removeFromCart(Integer userId, Integer bookId);
 
     boolean removeFromCart(Integer userId, Integer bookId, Integer quantity);
+
+    void deleteByUserId(Long userId);
 }
