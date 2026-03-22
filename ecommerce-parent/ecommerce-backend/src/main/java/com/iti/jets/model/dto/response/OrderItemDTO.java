@@ -11,6 +11,8 @@ import lombok.*;
 public class OrderItemDTO {
 
     private long bookId;
+    private String bookTittle;
+    private String imageUrl;
     private int quantity;
     private double currentPrice;
 }

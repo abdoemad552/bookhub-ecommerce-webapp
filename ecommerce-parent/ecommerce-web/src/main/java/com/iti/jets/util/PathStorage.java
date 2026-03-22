@@ -12,7 +12,9 @@ public class PathStorage {
     public static final String BOOK_INFO_PAGE       = "/WEB-INF/views/books/book-info.jsp";
     public static final String BOOK_NOT_FOUND_PAGE  = "/WEB-INF/views/error/book-not-found.jsp";
     public static final String NOT_FOUND_PAGE       = "/WEB-INF/views/error/page-not-found.jsp";
+    public static final String FORBIDDEN_PAGE       = "/WEB-INF/views/error/forbidden.jsp";
     public static final String CHECKOUT_PAGE        = "/WEB-INF/views/checkout/checkout.jsp";
+    public static final String ORDER_CONFIRMATION   = "/WEB-INF/views/confirmation/order-confirmation.jsp";
 
     // Inner Components
     public static final String BOOK_CARD    = "/WEB-INF/views/common/book-card.jsp";

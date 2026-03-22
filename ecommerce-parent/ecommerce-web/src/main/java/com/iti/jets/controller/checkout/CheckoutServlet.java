@@ -83,7 +83,11 @@ public class CheckoutServlet extends HttpServlet {
 
         JsonObjectBuilder jsonObject = Json.createObjectBuilder();
         if (result.isSuccess()) {
-            jsonObject.add("success", true);
+            String id = result.getData().substring(result.getData().lastIndexOf("-") + 1);
+
+            jsonObject
+                    .add("success", true)
+                    .add("orderId", id);
 
             // Send Confirmation Email to the user in a background thread
             if (currentUser.getEmailNotifications()) {
