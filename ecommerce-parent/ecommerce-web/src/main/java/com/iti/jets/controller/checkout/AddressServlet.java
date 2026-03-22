@@ -43,7 +43,6 @@ public class AddressServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-//        resp.setHeader("Cache-Control", "public, max-age=3600");
 
         // Load all data needed for the current user (like addresses)
         var session = req.getSession(false);

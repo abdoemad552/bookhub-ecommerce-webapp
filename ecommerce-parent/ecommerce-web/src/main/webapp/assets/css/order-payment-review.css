@@ -1,3 +1,4 @@
+/****************************************** Payment Section ***************************************************/
 /* ── Card scene ──────────────────────────────────── */
 .pay-card-scene {
     perspective: 1200px;
@@ -271,4 +272,252 @@
     opacity: .42;
     cursor: not-allowed;
     pointer-events: none;
+}
+
+/****************************************** Review Section ***************************************************/
+.rev-section-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted-foreground);
+    margin-bottom: 8px;
+}
+
+.rev-section-label svg {
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+/* ── Shipping destination card ─────────────────────── */
+.rev-address-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    background: var(--card);
+    transition: border-color .2s;
+}
+
+.rev-address-card:hover {
+    background: rgba(120, 53, 15, .03);
+}
+
+.rev-address-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(120, 53, 15, .08);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.rev-address-card__icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.rev-address-card__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.rev-address-card__type {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: 2px;
+}
+
+.rev-address-card__line {
+    font-size: 12.5px;
+    color: var(--foreground);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rev-address-card__sub {
+    font-size: 11.5px;
+    color: var(--muted-foreground);
+    margin-top: 1px;
+}
+
+/* ── Order items list ──────────────────────────────── */
+.rev-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--card);
+}
+
+/* individual item row */
+.rev-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border);
+    transition: background .15s;
+}
+
+.rev-item:last-child {
+    border-bottom: none;
+}
+
+.rev-item:hover {
+    background: rgba(120, 53, 15, .03);
+}
+
+/* book icon badge */
+.rev-item__icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(120, 53, 15, .07);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.rev-item__icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* text block */
+.rev-item__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.rev-item__title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--foreground);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rev-item__qty {
+    font-size: 11.5px;
+    color: var(--muted-foreground);
+    margin-top: 2px;
+}
+
+/* price block */
+.rev-item__price-block {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.rev-item__unit-price {
+    font-size: 11px;
+    color: var(--muted-foreground);
+}
+
+.rev-item__total-price {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--foreground);
+}
+
+/* ── Skeleton loader ───────────────────────────────── */
+.rev-item-skeleton {
+    height: 64px;
+    background: linear-gradient(
+            90deg,
+            var(--border) 25%,
+            rgba(120, 53, 15, .06) 50%,
+            var(--border) 75%
+    );
+    background-size: 200% 100%;
+    animation: revShimmer 1.6s infinite;
+}
+
+.rev-item-skeleton:first-child {
+    border-bottom: 1px solid var(--border);
+}
+
+@keyframes revShimmer {
+    from { background-position: 200% 0; }
+    to   { background-position: -200% 0; }
+}
+
+/* ── Price summary ─────────────────────────────────── */
+.rev-summary {
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-top: 12px;
+    background: var(--card);
+}
+
+.rev-summary__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.rev-summary__row:last-child {
+    border-bottom: none;
+}
+
+.rev-summary__row:hover{
+    background: rgba(120, 53, 15, .03);
+}
+
+.rev-summary__label {
+    font-size: 12.5px;
+    color: var(--muted-foreground);
+}
+
+.rev-summary__value {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--foreground);
+}
+
+.rev-summary__value--muted {
+    font-weight: 500;
+    color: var(--muted-foreground);
+}
+
+.rev-summary__divider {
+    height: 1px;
+    background: var(--border);
+}
+
+.rev-summary__row--total {
+    background: rgba(120, 53, 15, .04);
+}
+
+.rev-summary__row--total .rev-summary__label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--foreground);
+}
+
+.rev-summary__value--total {
+    font-size: 15px;
+    color: var(--primary);
 }

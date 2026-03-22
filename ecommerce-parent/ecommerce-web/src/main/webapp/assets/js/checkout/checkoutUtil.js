@@ -1,3 +1,6 @@
+import {addressesData} from "./checkout.js";
+import {validateStep2} from "./checkoutValidation.js";
+
 // DOM helper
 export const $ = id => document.getElementById(id);
 
@@ -43,6 +46,32 @@ export function updateStepUI() {
 }
 
 // Address grid
+export function buildAddressCard(add) {
+    const card = document.createElement('div');
+    card.className = 'address-card';
+    card.innerHTML = `
+        <input type="radio" id="address-${add.id}" name="addressId" value="${add.id}">
+        <label class="address-label" for="address-${add.id}">
+            ${getAddressIcon(add.addressType)}
+            <span class="cat-name">${add.addressType}</span>
+        </label>
+        <div class="address-check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+            </svg>
+        </div>`;
+
+    card.querySelector('input[type="radio"]').addEventListener('click', () => {
+        const addr = addressesData.find(a => a.id === add.id);
+        if (add.addressType === 'Online') return;
+        hideNewAddressPanel();
+        setTimeout(() => { if (addr) openPopup(addr); }, 250);
+    });
+
+    return card;
+}
+
 export function appendNewAddressCard() {
     const grid = $('address-grid');
 
@@ -192,6 +221,127 @@ export function getFieldIcon(key) {
         note:     wrap(`<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>`),
     };
     return icons[key] || '';
+}
+
+// Step 2: Payment helpers
+export function renderPaymentStep(data) {
+    if (!data) return;
+
+    const available = data.limit - data.used;
+    const total     = data.subtotal + data.shipping;
+    const enough    = validateStep2(data);
+    const usedPct   = Math.min((data.used / data.limit) * 100, 100);
+
+    // Card visuals
+    const card = $('pay-card');
+    $('pay-card-network').innerHTML = buildNetworkLogo(data.network);
+    $('pay-card-number').innerHTML  =
+        `<span>••••</span><span>••••</span><span>••••</span><span>${data.lastFour}</span>`;
+    $('pay-card-holder').textContent = data.holder.toUpperCase();
+    $('pay-card-avail').textContent  = formatCurrency(available);
+
+    setTimeout(() => { $('pay-card-bar').style.width = usedPct + '%'; }, 350);
+
+    if (available / data.limit < 0.20) card.classList.add('pay-card--danger');
+
+    // Breakdown rows
+    $('pay-subtotal-val').textContent = formatCurrency(data.subtotal);
+    $('pay-shipping-val').textContent = data.shipping === 0 ? 'Free' : formatCurrency(data.shipping);
+    $('pay-total-val').textContent    = formatCurrency(total);
+
+    const availEl = $('pay-avail-val');
+    availEl.textContent = formatCurrency(available);
+    if (!enough) availEl.style.color = '#dc2626';
+
+    // Status badge
+    const statusEl = $('pay-status');
+    const iconEl   = $('pay-status-icon');
+    const textEl   = $('pay-status-text');
+
+    const okIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/></svg>`;
+    const errIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+
+    if (enough) {
+        $('btn-next-2').disabled = false;
+    } else {
+        statusEl.style.display = 'flex';
+        statusEl.className     = 'pay-status pay-status--err';
+        iconEl.innerHTML       = errIcon;
+        textEl.textContent     = `Insufficient credit. You need ${formatCurrency(total - available)} more.`;
+        $('btn-next-2').disabled = true;
+    }
+}
+
+// Step 3: Order review helpers
+const BOOK_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+</svg>`;
+
+// Builds the shipping-to card from the currently selected address object
+function renderReviewAddress() {
+    const radio = document.querySelector('#address-grid input[type="radio"]:checked');
+    if (!radio) return;
+
+    const addr = addressesData.find(a => String(a.id) === radio.value);
+    if (!addr) return;
+
+    const container = $('rev-address-card');
+    container.innerHTML = `
+        <div class="rev-address-card__icon">
+            ${getAddressIcon(addr.addressType)}
+        </div>
+        <div class="rev-address-card__body">
+            <div class="rev-address-card__type">${addr.addressType}</div>
+            <div class="rev-address-card__line">
+                ${addr.street}, Bldg ${addr.buildingNo} — ${addr.city}
+            </div>
+            <div class="rev-address-card__sub">${addr.government}</div>
+        </div>`;
+}
+
+// Builds the item list and price summary from the order JSON
+function renderReviewItems(order) {
+    const list = $('rev-items');
+
+    if (!order || !order.items || order.items.length === 0) {
+        list.innerHTML = `<li class="rev-item" style="justify-content:center;color:var(--muted-foreground);font-size:13px;">
+            No items found.</li>`;
+        return;
+    }
+
+    list.innerHTML = order.items.map(item => {
+        const lineTotal = item.price * item.quantity;
+        return `
+        <li class="rev-item">
+            <div class="rev-item__icon">${BOOK_ICON}</div>
+            <div class="rev-item__body">
+                <div class="rev-item__title" title="${item.title}">${item.title}</div>
+                <div class="rev-item__qty">Qty: ${item.quantity} &times; ${formatCurrency(item.price)}</div>
+            </div>
+            <div class="rev-item__price-block">
+                <div class="rev-item__unit-price">${formatCurrency(item.price)} each</div>
+                <div class="rev-item__total-price">${formatCurrency(lineTotal)}</div>
+            </div>
+        </li>`;
+    }).join('');
+
+    // Summary
+    $('rev-subtotal').textContent = formatCurrency(order.subtotal);
+    $('rev-shipping').textContent = order.shipping === 0 ? 'Free' : formatCurrency(order.shipping);
+    $('rev-total').textContent    = formatCurrency(order.subtotal + order.shipping);
+}
+
+export function renderReviewStep(order) {
+    renderReviewAddress();
+    renderReviewItems(order);
 }
 
 // Payment UI helpers
