@@ -167,27 +167,27 @@
       </div>
     </div>
 
-      <%-- SHIPPING ADDRESS --%>
-      <div class="card-modern oc-reveal oc-reveal--4" style="padding:20px;">
+    <%-- SHIPPING ADDRESS --%>
+    <div class="card-modern oc-reveal oc-reveal--4" style="padding:20px;">
 
-        <div class="addr-section-label" style="margin-bottom:14px;">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
-            <circle cx="12" cy="10" r="3"/>
-          </svg>
-          Shipping To
-        </div>
-
-        <%-- populated by JS --%>
-        <div class="oc-address" id="oc-address"></div>
+      <div class="addr-section-label" style="margin-bottom:14px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        Shipping To
       </div>
 
-    <%-- ACTIONS --%>
-    <div class="nav-row has-back oc-reveal oc-reveal--5" style="margin-top:0;">
+      <%-- populated by JS --%>
+      <div class="oc-address" id="oc-address"></div>
+    </div>
+
+    <%-- ── ACTIONS ──────────────────────────────────────────── --%>
+    <div class="oc-actions oc-reveal oc-reveal--5">
 
       <a href="${pageContext.request.contextPath}/profile" class="orders-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
           <polyline points="14 2 14 8 20 8"/>
