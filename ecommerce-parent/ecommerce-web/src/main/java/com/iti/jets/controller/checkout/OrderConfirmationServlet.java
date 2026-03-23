@@ -105,7 +105,9 @@ public class OrderConfirmationServlet extends HttpServlet {
                     .add("status", orderDto.getOrderStatus().toString())
                     .add("subtotal", orderDto.getTotalPrice())
                     .add("shipping", orderDto.getShippingPrice())
-                    .add("items", jsonArray);
+                    .add("items", jsonArray)
+                    .add("shippingAddress", orderDto.getShippingAddress());
+
 
         } else {
             jsonObject

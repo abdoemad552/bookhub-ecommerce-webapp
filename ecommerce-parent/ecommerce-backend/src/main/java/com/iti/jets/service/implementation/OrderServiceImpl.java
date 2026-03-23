@@ -1,5 +1,7 @@
 package com.iti.jets.service.implementation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iti.jets.model.dto.request.PlaceOrderRequestDTO;
 import com.iti.jets.model.dto.response.OrderDTO;
 import com.iti.jets.model.dto.response.OrderItemDTO;
@@ -183,6 +185,14 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
             );
         }
 
+        ObjectMapper mapper = new ObjectMapper();
+        String addressJson;
+        try {
+            addressJson = mapper.writeValueAsString(order.getShippingAddress());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
         return OrderDTO.builder()
                 .orderId(order.getId())
                 .userId(order.getUser().getId())
@@ -192,6 +202,7 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
                 .totalPrice(order.getTotalPrice().doubleValue())
                 .shippingPrice(0)
                 .items(items)
+                .shippingAddress(addressJson)
                 .build();
     }
 

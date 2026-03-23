@@ -1,5 +1,7 @@
 package com.iti.jets.model.dto.response;
 
+import com.iti.jets.model.enums.AddressType;
+import com.iti.jets.model.enums.Government;
 import com.iti.jets.model.enums.OrderStatus;
 import lombok.*;
 
@@ -21,7 +23,8 @@ public class OrderDTO {
     private OrderStatus orderStatus;
     private double totalPrice;
     private double shippingPrice;
-
-
     Set<OrderItemDTO> items;
+
+    // Shipping Address
+    private String shippingAddress;
 }

@@ -42,11 +42,11 @@ const ADDRESS_ICONS = {
 };
 
 function renderAddress(addr) {
-    const icon = ADDRESS_ICONS[addr.type] ?? ADDRESS_ICONS.Home;
+    const icon = ADDRESS_ICONS[addr.addressType] ?? ADDRESS_ICONS.Home;
     $('oc-address').innerHTML = `
         <div class="oc-address__icon">${icon}</div>
         <div class="oc-address__body">
-            <div class="oc-address__type">${addr.type}</div>
+            <div class="oc-address__type">${addr.addressType}</div>
             <div class="oc-address__line">
                 ${addr.street}, Bldg ${addr.buildingNo} — ${addr.city}
             </div>
@@ -167,6 +167,7 @@ async function init() {
     renderHero(data.orderCode);
     renderItems(data);
     renderStatus(data.status);
+    renderAddress(JSON.parse(data.shippingAddress));
 }
 
 document.addEventListener('DOMContentLoaded', init);
