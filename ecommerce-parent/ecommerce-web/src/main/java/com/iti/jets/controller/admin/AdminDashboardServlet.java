@@ -1,4 +1,4 @@
-package com.iti.jets.controller;
+package com.iti.jets.controller.admin;
 
 import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.model.enums.UserRole;

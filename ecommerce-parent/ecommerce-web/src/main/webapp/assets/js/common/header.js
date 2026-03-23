@@ -1,5 +1,54 @@
+let isHeaderInitialized = false;
+
+function getCartCountBadge() {
+    return document.getElementById('header-cart-count');
+}
+
+export function getContextPath() {
+    return getCartCountBadge()?.dataset.contextPath || '';
+}
+
+export function updateCartItemsCount(count) {
+    const cartCountBadge = getCartCountBadge();
+    if (!cartCountBadge) {
+        return;
+    }
+
+    cartCountBadge.textContent = `${Number.isFinite(Number(count)) ? Number(count) : 0}`;
+}
+
+async function loadCartItemsCount() {
+    const cartCountBadge = getCartCountBadge();
+
+    if (!cartCountBadge) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${getContextPath()}/cart?count=true`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+        const data = await response.json();
+        updateCartItemsCount(data.count);
+    } catch (error) {
+        updateCartItemsCount(0);
+    }
+}
 
 export function initHeader() {
+    if (isHeaderInitialized) {
+        return;
+    }
+
+    isHeaderInitialized = true;
+
     const avatarDropdownContainer = document.getElementById('avatar-dropdown-container');
     if (avatarDropdownContainer) {
         const avatarBtn = document.getElementById('avatar-btn');
@@ -28,7 +77,6 @@ export function initHeader() {
             }
         });
 
-        // Close when clicking outside
         document.addEventListener('click', () => {
             dropdown.classList.remove('opacity-100', 'scale-100', 'visible');
             dropdown.classList.add('opacity-0', 'scale-95', 'invisible');
@@ -36,4 +84,6 @@ export function initHeader() {
             avatarBtn.setAttribute('aria-expanded', 'false');
         });
     }
+
+    loadCartItemsCount();
 }

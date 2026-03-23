@@ -7,8 +7,10 @@
     <meta name="keywords" content="bookhub,profile,orders,addresses,payment"/>
     <title>BookHub - My Profile</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
 </head>
-<body class="font-sans antialiased">
+<body class="font-google-sans antialiased">
 <div class="min-h-screen bg-background">
     <jsp:include page="../common/header.jsp"/>
     <main class="max-w-7xl mx-auto px-4 py-12">
@@ -126,7 +128,7 @@
             </div>
         </div>
     </main>
-    <%@include file="../common/footer.jsp"%>
+    <jsp:include page="../common/footer.jsp"/>
 </div>
 <script>
     const profileTabs = document.querySelectorAll(".profile-tab");

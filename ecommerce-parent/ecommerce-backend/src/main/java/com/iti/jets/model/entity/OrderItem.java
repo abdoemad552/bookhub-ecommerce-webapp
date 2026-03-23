@@ -26,7 +26,7 @@ import java.math.BigDecimal;
 public class OrderItem {
 
     @Id
-    @EqualsAndHashCode.Include
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -37,6 +37,7 @@ public class OrderItem {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "book_id", nullable = false)
+    @EqualsAndHashCode.Include
     private Book book;
 
     @Column(name = "quantity", nullable = false)

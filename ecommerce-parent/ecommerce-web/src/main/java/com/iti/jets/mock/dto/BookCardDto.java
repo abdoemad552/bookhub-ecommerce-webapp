@@ -8,8 +8,9 @@ public class BookCardDto {
     private double averageRating;
     private double price;
     private String coverPicUrl;
+    private int stockQuantity;
 
-    public BookCardDto(int id, String title, String author, String description, double averageRating, double price, String coverPicUrl) {
+    public BookCardDto(int id, String title, String author, String description, double averageRating, double price, String coverPicUrl, int stockQuantity) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -17,6 +18,7 @@ public class BookCardDto {
         this.averageRating = averageRating;
         this.price = price;
         this.coverPicUrl = coverPicUrl;
+        this.stockQuantity = stockQuantity;
     }
 
     public int getId() {
@@ -73,5 +75,13 @@ public class BookCardDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 }

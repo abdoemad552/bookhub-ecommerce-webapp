@@ -10,6 +10,7 @@ import jakarta.mail.internet.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 
 public class EmailService {
 
@@ -19,7 +20,7 @@ public class EmailService {
 
     static {
         try (InputStream input = EmailService.class.getClassLoader()
-                             .getResourceAsStream("smtp_config.properties")) {
+                .getResourceAsStream("smtp_config.properties")) {
 
             SMTP_CONFIG.load(input);
 
@@ -73,18 +74,60 @@ public class EmailService {
         String subject = "🔐 New Login to BookHub";
 
         String body = """
-            Hello %s,
+                Hello %s,
+                
+                We noticed a new login to your BookHub account.
+                
+                If this was you, welcome back! 📚✨ No action needed — enjoy exploring BookHub.
+                
+                If you didn't log in, please secure your account immediately.
+                
+                Best Regards,
+                BookHub Team
+                """.formatted(user.getUsername());
 
-            We noticed a new login to your BookHub account.
+        CompletableFuture.runAsync(() ->
+                sendEmail(user.getEmail(), subject, body)
+        );
+    }
 
-            If this was you, welcome back! 📚✨ No action needed — enjoy exploring BookHub.
+    public void sendPlaceOrderNotification(UserDTO user, String orderId, double totalPrice) {
 
-            If you didn't log in, please secure your account immediately.
+        String subject = "🛒 Your Order Has Been Placed Successfully!";
 
-            Best Regards,
-            BookHub Team
-            """.formatted(user.getUsername());
+        String body = """
+                Hello %s,
+                
+                Thank you for your order with BookHub 📚✨
+                
+                We’re happy to inform you that your order has been successfully placed and is now being processed.
+                
+                🧾 Order Details:
+                Order ID: #%s
+                Total Amount: %.2f EGP
+                
+                🚚 Delivery Information:
+                Your order is expected to arrive within approximately 5 working days.
+                
+                📦 Need Help with Your Order?
+                If you would like to cancel, return, or request a refund, please contact our customer support team as soon as possible.
+                We’ll be happy to assist you.
+                
+                You can also track your order anytime from your account.
+                
+                Thank you for choosing BookHub 💙
+                Happy reading!
+                
+                Best Regards,
+                BookHub Team
+                """.formatted(
+                user.getUsername(),
+                orderId,
+                totalPrice
+        );
 
-        sendEmail(user.getEmail(), subject, body);
+        CompletableFuture.runAsync(() ->
+                sendEmail(user.getEmail(), subject, body)
+        );
     }
 }

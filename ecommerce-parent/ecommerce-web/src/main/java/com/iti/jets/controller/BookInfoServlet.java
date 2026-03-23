@@ -1,0 +1,180 @@
+package com.iti.jets.controller;
+
+import com.iti.jets.model.dto.request.BookFilterDTO;
+import com.iti.jets.model.dto.response.ReviewDTO;
+import com.iti.jets.model.dto.response.UserDTO;
+import com.iti.jets.model.entity.Book;
+import com.iti.jets.mock.dto.BookCardDto;
+import com.iti.jets.service.factory.ServiceFactory;
+import com.iti.jets.service.interfaces.BookService;
+import com.iti.jets.service.interfaces.ReviewService;
+import com.iti.jets.service.interfaces.WishlistService;
+import com.iti.jets.util.PathStorage;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@WebServlet("/books/*")
+public class BookInfoServlet extends HttpServlet {
+
+    private static final int REVIEWS_PAGE_SIZE = 4;
+    private static final int RELATED_BOOKS_COUNT = 4;
+
+    private BookService bookService;
+    private ReviewService reviewService;
+    private WishlistService wishlistService;
+
+    @Override
+    public void init() {
+        ServiceFactory serviceFactory = ServiceFactory.getInstance();
+        bookService = serviceFactory.getBookService();
+        reviewService = serviceFactory.getReviewService();
+        wishlistService = serviceFactory.getWishlistService();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long bookId = parseBookId(request.getPathInfo());
+
+        if (bookId == null) {
+            forwardToNotFound(request, response);
+            return;
+        }
+
+        Book book = bookService.findById(bookId);
+
+        if (book == null) {
+            forwardToNotFound(request, response);
+            return;
+        }
+
+        List<ReviewDTO> reviews = reviewService.getBookReviews(Math.toIntExact(bookId), 1, REVIEWS_PAGE_SIZE);
+        UserDTO user = getSessionUser(request);
+        boolean isInWishlist = user != null && wishlistService.isInWishlist(Math.toIntExact(user.getId()), Math.toIntExact(bookId));
+        ReviewDTO userReview = user == null ? null : reviewService.getUserBookReview(Math.toIntExact(user.getId()), Math.toIntExact(bookId));
+
+        System.out.println(book.getImageUrl());
+        request.setAttribute("book", book);
+        double averageRating = book.getAverageRating() == null ? 0.0 : book.getAverageRating();
+        request.setAttribute("bookAverageRating", (int) Math.floor(averageRating));
+        request.setAttribute("bookAverageRatingValue", String.format(Locale.US, "%.1f", averageRating));
+        request.setAttribute("bookReviewCount", book.getRatingCount() == null ? reviews.size() : book.getRatingCount());
+        request.setAttribute("bookFormatLabel", formatLabel(book.getBookType() == null ? "" : book.getBookType().name()));
+        request.setAttribute("reviews", reviews);
+        request.setAttribute("reviewsPageSize", REVIEWS_PAGE_SIZE);
+        request.setAttribute("canLoadMoreReviews", reviews.size() >= REVIEWS_PAGE_SIZE);
+        request.setAttribute("isInWishlist", isInWishlist);
+        request.setAttribute("userReview", userReview);
+        request.setAttribute("relatedBooks", findRelatedBooks(book));
+
+        request.getRequestDispatcher(PathStorage.BOOK_INFO_PAGE).forward(request, response);
+    }
+
+    private UserDTO getSessionUser(HttpServletRequest request) {
+        Object user = request.getSession(false) == null ? null : request.getSession(false).getAttribute("user");
+        return user instanceof UserDTO ? (UserDTO) user : null;
+    }
+
+    private Long parseBookId(String pathInfo) {
+        if (pathInfo == null || pathInfo.isBlank() || "/".equals(pathInfo)) {
+            return null;
+        }
+
+        String[] parts = pathInfo.split("/");
+        String rawId = parts.length > 1 ? parts[1] : parts[0];
+
+        try {
+            return Long.parseLong(rawId);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private String formatLabel(String value) {
+        if (value == null || value.isBlank()) {
+            return "";
+        }
+
+        String normalized = value.toLowerCase(Locale.ROOT).replace('_', ' ');
+        String[] parts = normalized.split(" ");
+        StringBuilder builder = new StringBuilder();
+
+        for (String part : parts) {
+            if (part.isBlank()) {
+                continue;
+            }
+
+            if (!builder.isEmpty()) {
+                builder.append(' ');
+            }
+
+            builder.append(Character.toUpperCase(part.charAt(0)));
+            if (part.length() > 1) {
+                builder.append(part.substring(1));
+            }
+        }
+
+        return builder.toString();
+    }
+
+    private List<BookCardDto> findRelatedBooks(Book currentBook) {
+        Map<Integer, BookCardDto> relatedBooks = new LinkedHashMap<>();
+        String currentCategory = currentBook.getCategory() == null ? null : currentBook.getCategory().getName();
+
+        if (currentCategory != null && !currentCategory.isBlank()) {
+            BookFilterDTO filter = BookFilterDTO.builder()
+                    .category(currentCategory)
+                    .sortCriteria("featured")
+                    .build();
+
+            bookService.findAll(1, RELATED_BOOKS_COUNT + 4, filter).stream()
+                    .filter(book -> !book.getId().equals(currentBook.getId()))
+                    .map(this::toBookCardDto)
+                    .forEach(book -> relatedBooks.putIfAbsent(book.getId(), book));
+        }
+
+        if (relatedBooks.size() < RELATED_BOOKS_COUNT) {
+            bookService.findAllFeatured().stream()
+                    .filter(book -> !book.getId().equals(currentBook.getId()))
+                    .map(this::toBookCardDto)
+                    .forEach(book -> relatedBooks.putIfAbsent(book.getId(), book));
+        }
+
+        return relatedBooks.values()
+                .stream()
+                .limit(RELATED_BOOKS_COUNT)
+                .toList();
+    }
+
+    private BookCardDto toBookCardDto(Book book) {
+        String authorNames = book.getBookAuthors()
+                .stream()
+                .map(bookAuthor -> bookAuthor.getAuthor().getName())
+                .collect(Collectors.joining(", "));
+
+        return new BookCardDto(
+                Math.toIntExact(book.getId()),
+                book.getTitle(),
+                authorNames,
+                book.getDescription(),
+                book.getAverageRating() == null ? 0 : Math.round(book.getAverageRating()),
+                book.getPrice() == null ? 0 : book.getPrice().doubleValue(),
+                book.getImageUrl(),
+                book.getStockQuantity() == null ? 0 : book.getStockQuantity()
+        );
+    }
+
+    private void forwardToNotFound(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        request.getRequestDispatcher(PathStorage.BOOK_NOT_FOUND_PAGE).forward(request, response);
+    }
+}

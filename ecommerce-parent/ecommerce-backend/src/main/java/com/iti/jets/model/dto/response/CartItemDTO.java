@@ -1,13 +1,19 @@
 package com.iti.jets.model.dto.response;
 
-import java.util.List;
+import lombok.*;
 
+import java.util.Set;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class CartItemDTO {
-    private int bookId;
-    private int quantity;
+
+    private long bookId;
     private String bookTitle;
-    private String bookCoverUrl;
-    private List<AuthorDTO> authors;
+    private int quantity;
     private double price;
-    private int amount;
 }
