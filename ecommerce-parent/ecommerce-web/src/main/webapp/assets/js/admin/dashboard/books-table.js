@@ -14,7 +14,7 @@
 
 import { getContextPath } from '../../util.js';
 
-const SKELETON_ROW_COUNT = 5;
+const SKELETON_ROW_COUNT = 10;
 
 // ── SVG icons (inline so there's no extra import) ─────────────────────────────
 
@@ -52,9 +52,15 @@ const ICON_NEXT = `
 // ── Stock badge helper ────────────────────────────────────────────────────────
 
 function stockBadge(qty) {
-    if (qty <= 0)  return `<span class="px-2 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-600">${qty} units</span>`;
-    if (qty <= 10) return `<span class="px-2 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-600">${qty} units</span>`;
-    return             `<span class="px-2 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600">${qty} units</span>`;
+    if (qty <= 0)  return `<span class="px-2 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-600 select-none">${qty} units</span>`;
+    if (qty <= 10) return `<span class="px-2 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-600 select-none">${qty} units</span>`;
+    return             `<span class="px-2 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 select-none">${qty} units</span>`;
+}
+
+// ── Stock badge helper ────────────────────────────────────────────────────────
+
+function authorsRefs(authors) {
+    return authors.map(author => `<a href="${getContextPath()}/authors/${author.id}" class="hover:text-primary hover:underline transition-colors">${author.name}</a>`).join(", ");
 }
 
 // ── Action buttons ────────────────────────────────────────────────────────────
@@ -85,36 +91,34 @@ function actionButtons(book) {
 // ── Row builders ──────────────────────────────────────────────────────────────
 
 function desktopRow(book) {
-    const authors = Array.isArray(book.authors) ? book.authors.join(', ') : (book.author ?? '—');
     return `
-        <tr class="border-b border-border hover:bg-muted/30 transition-colors" data-book-row="${book.id}">
-            <td class="px-6 py-4 text-foreground font-medium">${book.title}</td>
-            <td class="px-6 py-4 text-muted-foreground">${authors}</td>
+        <tr class="border-b border-border hover:bg-muted/30 transition-colors select-none" data-book-row="${book.id}">
+            <td class="px-6 py-4 text-foreground font-medium"><a href="${getContextPath()}/books/${book.id}" class="hover:text-primary hover:underline transition-colors">${book.title}</a></td>
+            <td class="px-6 py-4 text-muted-foreground">${authorsRefs(book.authors)}</td>
             <td class="px-6 py-4">
-                <span class="px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">${book.category}</span>
+                <span class="px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary truncate">${book.category}</span>
             </td>
-            <td class="px-6 py-4 text-right font-semibold text-foreground">$${Number(book.price).toFixed(2)}</td>
-            <td class="px-6 py-4 text-right">${stockBadge(book.quantity)}</td>
+            <td class="px-6 py-4 text-right font-semibold text-foreground truncate">${Number(book.price).toFixed(2)} EGP</td>
+            <td class="px-6 py-4 text-center truncate">${stockBadge(book.stockQuantity)}</td>
             <td class="px-6 py-4 text-center">${actionButtons(book)}</td>
         </tr>`;
 }
 
 function mobileCard(book) {
-    const authors = Array.isArray(book.authors) ? book.authors.join(', ') : (book.author ?? '—');
-    const json    = JSON.stringify(book).replace(/'/g, '&#39;');
+    const json = JSON.stringify(book).replace(/'/g, '&#39;');
     return `
         <div class="p-4 space-y-3" data-book-card="${book.id}">
             <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
                     <p class="font-semibold text-foreground truncate">${book.title}</p>
-                    <p class="text-sm text-muted-foreground mt-0.5">${authors}</p>
+                    <p class="text-sm text-muted-foreground mt-0.5">${authorsRefs(book.authors)}</p>
                 </div>
-                <span class="shrink-0 px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">${book.category}</span>
+                <span class="shrink-0 px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary select-none">${book.category}</span>
             </div>
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <span class="text-sm font-semibold text-foreground">$${Number(book.price).toFixed(2)}</span>
-                    ${stockBadge(book.quantity)}
+                    <span class="text-sm font-semibold text-foreground">${Number(book.price).toFixed(2)} EGP</span>
+                    ${stockBadge(book.stockQuantity)}
                 </div>
                 <div class="flex items-center gap-2">
                     <button data-edit-book data-book='${json}'
@@ -309,24 +313,23 @@ export class BooksTable {
 
     _fetch(page) {
         this._showSkeleton();
-        console.log("Skeleton loaded...");
-
-        // $.ajax({
-        //     url:      `${getContextPath()}/admin/books`,
-        //     method:   'GET',
-        //     data:     { page, size: this._pageSize },
-        //     dataType: 'json',
-        // })
-        //     .done((data) => {
-        //         this._currentPage = data.page ?? page;
-        //         this._render(data.content ?? [], data.totalPages ?? 1);
-        //     })
-        //     .fail((jqXHR) => {
-        //         this._showError(jqXHR.status);
-        //     });
-
-        console.log("Skeleton loaded...");
-        console.log("Skeleton loaded...");
+        $.ajax({
+            url:      `${getContextPath()}/admin/books`,
+            method:   'GET',
+            data:     { page, size: this._pageSize },
+            dataType: 'json',
+        })
+        .done((data) => {
+            setTimeout(() => {
+                console.log(data);
+                this._currentPage = data.page ?? page;
+                this._render(data.content ?? [], data.totalPages ?? 1);
+            }, 2000);
+        })
+        .fail((jqXHR) => {
+            console.log(jqXHR.message);
+            this._showError(jqXHR.status);
+        });
     }
 
     // ── Rendering ─────────────────────────────────────────────────────────────
@@ -418,7 +421,9 @@ export class BooksTable {
             // Pagination
             .on('click.booksTable', '.pagination-page:not([disabled])', (e) => {
                 const page = parseInt($(e.currentTarget).data('page'), 10);
-                if (!isNaN(page)) this._fetch(page);
+                if (!isNaN(page)) {
+                    this._fetch(page);
+                }
             });
     }
 }

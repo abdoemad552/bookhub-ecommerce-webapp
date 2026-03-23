@@ -3,6 +3,8 @@ package com.iti.jets.controller.admin;
 import com.iti.jets.model.dto.request.BookAddRequestDTO;
 import com.iti.jets.model.dto.request.ImageUploadRequest;
 import com.iti.jets.model.dto.response.BookAddResponseDTO;
+import com.iti.jets.model.dto.response.BookSummaryDTO;
+import com.iti.jets.model.dto.response.PageResponseDTO;
 import com.iti.jets.model.enums.BookType;
 import com.iti.jets.model.enums.ImageCategory;
 import com.iti.jets.service.extra.ImageService;
@@ -51,20 +53,26 @@ public class AdminBooksServlet extends HttpServlet {
     }
 
     @Override
+    public void destroy() {
+        try { if (jsonb != null) jsonb.close(); }
+        catch (Exception ignored) {}
+    }
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        int page = parseIntParam(request, "page", 0);
-//        int size = parseIntParam(request, "size", 10);
-//
-//        page = Math.max(0, page);
-//        size = Math.min(Math.max(1, size), 100);
-//
-//        try {
-//            List<Book> books = bookService.findAll(page, size);
-//            writeJson(resp, HttpServletResponse.SC_OK, JsonUtil.toJson(result));
-//        } catch (Exception e) {
-//            writeError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-//                "Failed to fetch books");
-//        }
+        int page = parseIntParam(request, "page", 0);
+        int size = parseIntParam(request, "size", 10);
+
+        page = Math.max(0, page);
+        size = Math.min(Math.max(1, size), 100);
+
+        try {
+            PageResponseDTO<BookSummaryDTO> result = bookService.findAllSummary(page, size);
+            writeJson(response, HttpServletResponse.SC_OK, result);
+        } catch (Exception e) {
+            writeError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                "Failed to fetch books");
+        }
     }
 
     @Override
@@ -99,6 +107,30 @@ public class AdminBooksServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        Long id = extractId(request);
+
+        if (id == null) {
+            LOGGER.info("Missing book id in path");
+            writeError(response, HttpServletResponse.SC_BAD_REQUEST, "Missing book id in path");
+            return;
+        }
+
+        if (!bookService.existsById(id)) {
+            LOGGER.info("Book with id {} not found", id);
+            writeError(response, HttpServletResponse.SC_NOT_FOUND, "Book not found: " + id);
+            return;
+        }
+
+        try {
+            bookService.delete(id);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            LOGGER.info("Book with id {} deleted successfully", id);
+        } catch (Exception e) {
+            LOGGER.info("Error while deleting the book");
+            writeError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                "Failed to delete book");
+        }
     }
 
     // ── Response helpers ──────────────────────────────────────────────────────
@@ -191,6 +223,16 @@ public class AdminBooksServlet extends HttpServlet {
                 LOGGER.warn("Cover upload failed for book {}, saved without cover",
                     addResponse.getBookId());
             }
+        }
+    }
+
+    private Long extractId(HttpServletRequest request) {
+        String pathInfo = request.getPathInfo();
+        if (pathInfo == null || pathInfo.equals("/")) return null;
+        try {
+            return Long.parseLong(pathInfo.substring(1));
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 

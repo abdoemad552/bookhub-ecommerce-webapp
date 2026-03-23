@@ -2,6 +2,8 @@ package com.iti.jets.model.dto.response;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -9,5 +11,5 @@ import lombok.*;
 @ToString
 public class TopCategoryDTO {
     private String categoryName;
-    private double percentage;
+    private BigDecimal percentage;
 }

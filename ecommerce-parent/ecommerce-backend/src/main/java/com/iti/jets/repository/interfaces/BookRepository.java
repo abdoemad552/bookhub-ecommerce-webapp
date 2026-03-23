@@ -13,6 +13,8 @@ public interface BookRepository extends BaseRepository<Book, Long> {
 
     List<Book> findAllFeatured();
 
+    List<Book> findAllSummary(int page, int size);
+
     Optional<Book> findByIsbn(String isbn);
 
     void updateCoverUrl(Long bookId, String coverUrl);

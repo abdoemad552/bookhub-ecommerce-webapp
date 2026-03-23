@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
 
 <div class="space-y-5">
 
@@ -26,7 +25,7 @@
     </div>
 
     <%-- ══════════════════════════════════════════════
-         ADD BOOK DIALOG  — id must match addBookDialog.js
+         ADD BOOK DIALOG  — id must match add-book-dialog.js
     ══════════════════════════════════════════════ --%>
     <dialog id="add-book-dialog" aria-labelledby="add-dialog-title" aria-modal="true">
         <div class="dialog-panel bg-white border border-slate-200/80 shadow-2xl shadow-slate-900/10">
@@ -256,7 +255,7 @@
                             </span>
                         </button>
                         <p id="book-image-hint" class="text-xs text-slate-400 select-none">
-                            JPG, PNG, WEBP or GIF (max 5 MB)
+                            JPG, PNG, or WEBP (max 5 MB)
                         </p>
                         <p class="hidden text-xs text-red-500" data-error="book-image"></p>
                     </div>
@@ -293,7 +292,7 @@
     </dialog>
 
     <%-- ══════════════════════════════════════════════
-         EDIT BOOK DIALOG  — id must match editBookDialog.js
+         EDIT BOOK DIALOG  — id must match edit-book-dialog.js
     ══════════════════════════════════════════════ --%>
     <dialog id="edit-book-dialog" aria-labelledby="edit-dialog-title" aria-modal="true">
         <div class="dialog-panel bg-white border border-slate-200/80 shadow-2xl shadow-slate-900/10">

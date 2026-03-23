@@ -11,6 +11,7 @@ import { getContextPath }  from '../../util.js';
 import { BooksTable }      from './books-table.js';
 import { AddBookDialog }   from './add-book-dialog.js';
 import { EditBookDialog }  from './edit-book-dialog.js';
+import {showFeedbackMessage} from "../../common/book-card.js";
 
 let table      = null;
 let addDialog  = null;
@@ -69,9 +70,12 @@ function _handleDelete(bookId) {
         url:    `${getContextPath()}/admin/books/${bookId}`,
         method: 'DELETE',
     })
-        .done(() => table.reload())
+        .done(() => {
+            table.reload();
+            showFeedbackMessage("Book deleted successfully", true);
+        })
         .fail((jqXHR) => {
             console.error('Delete failed:', jqXHR.status, jqXHR.responseText);
-            alert('Failed to delete book. Please try again.');
+            showFeedbackMessage("Failed to delete the book, try again.", true);
         });
 }

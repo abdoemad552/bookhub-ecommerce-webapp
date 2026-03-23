@@ -12,6 +12,7 @@ import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 public class StatsRepositoryImpl implements StatsRepository {
@@ -75,7 +76,8 @@ public class StatsRepositoryImpl implements StatsRepository {
         return categoryCounts.stream()
             .map(t -> new TopCategoryDTO(
                 t.get("name", String.class),
-                t.get("count", Long.class) * 100.0 / total
+                BigDecimal.valueOf(t.get("count", Long.class) * 100.0 / total)
+                    .setScale(2, RoundingMode.DOWN)
             ))
             .toList();
     }

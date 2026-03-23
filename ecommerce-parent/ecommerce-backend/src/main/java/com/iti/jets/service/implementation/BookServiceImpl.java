@@ -3,6 +3,8 @@ package com.iti.jets.service.implementation;
 import com.iti.jets.model.dto.request.BookAddRequestDTO;
 import com.iti.jets.model.dto.request.BookFilterDTO;
 import com.iti.jets.model.dto.response.BookAddResponseDTO;
+import com.iti.jets.model.dto.response.BookSummaryDTO;
+import com.iti.jets.model.dto.response.PageResponseDTO;
 import com.iti.jets.model.entity.Author;
 import com.iti.jets.model.entity.Book;
 import com.iti.jets.model.entity.Category;
@@ -35,6 +37,17 @@ public class BookServiceImpl extends ContextHandler implements BookService {
     }
 
     @Override
+    public PageResponseDTO<BookSummaryDTO> findAllSummary(int page, int size) {
+        List<BookSummaryDTO> content = bookRepository.findAllSummary(page, size)
+            .stream()
+            .map(BookSummaryDTO::from)
+            .toList();
+
+        long total = bookRepository.count();
+        return new PageResponseDTO<>(content, page, size, total);
+    }
+
+    @Override
     public void delete(Long id) {
         executeInContext(() -> bookRepository.deleteById(id));
     }
@@ -62,8 +75,6 @@ public class BookServiceImpl extends ContextHandler implements BookService {
         }
 
         Category category = findOrCreateCategory(addRequest.getCategory());
-
-//        String imagePath = saveImage(addRequest.getImageBytes(), addRequest.getImageFileName());
 
         Book book = toEntity(addRequest, category);
 

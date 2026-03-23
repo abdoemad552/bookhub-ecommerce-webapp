@@ -128,6 +128,22 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
     }
 
     @Override
+    public List<Book> findAllSummary(int page, int size) {
+        return executeReadOnly(em -> em
+            .createQuery("""
+                SELECT DISTINCT b
+                FROM Book b
+                LEFT JOIN FETCH b.bookAuthors ba
+                LEFT JOIN FETCH ba.author
+                ORDER BY b.publishDate DESC
+            """, Book.class)
+            .setFirstResult(page * size)
+            .setMaxResults(size)
+            .getResultList()
+        );
+    }
+
+    @Override
     public Optional<Book> findByIsbn(String isbn) {
         return executeReadOnly(em -> em
             .createQuery("SELECT b FROM Book b WHERE b.isbn = :isbn", Book.class)

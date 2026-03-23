@@ -1,5 +1,5 @@
 /**
- * editBookDialog.js
+ * edit-book-dialog.js
  * Manages the "Edit Book" dialog.
  *
  * Usage:
