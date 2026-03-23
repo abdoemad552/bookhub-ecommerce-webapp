@@ -220,6 +220,7 @@ public class AdminBooksServlet extends HttpServlet {
                 bookService.updateCoverUrl(addResponse.getBookId(), coverUrl);
                 addResponse.setCoverUrl(coverUrl);
             } catch (Exception e) {
+                System.out.println(e.getMessage());
                 LOGGER.warn("Cover upload failed for book {}, saved without cover",
                     addResponse.getBookId());
             }

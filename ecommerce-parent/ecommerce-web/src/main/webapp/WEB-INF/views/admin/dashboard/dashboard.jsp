@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/dashboard.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/user-management.css">
     <script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body class="font-google-sans antialiased">

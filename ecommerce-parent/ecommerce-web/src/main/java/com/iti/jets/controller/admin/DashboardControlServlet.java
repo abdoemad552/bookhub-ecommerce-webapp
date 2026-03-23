@@ -50,6 +50,9 @@ public class DashboardControlServlet extends HttpServlet {
         } else if (tab.equalsIgnoreCase("products")) {
             request.getRequestDispatcher(PathStorage.ADMIN_DASHBOARD_PAGE_PRODUCTS)
                 .forward(request, response);
+        }else{
+            request.getRequestDispatcher(PathStorage.ADMIN_DASHBOARD_PAGE_USER_MANAGEMENT)
+                    .forward(request, response);
         }
     }
 
