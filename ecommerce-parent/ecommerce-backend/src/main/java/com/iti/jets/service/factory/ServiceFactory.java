@@ -5,6 +5,7 @@ import com.iti.jets.mapper.UserMapper;
 import com.iti.jets.repository.implementation.*;
 import com.iti.jets.repository.interfaces.*;
 import com.iti.jets.service.extra.EmailService;
+import com.iti.jets.service.extra.ImageService;
 import com.iti.jets.service.implementation.*;
 import com.iti.jets.service.interfaces.*;
 
@@ -34,6 +35,7 @@ public class ServiceFactory {
 
     // Extra Services
     private final EmailService emailService;
+    private final ImageService imageService;
 
     private ServiceFactory() {
         this.userRepository = new UserRepositoryImpl();
@@ -56,6 +58,7 @@ public class ServiceFactory {
 
         // Extra Services
         this.emailService = new EmailService();
+        this.imageService = new ImageService();
     }
 
     public static ServiceFactory getInstance() {
@@ -103,5 +106,9 @@ public class ServiceFactory {
 
     public EmailService getEmailService() {
         return emailService;
+    }
+
+    public ImageService getImageService() {
+        return imageService;
     }
 }

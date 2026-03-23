@@ -1,14 +1,15 @@
 package com.iti.jets.controller.admin;
 
 import com.iti.jets.model.dto.request.BookAddRequestDTO;
+import com.iti.jets.model.dto.request.ImageUploadRequest;
 import com.iti.jets.model.dto.response.BookAddResponseDTO;
-import com.iti.jets.model.entity.Book;
 import com.iti.jets.model.enums.BookType;
+import com.iti.jets.model.enums.ImageCategory;
+import com.iti.jets.service.extra.ImageService;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.BookService;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,6 +17,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -35,11 +38,15 @@ import java.util.stream.Collectors;
 public class AdminBooksServlet extends HttpServlet {
 
     private BookService bookService;
+    private ImageService imageService;
     private Jsonb jsonb;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminBooksServlet.class);
 
     @Override
     public void init() {
         this.bookService = ServiceFactory.getInstance().getBookService();
+        this.imageService = ServiceFactory.getInstance().getImageService();
         jsonb = JsonbBuilder.create();
     }
 
@@ -62,6 +69,8 @@ public class AdminBooksServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Part imagePart = request.getPart("image");
+
         BookAddRequestDTO addRequest;
         try {
             addRequest = parseAddRequest(request);
@@ -71,15 +80,17 @@ public class AdminBooksServlet extends HttpServlet {
         }
 
         Optional<BookAddResponseDTO> result = bookService.addBook(addRequest);
-
         if (result.isEmpty()) {
             writeError(response, HttpServletResponse.SC_CONFLICT,
                 "A book with ISBN '" + addRequest.getIsbn() + "' already exists.");
             return;
         }
 
-        // 3. Respond 201 Created
-        writeJson(response, HttpServletResponse.SC_CREATED, result.get());
+        BookAddResponseDTO addResponse = result.get();
+        handleCoverUpload(imagePart, addResponse);
+
+        // Respond 201 Created
+        writeJson(response, HttpServletResponse.SC_CREATED, addResponse);
     }
 
     @Override
@@ -151,14 +162,38 @@ public class AdminBooksServlet extends HttpServlet {
             throw new IllegalArgumentException("At least one author is required");
         dto.setAuthors(authors);
 
-        Part imagePart = request.getPart("image");
-        if (imagePart != null && imagePart.getSize() > 0) {
-            dto.setImageBytes(imagePart.getInputStream().readAllBytes());
-            dto.setImageFileName(imagePart.getSubmittedFileName());
-        }
-
         return dto;
     }
+
+    /**
+     * Uploads the cover image and updates the book's coverUrl in the DB.
+     * Failures are non-fatal — the book has already been saved successfully
+     * so we just log a warning and move on.
+     */
+    private void handleCoverUpload(
+        Part imagePart,
+        BookAddResponseDTO addResponse
+    ) {
+        if (imagePart != null && imagePart.getSize() > 0) {
+            try {
+                ImageUploadRequest uploadRequest = new ImageUploadRequest(
+                    imagePart.getInputStream(),
+                    imagePart.getContentType(),
+                    imagePart.getSize(),
+                    ImageCategory.BOOK
+                );
+
+                String coverUrl = imageService.uploadImage(uploadRequest);
+
+                bookService.updateCoverUrl(addResponse.getBookId(), coverUrl);
+                addResponse.setCoverUrl(coverUrl);
+            } catch (Exception e) {
+                LOGGER.warn("Cover upload failed for book {}, saved without cover",
+                    addResponse.getBookId());
+            }
+        }
+    }
+
 
     private String requireParam(HttpServletRequest request, String name, String errorMsg) {
         String val = request.getParameter(name);

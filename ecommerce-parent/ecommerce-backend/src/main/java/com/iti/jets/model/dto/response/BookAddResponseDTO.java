@@ -9,5 +9,5 @@ import lombok.*;
 @Builder
 public class BookAddResponseDTO {
     private Long bookId;
-    private String imagePath;
+    private String coverUrl;
 }

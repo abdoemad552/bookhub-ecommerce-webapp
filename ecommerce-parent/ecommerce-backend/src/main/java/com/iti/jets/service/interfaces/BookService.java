@@ -16,4 +16,6 @@ public interface BookService extends BaseService<Book, Long> {
     List<Book> findAllFeatured();
 
     Optional<BookAddResponseDTO> addBook(BookAddRequestDTO addRequest);
+
+    void updateCoverUrl(Long bookId, String coverUrl);
 }

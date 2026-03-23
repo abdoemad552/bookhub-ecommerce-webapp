@@ -137,6 +137,16 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
         );
     }
 
+    @Override
+    public void updateCoverUrl(Long bookId, String coverUrl) {
+        executeInTransaction(em -> em
+            .createQuery("UPDATE Book b SET b.imageUrl = :coverUrl WHERE b.id = :bookId")
+            .setParameter("coverUrl", coverUrl)
+            .setParameter("bookId", bookId)
+            .executeUpdate()
+        );
+    }
+
     private List<Order> buildOrderBy(CriteriaBuilder criteriaBuilder, Root<Book> bookRoot, BookFilterDTO filter) {
         String sortCriteria = filter == null || filter.getSortCriteria() == null
                 ? "featured"

@@ -69,7 +69,12 @@ public class BookServiceImpl extends ContextHandler implements BookService {
 
         Book saved = bookRepository.save(book);
 
-        return Optional.of(new BookAddResponseDTO(saved.getId(), saved.getImageUrl()));
+        return Optional.of(new BookAddResponseDTO(saved.getId(), null));
+    }
+
+    @Override
+    public void updateCoverUrl(Long bookId, String coverUrl) {
+        executeInContext(() -> bookRepository.updateCoverUrl(bookId, coverUrl));
     }
 
     private Category findOrCreateCategory(String category) {

@@ -23,7 +23,5 @@ public class BookAddRequestDTO {
     private BookType        bookType;
     private String          category;
     private List<String>    authors;
-
-    private byte[]  imageBytes;
-    private String  imageFileName;
+    private String          coverUrl;
 }
