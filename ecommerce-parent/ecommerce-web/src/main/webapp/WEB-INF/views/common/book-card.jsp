@@ -1,8 +1,9 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="bookCardVariant" value="${empty requestScope.bookCardVariant ? 'carousel' : requestScope.bookCardVariant}" />
 
 <c:forEach items="${requestScope.books}" var="book">
-    <div onclick="if (event.target.closest('[data-add-to-cart-button]')) { return; } window.location.href = '${pageContext.request.contextPath}/books/${book.id}'" data-slot="card" class="bg-card text-card-foreground rounded-xl border shadow-sm overflow-hidden hover:shadow-lg hover:scale-95 active:scale-90 cursor-pointer flex flex-row transition-all duration-150 ease-in-out ${bookCardVariant eq 'grid' ? 'w-full' : 'shrink-0 w-72 sm:w-80 md:w-96'}">
+    <div onclick="if (event.target.closest('[data-add-to-cart-button]')) { return; } window.location.href = '${pageContext.request.contextPath}/books/${book.id}'" data-slot="card" class="bg-card text-card-foreground rounded-xl border shadow-sm overflow-hidden hover:shadow-lg hover:scale-95 cursor-pointer flex flex-row transition-all duration-150 ease-in-out ${bookCardVariant eq 'grid' ? 'w-full' : 'shrink-0 w-72 sm:w-80 md:w-96'}">
 
         <!-- Book Cover -->
         <div class="w-24 sm:w-28 md:w-32 shrink-0">
@@ -48,13 +49,13 @@
 
             <!-- Price + Button -->
             <div class="flex items-center justify-between pt-3 border-t border-border/50 mt-3">
-                <span class="font-bold text-primary text-sm md:text-base">${book.price} EGP</span>
+                <span class="font-bold text-primary text-sm md:text-base line-clamp-1">${book.price} EGP</span>
                 <button type="button"
                         data-slot="button"
                         data-add-to-cart-button
                         data-book-id="${book.id}"
                         data-out-of-stock="${book.stockQuantity le 0}"
-                        class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] text-primary-foreground active:bg-primary/80 h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5 bg-primary hover:bg-primary/90"
+                        class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] text-primary-foreground active:bg-primary/80 h-8 rounded-md gap-1.5 px-3 bg-primary hover:bg-primary/90"
                         <c:if test="${book.stockQuantity le 0}">disabled="disabled"</c:if>>
                     <span data-add-to-cart-icon class="flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart w-3 h-3 md:w-4 md:h-4" aria-hidden="true">

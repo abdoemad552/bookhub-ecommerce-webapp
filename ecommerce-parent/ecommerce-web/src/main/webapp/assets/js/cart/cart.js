@@ -138,6 +138,11 @@ function bindCartActions() {
             updateCartRow(row, "DELETE", Number(row.dataset.quantity) || 1);
         });
     });
+
+    document.querySelector("#checkout-btn")
+        .addEventListener('click', function () {
+            window.location.href = getContextPath() + (this.dataset['is-guest'] === "true" ? "/login" : "/checkout");
+        });
 }
 
 function initCartPage() {

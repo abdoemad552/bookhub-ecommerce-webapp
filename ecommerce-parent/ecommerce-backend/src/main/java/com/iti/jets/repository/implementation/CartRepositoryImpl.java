@@ -148,6 +148,19 @@ public class CartRepositoryImpl extends BaseRepositoryImpl<Cart, Long> implement
         });
     }
 
+
+    @Override
+    public void deleteByUserId(Long userId) {
+        executeInTransaction(em -> {
+            Optional<Cart> cartOpt = findByUserId(userId.intValue());
+            if (cartOpt.isEmpty()) {
+                return null;
+            }
+            em.remove(cartOpt.get());
+            return null;
+        });
+    }
+
     private Optional<Cart> findManagedCartByUserId(EntityManager em, Integer userId) {
         if (userId == null) {
             return Optional.empty();
@@ -188,7 +201,7 @@ public class CartRepositoryImpl extends BaseRepositoryImpl<Cart, Long> implement
     private Cart createCart(EntityManager em, User user) {
         Cart cart = Cart.builder()
                 .user(user)
-                .totalPrice(0)
+                .totalPrice((double) 0)
                 .build();
         em.persist(cart);
         em.flush();

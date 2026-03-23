@@ -1,9 +1,17 @@
 package com.iti.jets.model.dto.response;
 
-import java.util.List;
+import lombok.*;
 
+import java.util.Set;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class CartDTO {
     private double totalPrice;
     private double shippingPrice;
-    private List<CartItemDTO> items;
+    private Set<CartItemDTO> items;
 }
