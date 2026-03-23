@@ -5,11 +5,11 @@ import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.UserService;
 import com.iti.jets.util.CookieHandler;
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
-import jakarta.servlet.http.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 
-@WebFilter("/*")
 public class AuthFilter implements Filter {
 
     private UserService userService;

@@ -4,13 +4,11 @@ import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.UserService;
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebFilter({"/checkout", "/order", "/profile"})
 public class UserRefreshFilter implements Filter {
 
     private UserService userService;
