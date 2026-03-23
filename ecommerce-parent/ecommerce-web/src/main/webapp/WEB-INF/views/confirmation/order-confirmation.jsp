@@ -195,7 +195,7 @@
         My Orders
       </a>
 
-      <a href="${pageContext.request.contextPath}/home"
+      <a href="${pageContext.request.contextPath}/explore"
          class="btn-modern py-3.5 px-4 text-primary-foreground font-semibold text-base
                 rounded-xl focus:outline-none uppercase tracking-wide
                 flex items-center justify-center gap-2"

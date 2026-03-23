@@ -54,7 +54,11 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
                 return ResponseFactory.failure("Invalid User");
             }
 
-            Order orderEntity = buildOrderEntity(request, userOpt.get());
+            BaseResponse<Order> res = buildOrderEntity(request, userOpt.get());
+            if(res.isFailure()){
+                return ResponseFactory.failure(res.getMessage());
+            }
+            Order orderEntity = res.getData();
             orderRepository.update(orderEntity);
 
             // Update the current user
@@ -206,7 +210,7 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
                 .build();
     }
 
-    private Order buildOrderEntity(PlaceOrderRequestDTO request, User user) {
+    private BaseResponse<Order> buildOrderEntity(PlaceOrderRequestDTO request, User user) {
 
         // Build Shipping address
         Address shippingAddress = Address.builder()
@@ -244,12 +248,18 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
             );
 
             // Update book data
+            if(book.getStockQuantity() - item.getQuantity() < 0){
+                return ResponseFactory.failure("Only  " + book.getStockQuantity() + " items available in stock from " + book.getTitle());
+            }
+            if(book.getStockQuantity() == 0){
+                return ResponseFactory.failure("This book: " + book.getTitle() + " is out of stock");
+            }
             book.setStockQuantity(book.getStockQuantity() - item.getQuantity());
-            book.setStockQuantity(book.getStockQuantity() + item.getQuantity());
+            book.setSoldQuantity(book.getSoldQuantity() + item.getQuantity());
             bookRepository.update(book);
         }
 
-        return orderEntity;
+        return ResponseFactory.success("Order entity formed", orderEntity);
     }
 
     private boolean updateCurrentUserData(User user, Order orderEntity, double totalPrice) {
