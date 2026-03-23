@@ -9,8 +9,6 @@ import com.iti.jets.service.extra.EmailService;
 import com.iti.jets.service.extra.ImageService;
 import com.iti.jets.service.implementation.*;
 import com.iti.jets.service.interfaces.*;
-import com.iti.jets.service.implementation.*;
-import com.iti.jets.service.interfaces.*;
 
 
 public class ServiceFactory {
@@ -62,7 +60,6 @@ public class ServiceFactory {
         this.wishlistService = new WishlistServiceImpl(wishlistRepository, userRepository, bookRepository);
         this.cartService = new CartServiceImpl(cartRepository, bookRepository, CartMapper.getInstance());
         this.orderService = new OrderServiceImpl(orderRepository, userRepository, bookRepository, cartRepository);
-        this.cartService = new CartServiceImpl(cartRepository);
         this.statsService = new StatsServiceImpl(statsRepository);
 
         // Extra Services

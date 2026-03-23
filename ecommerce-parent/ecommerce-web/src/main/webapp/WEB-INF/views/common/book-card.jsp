@@ -9,7 +9,7 @@
         <div class="w-24 sm:w-28 md:w-32 shrink-0">
             <c:choose>
                 <c:when test="${not empty book.coverPicUrl}">
-                    <img src="${book.coverPicUrl}" alt="${book.title}" class="w-full h-full object-cover" />
+                    <img src="${pageContext.request.contextPath}/${book.coverPicUrl}" alt="${book.title}" class="w-full h-full object-cover" />
                 </c:when>
                 <c:otherwise>
                     <div class="w-full h-full bg-[#eef2ec] flex items-center justify-center">

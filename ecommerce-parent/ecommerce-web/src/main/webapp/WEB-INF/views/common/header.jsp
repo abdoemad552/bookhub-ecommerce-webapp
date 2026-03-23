@@ -16,7 +16,7 @@
     <div class="flex items-center justify-between gap-4 h-full">
 
       <!-- Logo -->
-      <a class="nav-logo flex items-center gap-2.5 flex-shrink-0" href="${pageContext.request.contextPath}">
+      <a class="nav-logo flex items-center gap-2.5 shrink-0" href="${pageContext.request.contextPath}">
         <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-sm shadow-primary/30 flex-shrink-0">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
@@ -34,7 +34,7 @@
         <!-- Cart -->
         <a class="relative shrink-0" href="${pageContext.request.contextPath}/cart">
           <button data-slot="button"
-                  class="inline-flex items-center justify-center gap-1.5 bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground text-sm font-medium h-9 px-4 rounded-xl transition-colors whitespace-nowrap relative">
+                  class="inline-flex items-center justify-center gap-1.5 bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground text-sm font-medium h-10 px-4 rounded-xl transition-colors whitespace-nowrap relative cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
                  aria-hidden="true">
@@ -52,13 +52,13 @@
 
                 <c:choose>
                     <c:when test="${empty sessionScope.user}">
-                        <a href="${pageContext.request.contextPath}/login" class="flex-shrink-0">
-                            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground h-10 rounded-xl px-6">
+                        <a href="${pageContext.request.contextPath}/login" class="shrink-0">
+                            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold bg-background shadow-xs hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-all border h-10 px-6 rounded-xl cursor-pointer">
                                 Sign In
                             </button>
                         </a>
-                        <a href="${pageContext.request.contextPath}/signup" class="hidden sm:block flex-shrink-0">
-                            <button class="inline-flex items-center justify-center gap-1.5 bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground text-sm font-medium h-9 px-4 rounded-xl transition-colors whitespace-nowrap relative">
+                        <a href="${pageContext.request.contextPath}/signup" class="hidden sm:block shrink-0">
+                            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground h-10 px-6 rounded-xl transition-all relative cursor-pointer">
                                 Sign Up
                             </button>
                         </a>
