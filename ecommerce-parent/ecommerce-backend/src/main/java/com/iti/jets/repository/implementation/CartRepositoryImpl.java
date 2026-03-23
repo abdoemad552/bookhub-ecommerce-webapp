@@ -88,6 +88,13 @@ public class CartRepositoryImpl extends BaseRepositoryImpl<Cart, Long> implement
                     .findFirst()
                     .orElse(null);
 
+            int currentQuantityInCart = existingItem == null ? 0 : existingItem.getQuantity();
+            int availableStock = book.getStockQuantity() == null ? 0 : book.getStockQuantity();
+
+            if (currentQuantityInCart + safeQuantity > availableStock) {
+                return false;
+            }
+
             if (existingItem == null) {
                 CartItem cartItem = CartItem.builder()
                         .cart(cart)
