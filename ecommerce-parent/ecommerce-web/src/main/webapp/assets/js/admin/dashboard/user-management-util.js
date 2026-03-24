@@ -1,9 +1,6 @@
 import {getContextPath} from "../../util.js";
 import {state} from "./user-management.js";
 
-// Constant
-const AVATAR_COLORS = 10;
-
 // DOM helpers
 export const $ = (sel, ctx = document) => {
     if (typeof sel !== "string") {
@@ -58,11 +55,6 @@ export function escHtml(str) {
     return String(str ?? "")
         .replace(/&/g, "&amp;").replace(/</g, "&lt;")
         .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-}
-
-export function fmtDate(iso) {
-    if (!iso) return "—";
-    return new Date(iso).toLocaleDateString("en-US", {year: "numeric", month: "short", day: "numeric"});
 }
 
 export function fmtMoney(amount) {
@@ -262,4 +254,102 @@ export function buildPageRange(current, total) {
         result.push(sorted[i]);
     }
     return result;
+}
+
+// Render order cards
+export function buildOrderCard(order) {
+    const statusMap = {
+        "delivered": "status-delivered",
+        "processing": "status-processing",
+        "cancelled": "status-cancelled",
+    };
+
+    const statusKey = order.status?.toLowerCase() ?? "";
+    const statusClass = statusMap[statusKey] ?? "status-processing";
+    const statusLabel = order.status
+        ? order.status.charAt(0) + order.status.slice(1).toLowerCase()
+        : "Processing";
+    const orderUrl = `${getContextPath()}/order-confirmation?orderId=${order.id}`;
+    const dateLabel = order.createdAt
+        ? new Date(order.createdAt).toLocaleDateString("en-US", {year: "numeric", month: "short", day: "numeric"})
+        : null;
+
+    const isCancellable = statusKey !== "cancelled" && statusKey !== "delivered";
+
+    return `
+        <div class="um-order-card-wrap" data-order-id="${order.id}">
+            <a href="${orderUrl}" class="um-order-card" aria-label="View order ${escHtml(order.orderCode ?? String(order.id))}">
+                <div class="um-order-card-left">
+                    <div class="um-order-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 10a4 4 0 0 1-8 0"/>
+                            <path d="M3.103 6.034h17.794"/>
+                            <path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="um-order-code">${escHtml(order.orderCode ?? "#" + order.id)}</span>
+                        <span class="um-order-meta">
+                            <span class="um-order-status ${statusClass}">${escHtml(statusLabel)}</span>
+                            ${dateLabel ? `<span class="um-order-date">${escHtml(dateLabel)}</span>` : ""}
+                        </span>
+                    </div>
+                </div>
+                <div class="um-order-card-right">
+                    <span class="um-order-total">${fmtMoney(order.total)}</span>
+                    <span class="um-order-arrow">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m9 18 6-6-6-6"/>
+                        </svg>
+                    </span>
+                </div>
+            </a>
+            ${isCancellable ? `
+            <button class="um-cancel-order-btn" data-order-id="${order.id}"
+                    aria-label="Cancel order ${escHtml(order.orderCode ?? String(order.id))}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+                </svg>
+                Cancel
+            </button>` : ""}
+        </div>`;
+}
+
+// Toast
+export function showToast(message, type = "success") {
+    const container = document.getElementById("um-toast-container");
+    if (!container) return;
+
+    const toast = document.createElement("div");
+    toast.className = `um-toast um-toast-${type}`;
+
+    const icon = type === "success"
+        ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`
+        : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+
+    toast.innerHTML = `
+        <span class="um-toast-icon">${icon}</span>
+        <span class="um-toast-msg">${escHtml(message)}</span>
+        <button class="um-toast-close" aria-label="Dismiss">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>`;
+
+    toast.querySelector(".um-toast-close").addEventListener("click", () => dismissToast(toast));
+    container.appendChild(toast);
+
+    // Trigger enter animation on next frame
+    requestAnimationFrame(() => toast.classList.add("um-toast-show"));
+
+    // Auto-dismiss after 4s
+    setTimeout(() => dismissToast(toast), 4000);
+}
+
+export function dismissToast(toast) {
+    toast.classList.remove("um-toast-show");
+    toast.classList.add("um-toast-hide");
+    toast.addEventListener("transitionend", () => toast.remove(), {once: true});
 }
