@@ -62,6 +62,7 @@ public class BookInfoServlet extends HttpServlet {
         boolean isInWishlist = user != null && wishlistService.isInWishlist(Math.toIntExact(user.getId()), Math.toIntExact(bookId));
         ReviewDTO userReview = user == null ? null : reviewService.getUserBookReview(Math.toIntExact(user.getId()), Math.toIntExact(bookId));
 
+        System.out.println(book.getImageUrl());
         request.setAttribute("book", book);
         double averageRating = book.getAverageRating() == null ? 0.0 : book.getAverageRating();
         request.setAttribute("bookAverageRating", (int) Math.floor(averageRating));

@@ -33,17 +33,23 @@
   <div class="oc-shell">
 
     <%-- HERO  — badge + order ID --%>
-    <div class="oc-hero oc-reveal oc-reveal--1">
-      <div class="oc-hero__badge">
-        <div class="oc-hero__pulse"></div>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-      </div>
-      <h1 class="oc-hero__title">Order Placed!</h1>
-      <p class="oc-hero__sub">Thanks for Choosing BookHub.</p>
-    </div>
+    <c:choose>
+      <c:when test="${requestScope.AdminRequest eq true}">
+      </c:when>
+      <c:otherwise>
+        <div class="oc-hero oc-reveal oc-reveal--1">
+          <div class="oc-hero__badge">
+            <div class="oc-hero__pulse"></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <h1 class="oc-hero__title">Order Placed!</h1>
+          <p class="oc-hero__sub">Thanks for Choosing BookHub.</p>
+        </div>
+      </c:otherwise>
+    </c:choose>
 
     <%-- Order ID card — same width as all other cards --%>
     <div class="card-modern oc-reveal oc-reveal--2" style="padding:20px;">
@@ -167,50 +173,55 @@
       </div>
     </div>
 
-      <%-- SHIPPING ADDRESS --%>
-      <div class="card-modern oc-reveal oc-reveal--4" style="padding:20px;">
+    <%-- SHIPPING ADDRESS --%>
+    <div class="card-modern oc-reveal oc-reveal--4" style="padding:20px;">
 
-        <div class="addr-section-label" style="margin-bottom:14px;">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
-            <circle cx="12" cy="10" r="3"/>
-          </svg>
-          Shipping To
-        </div>
-
-        <%-- populated by JS --%>
-        <div class="oc-address" id="oc-address"></div>
+      <div class="addr-section-label" style="margin-bottom:14px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        Shipping To
       </div>
 
-    <%-- ACTIONS --%>
-    <div class="nav-row has-back oc-reveal oc-reveal--5" style="margin-top:0;">
-
-      <a href="${pageContext.request.contextPath}/profile" class="orders-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-        </svg>
-        My Orders
-      </a>
-
-      <a href="${pageContext.request.contextPath}/home"
-         class="btn-modern py-3.5 px-4 text-primary-foreground font-semibold text-base
-                rounded-xl focus:outline-none uppercase tracking-wide
-                flex items-center justify-center gap-2"
-         style="text-decoration:none;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/>
-          <path d="M21 21l-4.35-4.35"/>
-        </svg>
-        Continue Shopping
-      </a>
+      <%-- populated by JS --%>
+      <div class="oc-address" id="oc-address"></div>
     </div>
 
+    <%-- ── ACTIONS ──────────────────────────────────────────── --%>
+    <c:choose>
+      <c:when test="${requestScope.AdminRequest eq true}">
+      </c:when>
+
+      <c:otherwise>
+        <div class="oc-actions oc-reveal oc-reveal--5">
+
+          <a href="${pageContext.request.contextPath}/profile" class="orders-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            My Orders
+          </a>
+
+          <a href="${pageContext.request.contextPath}/explore"
+             class="btn-modern py-3.5 px-4 text-primary-foreground font-semibold text-base
+                rounded-xl focus:outline-none uppercase tracking-wide
+                flex items-center justify-center gap-2"
+             style="text-decoration:none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            Continue Shopping
+          </a>
+        </div>
+      </c:otherwise>
+    </c:choose>
   </div>
 </main>
-
 </body>
 </html>

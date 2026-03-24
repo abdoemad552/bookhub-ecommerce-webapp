@@ -9,6 +9,7 @@ import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.model.dto.response.factory.ResponseFactory;
 import com.iti.jets.model.entity.Address;
 import com.iti.jets.model.entity.User;
+import com.iti.jets.model.enums.UserRole;
 import com.iti.jets.repository.interfaces.CategoryRepository;
 import com.iti.jets.repository.interfaces.UserRepository;
 import com.iti.jets.service.generic.ContextHandler;
@@ -152,6 +153,26 @@ public class UserServiceImpl extends ContextHandler implements UserService {
 
             userRepository.update(user);
             return ResponseFactory.success("Address saved successfully");
+        });
+    }
+
+    @Override
+    public boolean toggleRole(Long userId) {
+        return executeInContext(() -> {
+            Optional<User> userOpt = userRepository.findById(userId);
+            if (userOpt.isEmpty()) {
+                return false;
+            }
+
+            User user = userOpt.get();
+            if (user.getRole() == UserRole.USER) {
+                user.setRole(UserRole.ADMIN);
+            } else {
+                user.setRole(UserRole.USER);
+            }
+
+            userRepository.update(user);
+            return true;
         });
     }
 }

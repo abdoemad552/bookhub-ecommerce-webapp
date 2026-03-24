@@ -6,6 +6,7 @@ import com.iti.jets.mapper.UserMapper;
 import com.iti.jets.repository.implementation.*;
 import com.iti.jets.repository.interfaces.*;
 import com.iti.jets.service.extra.EmailService;
+import com.iti.jets.service.extra.ImageService;
 import com.iti.jets.service.implementation.*;
 import com.iti.jets.service.interfaces.*;
 
@@ -21,6 +22,7 @@ public class ServiceFactory {
     private final ReviewRepository reviewRepository;
     private final WishlistRepository wishlistRepository;
     private final CartRepository cartRepository;
+    private final StatsRepository statsRepository;
     private final OrderRepository orderRepository;
 
     // Service
@@ -31,10 +33,12 @@ public class ServiceFactory {
     private final ReviewService reviewService;
     private final WishlistService wishlistService;
     private final CartService cartService;
+    private final StatsService statsService;
     private final OrderService orderService;
 
     // Extra Services
     private final EmailService emailService;
+    private final ImageService imageService;
 
     private ServiceFactory() {
         // Repository
@@ -44,20 +48,23 @@ public class ServiceFactory {
         this.reviewRepository = new ReviewRepositoryImpl();
         this.wishlistRepository = new WishlistRepositoryImpl();
         this.cartRepository = new CartRepositoryImpl();
+        this.statsRepository = new StatsRepositoryImpl();
         this.orderRepository = new OrderRepositoryImpl();
 
         // Service
         this.authService = new AuthServiceImpl(userRepository, categoryRepository, UserMapper.getInstance());
         this.userService = new UserServiceImpl(userRepository, categoryRepository, UserMapper.getInstance());
         this.categoryService = new CategoryServiceImpl(categoryRepository, CategoryMapper.getInstance());
-        this.bookService = new BookServiceImpl(bookRepository);
+        this.bookService = new BookServiceImpl(bookRepository, categoryRepository);
         this.reviewService = new ReviewServiceImpl(reviewRepository, userRepository, bookRepository);
         this.wishlistService = new WishlistServiceImpl(wishlistRepository, userRepository, bookRepository);
         this.cartService = new CartServiceImpl(cartRepository, bookRepository, CartMapper.getInstance());
-        this.orderService = new OrderServiceImpl(orderRepository, userRepository, bookRepository, cartRepository);
+        this.orderService = new OrderServiceImpl(orderRepository, userRepository, bookRepository, cartRepository, UserMapper.getInstance());
+        this.statsService = new StatsServiceImpl(statsRepository);
 
         // Extra Services
         this.emailService = new EmailService();
+        this.imageService = new ImageService();
     }
 
     public static ServiceFactory getInstance() {
@@ -99,11 +106,19 @@ public class ServiceFactory {
         return cartService;
     }
 
+    public StatsService getStatsService() {
+        return statsService;
+    }
+
     public EmailService getEmailService() {
         return emailService;
     }
 
     public OrderService getOrderService() {
         return orderService;
+    }
+
+    public ImageService getImageService() {
+        return imageService;
     }
 }

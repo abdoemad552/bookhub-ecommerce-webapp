@@ -22,8 +22,8 @@
             <div class="flex justify-center xl:justify-start">
                 <div class="w-full max-w-110 aspect-square rounded-lg border border-[#e6e0d7] bg-[#eef2ec] shadow-[0_2px_10px_rgba(15,23,42,0.06)] overflow-hidden flex items-center justify-center">
                     <c:choose>
-                        <c:when test="${false}">
-                            <img src="https://blog-cdn.reedsy.com/directories/gallery/396/large_a134a0dc3dc2b5ea5505360015725a0f.jpg" alt="${book.title}" class="w-full h-full object-contain p-6"/>
+                        <c:when test="${not empty book.imageUrl}">
+                            <img src="${pageContext.request.contextPath}/${book.imageUrl}" alt="${book.title}" class="w-full h-full object-contain p-6"/>
                         </c:when>
                         <c:otherwise>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b39d95" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-32 h-32" aria-hidden="true">

@@ -1,11 +1,12 @@
 package com.iti.jets.service.extra;
 
 import com.iti.jets.model.dto.response.UserDTO;
+import com.iti.jets.model.enums.UserRole;
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jakarta.mail.*;
-import jakarta.mail.internet.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -124,6 +125,68 @@ public class EmailService {
                 user.getUsername(),
                 orderId,
                 totalPrice
+        );
+
+        CompletableFuture.runAsync(() ->
+                sendEmail(user.getEmail(), subject, body)
+        );
+    }
+
+    public void sendToggleRoleMail(UserDTO user) {
+
+        String subject = "🔐 Your Account Role Has Been Updated";
+
+        String body = """
+            Hello %s,
+            
+            We wanted to let you know that your role on BookHub has been successfully updated.
+            
+            👤 New Role: %s
+            
+            With this change, your access and permissions within the platform may have been updated accordingly.
+            
+            If this change was made by you or an administrator, no further action is needed.
+            
+            If you did not expect this change, please contact our support team immediately.
+            
+            Thank you for being part of BookHub 📚✨
+            
+            Best Regards,
+            BookHub Team
+            """.formatted(
+                user.getUsername(),
+                user.getRole().getPrettyName()
+        );
+
+        CompletableFuture.runAsync(() ->
+                sendEmail(user.getEmail(), subject, body)
+        );
+    }
+
+    public void sendCancelOrder(UserDTO user, Long orderId){
+
+        String orderCode = "ORD-2026-" + orderId;
+
+        String subject = "❌ Your Order Has Been Cancelled";
+
+        String body = """
+            Hello %s,
+            
+            We’re writing to confirm that your order has been successfully cancelled.
+            
+            🧾 Order Details:
+            Order ID: #%s
+           
+            If you did not request this cancellation or believe this was a mistake,
+            please contact our support team as soon as possible.
+            
+            We hope to serve you again soon 💙
+            
+            Best Regards,
+            BookHub Team
+            """.formatted(
+                user.getUsername(),
+                orderCode
         );
 
         CompletableFuture.runAsync(() ->

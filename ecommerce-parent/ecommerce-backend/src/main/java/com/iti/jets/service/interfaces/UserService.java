@@ -18,4 +18,6 @@ public interface UserService extends BaseService<UserDTO, Long> {
     UserAddressesDTO loadUserAddresses(Long id);
 
     BaseResponse<Void> saveNewUserAddress(Long userId, AddressRequestDTO addressRequestDto);
+
+    boolean toggleRole(Long userId);
 }

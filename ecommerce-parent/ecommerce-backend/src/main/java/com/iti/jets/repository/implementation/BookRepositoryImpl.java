@@ -127,6 +127,42 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
         );
     }
 
+    @Override
+    public List<Book> findAllSummary(int page, int size) {
+        return executeReadOnly(em -> em
+            .createQuery("""
+                SELECT DISTINCT b
+                FROM Book b
+                LEFT JOIN FETCH b.bookAuthors ba
+                LEFT JOIN FETCH ba.author
+                ORDER BY b.publishDate DESC
+            """, Book.class)
+            .setFirstResult(page * size)
+            .setMaxResults(size)
+            .getResultList()
+        );
+    }
+
+    @Override
+    public Optional<Book> findByIsbn(String isbn) {
+        return executeReadOnly(em -> em
+            .createQuery("SELECT b FROM Book b WHERE b.isbn = :isbn", Book.class)
+            .setParameter("isbn", isbn)
+            .getResultStream()
+            .findFirst()
+        );
+    }
+
+    @Override
+    public void updateCoverUrl(Long bookId, String coverUrl) {
+        executeInTransaction(em -> em
+            .createQuery("UPDATE Book b SET b.imageUrl = :coverUrl WHERE b.id = :bookId")
+            .setParameter("coverUrl", coverUrl)
+            .setParameter("bookId", bookId)
+            .executeUpdate()
+        );
+    }
+
     private List<Order> buildOrderBy(CriteriaBuilder criteriaBuilder, Root<Book> bookRoot, BookFilterDTO filter) {
         String sortCriteria = filter == null || filter.getSortCriteria() == null
                 ? "featured"

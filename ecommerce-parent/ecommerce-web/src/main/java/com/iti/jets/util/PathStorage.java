@@ -22,7 +22,10 @@ public class PathStorage {
     public static final String FOOTER       = "/WEB-INF/views/common/footer.jsp";
 
     // Admin Pages
-    public static final String ADMIN_DASHBOARD_PAGE = "/WEB-INF/views/admin/dashboard/dashboard.jsp";
+    public static final String ADMIN_DASHBOARD_PAGE                  = "/WEB-INF/views/admin/dashboard/dashboard.jsp";
+    public static final String ADMIN_DASHBOARD_PAGE_OVERVIEW         = "/WEB-INF/views/admin/dashboard/overview.jsp";
+    public static final String ADMIN_DASHBOARD_PAGE_PRODUCTS         = "/WEB-INF/views/admin/dashboard/products.jsp";
+    public static final String ADMIN_DASHBOARD_PAGE_USER_MANAGEMENT  = "/WEB-INF/views/admin/dashboard/user-management.jsp";
 
     // Servlet Mapping
     public static final String HOME_SERVLET = "home";

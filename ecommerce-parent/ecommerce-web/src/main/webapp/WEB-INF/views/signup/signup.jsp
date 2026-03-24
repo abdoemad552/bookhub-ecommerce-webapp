@@ -21,8 +21,6 @@
 <body class="font-google-sans antialiased">
 <div class="min-h-screen bg-gradient-to-br from-background via-background to-accent/5
             flex flex-col relative">
-    <jsp:include page="../common/header.jsp"/>
-
     <main class="flex-1 flex items-center justify-center px-4 py-8 relative">
 
     <div class="absolute -top-20 -right-20 w-72 h-72 bg-accent/10 rounded-full blur-3xl animate-float opacity-25 pointer-events-none"></div>
@@ -364,7 +362,6 @@
         </div>
     </div>
     </main>
-    <jsp:include page="../common/footer.jsp"/>
 </div>
 </body>
 </html>
