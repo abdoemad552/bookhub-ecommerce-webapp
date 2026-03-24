@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implements BookRepository {
 
@@ -51,7 +52,17 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
             List<Predicate> predicates = new ArrayList<>();
 
             if (filter != null) {
-                if (filter.getCategory() != null && !filter.getCategory().isBlank()) {
+                Set<String> categoryFilters = filter.getCategories() == null
+                        ? Set.of()
+                        : filter.getCategories().stream()
+                        .filter(category -> category != null && !category.isBlank())
+                        .map(category -> category.trim().toLowerCase(Locale.ROOT))
+                        .collect(java.util.stream.Collectors.toSet());
+
+                if (!categoryFilters.isEmpty()) {
+                    Join<Object, Object> categoryJoin = bookRoot.join("category", JoinType.LEFT);
+                    predicates.add(criteriaBuilder.lower(categoryJoin.get("name")).in(categoryFilters));
+                } else if (filter.getCategory() != null && !filter.getCategory().isBlank()) {
                     Join<Object, Object> categoryJoin = bookRoot.join("category", JoinType.LEFT);
                     predicates.add(
                             criteriaBuilder.equal(
