@@ -3,8 +3,6 @@ package com.iti.jets.controller;
 import com.iti.jets.model.dto.response.CategoryDTO;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.CategoryService;
-import jakarta.json.Json;
-import jakarta.json.JsonArrayBuilder;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

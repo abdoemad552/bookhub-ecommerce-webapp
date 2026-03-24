@@ -132,7 +132,7 @@ public class BookInfoServlet extends HttpServlet {
 
         if (currentCategory != null && !currentCategory.isBlank()) {
             BookFilterDTO filter = BookFilterDTO.builder()
-                    .category(currentCategory)
+                    .category(String.valueOf(currentBook.getCategory().getId()))
                     .sortCriteria("featured")
                     .build();
 

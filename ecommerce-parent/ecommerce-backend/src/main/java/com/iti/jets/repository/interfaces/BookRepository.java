@@ -11,6 +11,8 @@ public interface BookRepository extends BaseRepository<Book, Long> {
 
     List<Book> findAll(int pageNumber, int pageSize, BookFilterDTO filter);
 
+    long count(BookFilterDTO filter);
+
     List<Book> findAllFeatured();
 
     List<Book> findAllSummary(int page, int size);

@@ -30,21 +30,17 @@ public class CategoryServiceImpl extends ContextHandler implements CategoryServi
     public CategoryDTO findById(Long id) {
         return executeInContext(() -> {
             Optional<Category> categoryOpt = categoryRepository.findById(id);
-            if (categoryOpt.isPresent()) {
-                return categoryMapper.toDTO(categoryOpt.get());
-            } else {
-                return null;
-            }
+            return categoryOpt.map(categoryMapper::toDTO).orElse(null);
         });
     }
 
     @Override
     public List<CategoryDTO> findAll() {
-        return executeInContext(() -> {
-            return categoryRepository.findAll().stream()
-                    .map(categoryMapper::toDTO)
-                    .toList();
-        });
+        return executeInContext(() -> categoryRepository.findAll()
+            .stream()
+            .map(categoryMapper::toDTO)
+            .toList()
+        );
     }
 
     @Override

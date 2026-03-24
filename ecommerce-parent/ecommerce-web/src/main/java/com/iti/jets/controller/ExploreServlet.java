@@ -1,6 +1,8 @@
 package com.iti.jets.controller;
 
 import com.iti.jets.model.dto.request.BookFilterDTO;
+import com.iti.jets.model.dto.response.BookCardDTO;
+import com.iti.jets.model.dto.response.PageResponseDTO;
 import com.iti.jets.model.entity.Book;
 import com.iti.jets.mock.dto.BookCardDto;
 import com.iti.jets.service.factory.ServiceFactory;
@@ -20,8 +22,9 @@ import java.util.stream.Collectors;
 @WebServlet("/explore")
 public class ExploreServlet extends HttpServlet {
 
-    private static final int BOOKS_PAGE_SIZE = 9;
-    private static final int DEFAULT_MAX_PRICE = 1000;
+    private static final int DEFAULT_MIN_PRICE = 0;
+    private static final int DEFAULT_MAX_PRICE = 999999;
+    private static final int DEFAULT_PAGE_SIZE = 12;
 
     private BookService bookService;
 
@@ -35,40 +38,71 @@ public class ExploreServlet extends HttpServlet {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws ServletException, IOException {
-        int pageNumber = parsePositiveInteger(request.getParameter("page"), 1);
-        String selectedCategory = normalizeCategory(request.getParameter("category"));
-        String searchQuery = normalizeText(request.getParameter("query"));
-        int maxPrice = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
-        String sortCriteria = normalizeSortCriteria(request.getParameter("sort"));
+        int     pageNumber       = parsePositiveInteger(request.getParameter("page"), 1);
+        int     pageSize         = parsePositiveInteger(request.getParameter("size"), DEFAULT_PAGE_SIZE);
+        String  query            = normalizeText(request.getParameter("query"));
+        String  category         = normalizeCategory(request.getParameter("category"));
+        int     maxPrice         = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
+        int     minPrice         = parsePositiveInteger(request.getParameter("minPrice"), DEFAULT_MIN_PRICE);
+        String  sort             = normalizeSortCriteria(request.getParameter("sort"));
+
+        System.out.println(request.getParameter("page"));
+        System.out.println(request.getParameter("size"));
+        System.out.println(request.getParameter("query"));
+        System.out.println(request.getParameter("category"));
+        System.out.println(request.getParameter("minPrice"));
+        System.out.println(request.getParameter("maxPrice"));
+        System.out.println(request.getParameter("sort"));
 
         BookFilterDTO filter = BookFilterDTO.builder()
-                .category(selectedCategory)
-                .maxPrice(maxPrice)
-                .searchQuery(searchQuery)
-                .sortCriteria(sortCriteria)
-                .build();
+            .searchQuery(query)
+            .category(category)
+            .minPrice(minPrice)
+            .maxPrice(maxPrice)
+            .sortCriteria(sort)
+            .build();
 
-        List<BookCardDto> books = bookService.findAll(pageNumber, BOOKS_PAGE_SIZE, filter)
-                .stream()
-                .map(this::toBookCardDto)
-                .toList();
+        PageResponseDTO<BookCardDTO> books = bookService.findAllBookCard(pageNumber, pageSize, filter);
 
-        boolean hasNextPage = !bookService.findAll(pageNumber + 1, BOOKS_PAGE_SIZE, filter).isEmpty();
-
-        request.setAttribute("books", books);
-        request.setAttribute("bookCardVariant", "grid");
-        request.setAttribute("booksResultCount", books.size());
-        request.setAttribute("currentPageNumber", pageNumber);
-        request.setAttribute("hasPreviousPage", pageNumber > 1);
-        request.setAttribute("hasNextPage", hasNextPage);
-        request.setAttribute("selectedCategory", selectedCategory == null ? "All Books" : selectedCategory);
-        request.setAttribute("selectedCategoryParam", selectedCategory == null ? "" : selectedCategory);
-        request.setAttribute("selectedCategoryValue", selectedCategory == null ? "all" : toSlug(selectedCategory));
-        request.setAttribute("selectedSearchQuery", searchQuery == null ? "" : searchQuery);
-        request.setAttribute("selectedMaxPrice", maxPrice);
-        request.setAttribute("selectedSortCriteria", sortCriteria);
+        request.setAttribute("pagination", books);
 
         request.getRequestDispatcher(PathStorage.EXPLORE_PAGE).forward(request, response);
+    }
+
+    @Override
+    protected void doPost(
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws ServletException, IOException {
+        int     pageNumber       = parsePositiveInteger(request.getParameter("page"), 1);
+        int     pageSize         = parsePositiveInteger(request.getParameter("size"), DEFAULT_PAGE_SIZE);
+        String  query            = normalizeText(request.getParameter("query"));
+        String  category         = normalizeCategory(request.getParameter("category"));
+        int     maxPrice         = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
+        int     minPrice         = parsePositiveInteger(request.getParameter("minPrice"), DEFAULT_MIN_PRICE);
+        String  sort             = normalizeSortCriteria(request.getParameter("sort"));
+
+        System.out.println(request.getParameter("page"));
+        System.out.println(request.getParameter("size"));
+        System.out.println(request.getParameter("query"));
+        System.out.println(request.getParameter("category"));
+        System.out.println(request.getParameter("minPrice"));
+        System.out.println(request.getParameter("maxPrice"));
+        System.out.println(request.getParameter("sort"));
+
+        BookFilterDTO filter = BookFilterDTO.builder()
+            .searchQuery(query)
+            .category(category)
+            .minPrice(minPrice)
+            .maxPrice(maxPrice)
+            .sortCriteria(sort)
+            .build();
+
+        PageResponseDTO<BookCardDTO> books = bookService.findAllBookCard(pageNumber, pageSize, filter);
+
+        request.setAttribute("pagination", books);
+
+        request.getRequestDispatcher(PathStorage.EXPLORE_BOOKS_CONTAINER).forward(request, response);
     }
 
     private int parsePositiveInteger(String rawValue, int fallback) {

@@ -3,6 +3,7 @@ package com.iti.jets.service.implementation;
 import com.iti.jets.model.dto.request.BookAddRequestDTO;
 import com.iti.jets.model.dto.request.BookFilterDTO;
 import com.iti.jets.model.dto.response.BookAddResponseDTO;
+import com.iti.jets.model.dto.response.BookCardDTO;
 import com.iti.jets.model.dto.response.BookSummaryDTO;
 import com.iti.jets.model.dto.response.PageResponseDTO;
 import com.iti.jets.model.entity.Author;
@@ -45,6 +46,16 @@ public class BookServiceImpl extends ContextHandler implements BookService {
 
         long total = bookRepository.count();
         return new PageResponseDTO<>(content, page, size, total);
+    }
+
+    public PageResponseDTO<BookCardDTO> findAllBookCard(int page, int size, BookFilterDTO filter) {
+        List<BookCardDTO> filteredBooks = findAll(page, size, filter)
+            .stream()
+            .map(BookCardDTO::from)
+            .toList();
+
+        long total = bookRepository.count(filter);
+        return new PageResponseDTO<>(filteredBooks, page, size, total);
     }
 
     @Override

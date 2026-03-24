@@ -21,6 +21,7 @@ public class PathStorage {
     public static final String BOOK_CARD_H  = "/WEB-INF/views/common/book-card-h.jsp";
     public static final String HEADER       = "/WEB-INF/views/common/header.jsp";
     public static final String FOOTER       = "/WEB-INF/views/common/footer.jsp";
+    public static final String EXPLORE_BOOKS_CONTAINER         = "/WEB-INF/views/explore/books-container.jsp";
 
     // Admin Pages
     public static final String ADMIN_DASHBOARD_PAGE             = "/WEB-INF/views/admin/dashboard/dashboard.jsp";

@@ -2,6 +2,7 @@ package com.iti.jets.repository.implementation;
 
 import com.iti.jets.model.dto.request.BookFilterDTO;
 import com.iti.jets.model.entity.Book;
+import com.iti.jets.model.entity.Category;
 import com.iti.jets.repository.generic.BaseRepositoryImpl;
 import com.iti.jets.repository.interfaces.BookRepository;
 import jakarta.persistence.TypedQuery;
@@ -24,17 +25,17 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
     @Override
     public Optional<Book> findById(Long id) {
         return executeReadOnly(em ->
-                em.createQuery(
-                                "SELECT DISTINCT b FROM Book b " +
-                                        "LEFT JOIN FETCH b.category " +
-                                        "LEFT JOIN FETCH b.bookAuthors ba " +
-                                        "LEFT JOIN FETCH ba.author " +
-                                        "WHERE b.id = :id",
-                                getEntityClass()
-                        )
-                        .setParameter("id", id)
-                        .getResultStream()
-                        .findFirst()
+            em.createQuery(
+                "SELECT DISTINCT b FROM Book b " +
+                        "LEFT JOIN FETCH b.category " +
+                        "LEFT JOIN FETCH b.bookAuthors ba " +
+                        "LEFT JOIN FETCH ba.author " +
+                        "WHERE b.id = :id",
+                getEntityClass()
+            )
+            .setParameter("id", id)
+            .getResultStream()
+            .findFirst()
         );
     }
 
@@ -52,40 +53,40 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
 
             if (filter != null) {
                 if (filter.getCategory() != null && !filter.getCategory().isBlank()) {
-                    Join<Object, Object> categoryJoin = bookRoot.join("category", JoinType.LEFT);
+                    Join<Book, Category> categoryJoin = bookRoot.join("category", JoinType.LEFT);
                     predicates.add(
-                            criteriaBuilder.equal(
-                                    criteriaBuilder.lower(categoryJoin.get("name")),
-                                    filter.getCategory().trim().toLowerCase(Locale.ROOT)
-                            )
+                        criteriaBuilder.equal(
+                            categoryJoin.get("id"),
+                            filter.getCategory().trim()
+                        )
                     );
                 }
 
                 if (filter.getMinPrice() > 0) {
                     predicates.add(
-                            criteriaBuilder.greaterThanOrEqualTo(
-                                    bookRoot.get("price"),
-                                    BigDecimal.valueOf(filter.getMinPrice())
-                            )
+                        criteriaBuilder.greaterThanOrEqualTo(
+                            bookRoot.get("price"),
+                            BigDecimal.valueOf(filter.getMinPrice())
+                        )
                     );
                 }
 
                 if (filter.getMaxPrice() > 0) {
                     predicates.add(
-                            criteriaBuilder.lessThanOrEqualTo(
-                                    bookRoot.get("price"),
-                                    BigDecimal.valueOf(filter.getMaxPrice())
-                            )
+                        criteriaBuilder.lessThanOrEqualTo(
+                            bookRoot.get("price"),
+                            BigDecimal.valueOf(filter.getMaxPrice())
+                        )
                     );
                 }
 
                 if (filter.getSearchQuery() != null && !filter.getSearchQuery().isBlank()) {
                     String normalizedSearchQuery = "%" + filter.getSearchQuery().trim().toLowerCase(Locale.ROOT) + "%";
                     predicates.add(
-                            criteriaBuilder.or(
-                                    criteriaBuilder.like(criteriaBuilder.lower(bookRoot.get("title")), normalizedSearchQuery),
-                                    criteriaBuilder.like(criteriaBuilder.lower(bookRoot.get("description")), normalizedSearchQuery)
-                            )
+                        criteriaBuilder.or(
+                            criteriaBuilder.like(criteriaBuilder.lower(bookRoot.get("title")), normalizedSearchQuery),
+                            criteriaBuilder.like(criteriaBuilder.lower(bookRoot.get("description")), normalizedSearchQuery)
+                        )
                     );
                 }
             }
@@ -110,6 +111,69 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
             return query.getResultList();
         });
     }
+
+    public long count(BookFilterDTO filter) {
+        return executeReadOnly(em -> {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+
+            Root<Book> bookRoot = cq.from(Book.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (filter != null) {
+                if (filter.getCategory() != null && !filter.getCategory().isBlank()) {
+                    Join<Book, Category> categoryJoin = bookRoot.join("category", JoinType.LEFT);
+
+                    predicates.add(
+                        cb.equal(
+                            categoryJoin.get("id"),
+                            filter.getCategory().trim()
+                        )
+                    );
+                }
+
+                if (filter.getMinPrice() > 0) {
+                    predicates.add(
+                        cb.greaterThanOrEqualTo(
+                            bookRoot.get("price"),
+                            BigDecimal.valueOf(filter.getMinPrice())
+                        )
+                    );
+                }
+
+                if (filter.getMaxPrice() > 0) {
+                    predicates.add(
+                        cb.lessThanOrEqualTo(
+                            bookRoot.get("price"),
+                            BigDecimal.valueOf(filter.getMaxPrice())
+                        )
+                    );
+                }
+
+                if (filter.getSearchQuery() != null && !filter.getSearchQuery().isBlank()) {
+                    String normalizedSearchQuery =
+                        "%" + filter.getSearchQuery().trim().toLowerCase(Locale.ROOT) + "%";
+
+                    predicates.add(
+                        cb.or(
+                            cb.like(cb.lower(bookRoot.get("title")), normalizedSearchQuery),
+                            cb.like(cb.lower(bookRoot.get("description")), normalizedSearchQuery)
+                        )
+                    );
+                }
+            }
+
+            cq.select(cb.countDistinct(bookRoot));
+
+            if (!predicates.isEmpty()) {
+                cq.where(predicates.toArray(new Predicate[0]));
+            }
+
+            return em.createQuery(cq).getSingleResult();
+        });
+    }
+
 
     @Override
     public List<Book> findAllFeatured() {
