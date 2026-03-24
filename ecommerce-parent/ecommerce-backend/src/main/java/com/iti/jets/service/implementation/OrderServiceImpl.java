@@ -172,6 +172,18 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
         });
     }
 
+    @Override
+    public List<OrderDTO> findAllByUserId(Long userId) {
+        if (userId == null) {
+            return List.of();
+        }
+
+        return executeInContext(() -> orderRepository.findAllByUserId(userId)
+                .stream()
+                .map(this::buildOrderDTO)
+                .toList());
+    }
+
     // Helpers
     private OrderDTO buildOrderDTO(Order order) {
         Set<OrderItemDTO> items = new HashSet<>();

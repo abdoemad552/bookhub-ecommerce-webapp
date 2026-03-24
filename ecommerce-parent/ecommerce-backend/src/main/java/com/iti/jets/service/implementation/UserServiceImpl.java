@@ -2,12 +2,14 @@ package com.iti.jets.service.implementation;
 
 import com.iti.jets.mapper.UserMapper;
 import com.iti.jets.model.dto.request.AddressRequestDTO;
-import com.iti.jets.model.dto.response.CartDTO;
+import com.iti.jets.model.dto.request.UpdatePersonalInfoRequestDTO;
 import com.iti.jets.model.dto.response.UserAddressesDTO;
 import com.iti.jets.model.dto.response.UserDTO;
+import com.iti.jets.model.dto.response.UserInterestsDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.model.dto.response.factory.ResponseFactory;
 import com.iti.jets.model.entity.Address;
+import com.iti.jets.model.entity.Category;
 import com.iti.jets.model.entity.User;
 import com.iti.jets.repository.interfaces.CategoryRepository;
 import com.iti.jets.repository.interfaces.UserRepository;
@@ -15,7 +17,10 @@ import com.iti.jets.service.generic.ContextHandler;
 import com.iti.jets.service.interfaces.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.iti.jets.util.PasswordHasher;
 
+import java.math.BigDecimal;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
