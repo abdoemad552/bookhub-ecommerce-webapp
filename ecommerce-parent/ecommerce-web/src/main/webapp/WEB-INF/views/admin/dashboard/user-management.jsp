@@ -71,7 +71,8 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
            stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
-        <path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+        <path d="m15 9-6 6"/>
+        <path d="m9 9 6 6"/>
       </svg>
     </div>
     <h4 id="um-confirm-title">Cancel this order?</h4>
@@ -153,19 +154,20 @@
 
     <!-- ── Footer: Grant / Revoke + Close ── -->
     <div class="um-modal-footer shrink-0">
-      <button id="um-role-action-btn" class="um-footer-role-btn" data-user-id="" data-is-admin="false">
+      <c:if test="${sessionScope.user.role eq 'MAIN_ADMIN'}">
+        <button id="um-role-action-btn" class="um-footer-role-btn" data-user-id="" data-is-admin="false">
         <span id="um-role-btn-spinner" class="hidden">
           <svg class="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" opacity=".25"/>
             <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
           </svg>
         </span>
-        <span id="um-role-btn-icon">
+          <span id="um-role-btn-icon">
           <!-- icon swapped by JS -->
         </span>
-        <span id="um-role-btn-text">Grant Admin</span>
-      </button>
+          <span id="um-role-btn-text">Grant Admin</span>
+        </button>
+      </c:if>
     </div>
-
   </div>
 </div>

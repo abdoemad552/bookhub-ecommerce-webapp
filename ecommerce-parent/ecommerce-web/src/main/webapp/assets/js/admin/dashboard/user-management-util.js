@@ -36,7 +36,7 @@ export function buildAvatar(user, size = 36) {
 }
 
 export function roleBadge(role) {
-    const isAdmin = role?.toLowerCase() === "admin";
+    const isAdmin = role?.toLowerCase() !== "user";
     const cls = isAdmin ? "role-admin" : "role-user";
     const icon = isAdmin
         ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -99,7 +99,7 @@ export function populateModalBase(user) {
     if (roleWrap) roleWrap.innerHTML = roleBadge(user.role);
 
     // Grant / Revoke footer button
-    const isAdmin = user.role?.toLowerCase() === "admin";
+    const isAdmin = user.role?.toLowerCase() !== "user";
     updateRoleActionBtn(user.id, isAdmin);
 
     // Reset stats

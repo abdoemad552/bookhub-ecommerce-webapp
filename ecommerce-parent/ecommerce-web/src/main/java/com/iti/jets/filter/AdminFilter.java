@@ -27,7 +27,7 @@ public class AdminFilter implements Filter {
 
         UserDTO user = (UserDTO) session.getAttribute("user");
 
-        if (user.getRole() != UserRole.ADMIN) {
+        if (user.getRole() == UserRole.USER) {
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             req.getRequestDispatcher(PathStorage.FORBIDDEN_PAGE).forward(req, resp);
             return;

@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet("/admin/dashboard/userManagement")
-public class AminUserManagementServlet extends HttpServlet {
+public class AdminUserManagementServlet extends HttpServlet {
 
     UserService userService;
     OrderService orderService;
