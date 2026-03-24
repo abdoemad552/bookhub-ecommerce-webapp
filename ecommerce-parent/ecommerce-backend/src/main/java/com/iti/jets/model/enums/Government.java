@@ -8,7 +8,7 @@ public enum Government {
     BEHEIRA("Beheira", 25),
     ISMAILIA("Ismailia", 20),
     FAYOUM("Fayoum", 20),
-    PORT_SAID("Port Said", 30);
+    PORT_SAID("Port_Said", 30);
 
     private final String prettyName;
     private final Integer shipping;
