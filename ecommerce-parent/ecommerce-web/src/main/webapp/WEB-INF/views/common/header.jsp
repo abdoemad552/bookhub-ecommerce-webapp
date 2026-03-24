@@ -54,7 +54,7 @@
           <c:when test="${empty sessionScope.user}">
             <a href="${pageContext.request.contextPath}/login" class="shrink-0">
               <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold bg-background shadow-xs hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-all border h-10 px-6 rounded-xl cursor-pointer">
-                Sign In
+                Log In
               </button>
             </a>
             <a href="${pageContext.request.contextPath}/signup" class="hidden sm:block shrink-0">
