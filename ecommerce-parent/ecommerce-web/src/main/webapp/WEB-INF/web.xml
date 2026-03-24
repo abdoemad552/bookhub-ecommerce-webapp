@@ -78,14 +78,15 @@
     </filter>
 
     <filter>
+        <filter-name>UserRefreshFilter</filter-name>
+        <filter-class>com.iti.jets.filter.UserRefreshFilter</filter-class>
+    </filter>
+
+    <filter>
         <filter-name>AdminFilter</filter-name>
         <filter-class>com.iti.jets.filter.AdminFilter</filter-class>
     </filter>
 
-    <filter>
-        <filter-name>UserRefreshFilter</filter-name>
-        <filter-class>com.iti.jets.filter.UserRefreshFilter</filter-class>
-    </filter>
 
     <filter-mapping>
         <filter-name>AuthFilter</filter-name>
@@ -93,15 +94,17 @@
     </filter-mapping>
 
     <filter-mapping>
-        <filter-name>AdminFilter</filter-name>
-        <url-pattern>/admin/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
         <filter-name>UserRefreshFilter</filter-name>
         <url-pattern>/order</url-pattern>
         <url-pattern>/profile</url-pattern>
         <url-pattern>/checkout</url-pattern>
+        <url-pattern>/admin/*</url-pattern>
     </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>AdminFilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
+
 
 </web-app>
