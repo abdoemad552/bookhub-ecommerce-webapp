@@ -147,7 +147,9 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
             }
 
             order.setStatus(OrderStatus.CANCELLED);
+            order.getUser().setCreditLimit(order.getUser().getCreditLimit().add(order.getTotalPrice()));
             orderRepository.update(order);
+            userRepository.update(order.getUser());
 
             return ResponseFactory.success("Order cancelled successfully");
         });
@@ -194,7 +196,10 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
             double totalSpent = 0;
 
             for (Order order : orders) {
-                totalSpent += order.getTotalPrice().doubleValue();
+
+                if (order.getStatus() != OrderStatus.CANCELLED) {
+                    totalSpent += order.getTotalPrice().doubleValue();
+                }
                 orderDtos.add(
                         OrderDTO.builder()
                                 .orderId(order.getId())
@@ -220,7 +225,7 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
     public UserDTO getOwnedUser(Long orderId) {
         return executeInContext(() -> {
             Optional<Order> orderOpt = orderRepository.findById(orderId);
-            if(orderOpt.isEmpty()){
+            if (orderOpt.isEmpty()) {
                 return null;
             }
 
