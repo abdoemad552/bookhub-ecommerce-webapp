@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -25,5 +26,22 @@ public class BookCardDTO {
     private String description;
     private double price;
     private int stockQuantity;
+    private String imageUrl;
     // TODO: Tags...
+
+    public String getAuthor() {
+        if (authors == null || authors.isEmpty()) {
+            return "";
+        }
+
+        return authors.stream()
+                .filter(Objects::nonNull)
+                .map(AuthorDTO::getName)
+                .filter(name -> name != null && !name.isBlank())
+                .collect(Collectors.joining(", "));
+    }
+
+    public String getCoverPicUrl() {
+        return imageUrl;
+    }
 }

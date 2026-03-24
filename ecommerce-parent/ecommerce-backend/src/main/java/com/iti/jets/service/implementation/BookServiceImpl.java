@@ -85,6 +85,7 @@ public class BookServiceImpl extends ContextHandler implements BookService {
                 .description(book.getDescription())
                 .price(book.getPrice() == null ? 0.0 : book.getPrice().doubleValue())
                 .stockQuantity(book.getStockQuantity() == null ? 0 : book.getStockQuantity())
+                .imageUrl(book.getImageUrl())
                 .build();
     }
 }

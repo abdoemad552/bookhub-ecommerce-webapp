@@ -265,8 +265,8 @@
                                                     </c:if>
                                                 </div>
                                                 <p class="text-xs md:text-sm text-muted-foreground mb-2">
-                                                    <c:forEach items="${book.authors}" var="authorName" varStatus="status">
-                                                        ${authorName}<c:if test="${not status.last}">, </c:if>
+                                                    <c:forEach items="${book.authors}" var="author" varStatus="status">
+                                                        ${author.name}<c:if test="${not status.last}">, </c:if>
                                                     </c:forEach>
                                                 </p>
                                                 <div class="flex items-center gap-1">

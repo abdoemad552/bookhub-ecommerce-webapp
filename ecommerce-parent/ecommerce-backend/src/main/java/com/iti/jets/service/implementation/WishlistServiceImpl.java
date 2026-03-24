@@ -141,6 +141,7 @@ public class WishlistServiceImpl extends ContextHandler implements WishlistServi
                 .description(book.getDescription())
                 .price(book.getPrice() == null ? 0.0 : book.getPrice().doubleValue())
                 .stockQuantity(book.getStockQuantity() == null ? 0 : book.getStockQuantity())
+                .imageUrl(book.getImageUrl())
                 .build();
     }
 }
