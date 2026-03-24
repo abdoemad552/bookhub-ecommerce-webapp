@@ -1,5 +1,7 @@
 package com.iti.jets.service.implementation;
 
+import com.iti.jets.model.dto.response.BookCardDTO;
+import com.iti.jets.model.entity.Book;
 import com.iti.jets.model.entity.Wishlist;
 import com.iti.jets.model.entity.WishlistId;
 import com.iti.jets.repository.interfaces.BookRepository;
@@ -8,7 +10,9 @@ import com.iti.jets.repository.interfaces.WishlistRepository;
 import com.iti.jets.service.generic.ContextHandler;
 import com.iti.jets.service.interfaces.WishlistService;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WishlistServiceImpl extends ContextHandler implements WishlistService {
 
@@ -85,6 +89,20 @@ public class WishlistServiceImpl extends ContextHandler implements WishlistServi
         return executeInContext(() -> wishlistRepository.existsById(wishlistId));
     }
 
+    @Override
+    public List<BookCardDTO> findWishlistBooks(Long userId) {
+        if (userId == null) {
+            return List.of();
+        }
+
+        return executeInContext(() -> wishlistRepository.findAllByUserId(userId)
+                .stream()
+                .map(Wishlist::getBook)
+                .map(this::toBookCardDto)
+                .toList()
+        );
+    }
+
     private WishlistId buildWishlistId(Integer userId, Integer bookId) {
         if (userId == null || bookId == null) {
             return null;
@@ -93,6 +111,26 @@ public class WishlistServiceImpl extends ContextHandler implements WishlistServi
         return WishlistId.builder()
                 .userId(Long.valueOf(userId))
                 .bookId(Long.valueOf(bookId))
+                .build();
+    }
+
+    private BookCardDTO toBookCardDto(Book book) {
+        String authorName = book.getBookAuthors() == null ? ""
+                : book.getBookAuthors().stream()
+                .map(bookAuthor -> bookAuthor.getAuthor() == null ? null : bookAuthor.getAuthor().getName())
+                .filter(name -> name != null && !name.isBlank())
+                .sorted(Comparator.naturalOrder())
+                .collect(Collectors.joining(", "));
+
+        return BookCardDTO.builder()
+                .id(book.getId())
+                .title(book.getTitle())
+                .author(authorName)
+                .averageRating(book.getAverageRating() == null ? 0 : (int) Math.round(book.getAverageRating()))
+                .description(book.getDescription())
+                .price(book.getPrice())
+                .coverPicUrl(book.getImageUrl())
+                .stockQuantity(book.getStockQuantity() == null ? 0 : book.getStockQuantity())
                 .build();
     }
 }
