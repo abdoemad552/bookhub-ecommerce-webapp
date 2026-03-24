@@ -602,3 +602,163 @@
 
 .um-empty-state svg { width: 36px; height: 36px; opacity: 0.4; }
 .um-empty-state.hidden { display: none !important; }
+/* ─── Order card wrap (holds card + cancel btn) ── */
+.um-order-card-wrap {
+    margin-bottom: 0.5rem;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+    background: var(--background);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.um-order-card-wrap:hover {
+    border-color: oklch(0.35 0.08 30 / 0.4);
+    box-shadow: 0 4px 16px oklch(0.35 0.08 30 / 0.07);
+}
+
+/* Override card's own border/bg since wrap owns them */
+.um-order-card-wrap .um-order-card {
+    border: none;
+    background: transparent;
+    margin-bottom: 0;
+    border-radius: 0;
+    transform: none !important; /* wrap handles hover lift */
+}
+
+.um-order-card-wrap:hover .um-order-card {
+    box-shadow: none;
+}
+
+/* ─── Cancel order button ── */
+.um-cancel-order-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-top: 1px solid rgb(239 68 68 / 0.15);
+    background: rgb(239 68 68 / 0.04);
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #dc2626;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+    letter-spacing: 0.01em;
+}
+
+.um-cancel-order-btn:hover {
+    background: rgb(239 68 68 / 0.10);
+    color: #b91c1c;
+}
+
+.um-cancel-order-btn svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+}
+
+.um-cancel-order-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Hide animation for cancel button after optimistic update */
+.um-cancel-order-btn--hiding {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+/* ─── Toast container ── */
+#um-toast-container {
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    pointer-events: none;
+}
+
+/* ─── Toast ── */
+.um-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1.5px solid transparent;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+    font-size: 0.83rem;
+    font-weight: 600;
+    min-width: 240px;
+    max-width: 340px;
+    pointer-events: all;
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    font-family: inherit;
+}
+
+.um-toast.um-toast-show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.um-toast.um-toast-hide {
+    opacity: 0;
+    transform: translateY(6px) scale(0.97);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.um-toast-success {
+    background: #f0fdf4;
+    border-color: rgb(16 185 129 / 0.30);
+    color: #065f46;
+}
+
+.um-toast-error {
+    background: #fef2f2;
+    border-color: rgb(239 68 68 / 0.30);
+    color: #991b1b;
+}
+
+.um-toast-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+.um-toast-icon svg {
+    width: 15px;
+    height: 15px;
+}
+
+.um-toast-msg {
+    flex: 1;
+    line-height: 1.4;
+}
+
+.um-toast-close {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.15s ease;
+    padding: 0;
+    color: inherit;
+}
+
+.um-toast-close:hover { opacity: 1; }
+.um-toast-close svg { width: 12px; height: 12px; }

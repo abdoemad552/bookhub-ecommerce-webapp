@@ -61,6 +61,9 @@
   </div>
 </div>
 
+<!-- ── Toast notifications ── -->
+<div id="um-toast-container" aria-live="polite" aria-atomic="true"></div>
+
 <!--USER DETAIL MODAL -->
 <div id="um-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="um-modal-title">
   <div id="um-modal-panel">

@@ -6,7 +6,7 @@ import {
 } from "./user-management-util.js";
 
 import {
-    loadPage,fetchUserDetails, handleAdminToggle
+    loadPage, fetchUserDetails, handleAdminToggle, cancelOrder
 } from "./user-management-server.js"
 
 // Module state
@@ -22,6 +22,16 @@ export const state = {
 function bindEvents() {
     document.addEventListener("click", e => {
         if (state.destroyed) return;
+
+        // Cancel order button
+        const cancelBtn = e.target.closest(".um-cancel-order-btn");
+        if (cancelBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            const orderId = cancelBtn.dataset.orderId;
+            cancelOrder(orderId, cancelBtn);
+            return;
+        }
 
         // View button → open modal
         const actionBtn = e.target.closest(".um-action-btn");
