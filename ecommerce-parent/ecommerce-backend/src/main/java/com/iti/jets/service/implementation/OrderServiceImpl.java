@@ -24,10 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class OrderServiceImpl extends ContextHandler implements OrderService {
 
@@ -180,6 +177,18 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
 
             return Objects.equals(order.getUser().getId(), userId);
         });
+    }
+
+    @Override
+    public List<OrderDTO> findAllByUserId(Long userId) {
+        if (userId == null) {
+            return List.of();
+        }
+
+        return executeInContext(() -> orderRepository.findAllByUserId(userId)
+                .stream()
+                .map(this::buildOrderDTO)
+                .toList());
     }
 
     @Override

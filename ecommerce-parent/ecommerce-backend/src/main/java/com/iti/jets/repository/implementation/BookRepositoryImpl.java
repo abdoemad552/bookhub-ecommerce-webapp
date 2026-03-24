@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implements BookRepository {
 
@@ -51,7 +52,17 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
             List<Predicate> predicates = new ArrayList<>();
 
             if (filter != null) {
-                if (filter.getCategory() != null && !filter.getCategory().isBlank()) {
+                Set<String> categoryFilters = filter.getCategories() == null
+                        ? Set.of()
+                        : filter.getCategories().stream()
+                        .filter(category -> category != null && !category.isBlank())
+                        .map(category -> category.trim().toLowerCase(Locale.ROOT))
+                        .collect(java.util.stream.Collectors.toSet());
+
+                if (!categoryFilters.isEmpty()) {
+                    Join<Object, Object> categoryJoin = bookRoot.join("category", JoinType.LEFT);
+                    predicates.add(criteriaBuilder.lower(categoryJoin.get("name")).in(categoryFilters));
+                } else if (filter.getCategory() != null && !filter.getCategory().isBlank()) {
                     Join<Object, Object> categoryJoin = bookRoot.join("category", JoinType.LEFT);
                     predicates.add(
                             criteriaBuilder.equal(
@@ -80,11 +91,13 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
                 }
 
                 if (filter.getSearchQuery() != null && !filter.getSearchQuery().isBlank()) {
-                    String normalizedSearchQuery = "%" + filter.getSearchQuery().trim().toLowerCase(Locale.ROOT) + "%";
+                    String trimmedSearchQuery = filter.getSearchQuery().trim();
+                    String normalizedTitleSearchQuery = buildContainsPattern(trimmedSearchQuery.toLowerCase(Locale.ROOT));
+                    String descriptionSearchQuery = buildContainsPattern(trimmedSearchQuery);
                     predicates.add(
                             criteriaBuilder.or(
-                                    criteriaBuilder.like(criteriaBuilder.lower(bookRoot.get("title")), normalizedSearchQuery),
-                                    criteriaBuilder.like(criteriaBuilder.lower(bookRoot.get("description")), normalizedSearchQuery)
+                                    criteriaBuilder.like(criteriaBuilder.lower(bookRoot.get("title")), normalizedTitleSearchQuery, '\\'),
+                                    criteriaBuilder.like(bookRoot.get("description"), descriptionSearchQuery, '\\')
                             )
                     );
                 }
@@ -182,5 +195,14 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
 
         orderBy.add(criteriaBuilder.asc(bookRoot.get("title")));
         return orderBy;
+    }
+
+    private String buildContainsPattern(String searchValue) {
+        String escapedSearchValue = searchValue
+                .replace("\\", "\\\\")
+                .replace("%", "\\%")
+                .replace("_", "\\_");
+
+        return "%" + escapedSearchValue + "%";
     }
 }

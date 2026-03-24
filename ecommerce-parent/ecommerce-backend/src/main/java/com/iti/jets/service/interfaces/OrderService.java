@@ -8,6 +8,8 @@ import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.model.entity.Order;
 import com.iti.jets.model.enums.OrderStatus;
 
+import java.util.List;
+
 public interface OrderService {
 
     BaseResponse<String> placeOrder(PlaceOrderRequestDTO request);
@@ -27,4 +29,6 @@ public interface OrderService {
     BaseResponse<UserOrderHistoryDTO> loadOrderHistory(Long userId);
 
     UserDTO getOwnedUser(Long orderId);
+
+    List<OrderDTO> findAllByUserId(Long userId);
 }

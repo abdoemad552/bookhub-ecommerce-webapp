@@ -197,14 +197,14 @@
       <c:otherwise>
         <div class="oc-actions oc-reveal oc-reveal--5">
 
-          <a href="${pageContext.request.contextPath}/profile" class="orders-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-            </svg>
-            My Orders
-          </a>
+      <a href="${pageContext.request.contextPath}/profile?tab=orders-info" class="orders-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+        </svg>
+        My Orders
+      </a>
 
           <a href="${pageContext.request.contextPath}/explore"
              class="btn-modern py-3.5 px-4 text-primary-foreground font-semibold text-base

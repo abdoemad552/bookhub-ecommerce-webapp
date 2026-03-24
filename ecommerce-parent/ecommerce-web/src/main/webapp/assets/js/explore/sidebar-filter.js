@@ -2,16 +2,6 @@ let isCategoriesOpen = false;
 let isSortOpen = false;
 let searchDebounceId = null;
 
-const categoriesMapping = {
-    all: "All Books",
-    fiction: "Fiction",
-    "science-fiction": "Science Fiction",
-    fantasy: "Fantasy",
-    "self-help": "Self-Help",
-    "non-fiction": "Non-Fiction",
-    biography: "Biography"
-};
-
 const sortCriteriaMapping = {
     featured: "Featured",
     "price-low-to-high": "Price: Low to High",
@@ -38,7 +28,7 @@ function applyFilters(nextState) {
 
     if (nextState.selectedCategory && nextState.selectedCategory !== "all") {
         const categoryButton = document.querySelector(`[data-category="${nextState.selectedCategory}"]`);
-        url.searchParams.set("category", categoryButton?.dataset.categoryValue || categoriesMapping[nextState.selectedCategory]);
+        url.searchParams.set("category", categoryButton?.dataset.categoryValue || nextState.selectedCategory);
     } else {
         url.searchParams.delete("category");
     }
@@ -67,6 +57,8 @@ function applyFilters(nextState) {
 
 function setSelectedCategory(categorySlug) {
     const previousCategorySlug = document.getElementById("selected-category")?.dataset.selectedCategoryValue || "all";
+    const nextCategoryButton = document.querySelector(`[data-category="${categorySlug}"]`);
+    const nextCategoryLabel = nextCategoryButton?.dataset.categoryLabel || "All Books";
 
     $(`[data-category="${previousCategorySlug}"]`)
         .addClass("hover:bg-primary/5 active:bg-primary/10 text-foreground")
@@ -79,12 +71,12 @@ function setSelectedCategory(categorySlug) {
     const selectedCategory = document.getElementById("selected-category");
     if (selectedCategory) {
         selectedCategory.dataset.selectedCategoryValue = categorySlug;
-        selectedCategory.textContent = categoriesMapping[categorySlug] || "All Books";
+        selectedCategory.textContent = nextCategoryLabel;
     }
 
     const gridSelectedCategory = document.getElementById("grid-selected-category");
     if (gridSelectedCategory) {
-        gridSelectedCategory.textContent = categoriesMapping[categorySlug] || "All Books";
+        gridSelectedCategory.textContent = nextCategoryLabel;
     }
 }
 

@@ -83,7 +83,7 @@
               <button id="avatar-btn"
                       class="flex items-center gap-2 p-1 rounded-full hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                       aria-expanded="true" aria-haspopup="true">
-                <div class="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center border-2 border-primary">
+                <div class="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center border-2 border-primary overflow-hidden">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                        stroke-linejoin="round" class="lucide lucide-user w-5 h-5 text-primary"
@@ -120,7 +120,7 @@
                     </svg>
                     Profile
                   </a>
-                  <a href="${pageContext.request.contextPath}/profile"
+                  <a href="${pageContext.request.contextPath}/profile?tab=orders-info"
                      class="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
