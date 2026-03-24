@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class BookCardDTO {
+    private Long id;
     private String title;
     private List<AuthorDTO> authors;
     private double averageRating;

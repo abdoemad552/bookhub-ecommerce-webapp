@@ -78,6 +78,7 @@ public class BookServiceImpl extends ContextHandler implements BookService {
                 .toList();
 
         return BookCardDTO.builder()
+                .id(book.getId())
                 .title(book.getTitle())
                 .authors(authorDtos)
                 .averageRating(book.getAverageRating() == null ? 0 : Math.round(book.getAverageRating()))
