@@ -41,39 +41,31 @@ function cacheDefaults($btn) {
 }
 
 function applyLoading($btn) {
-    $btn.prop("disabled", true)
-        .addClass("animate-pulse opacity-80 blur-[0.5px]");
-
+    $btn.prop("disabled", true);
     $btn.find("[data-add-to-cart-icon]").addClass("hidden");
     $btn.find("[data-add-to-cart-spinner]").removeClass("hidden");
 }
 
 function applySuccess($btn) {
-    const $icon = $btn.find("[data-add-to-cart-icon]");
-
-    $btn.prop("disabled", true)
+    $btn.prop("disabled", false)
         .attr("data-added-to-cart", "true")
         .attr("title", "Added to cart")
-        .addClass("bg-green-700 border-green-700 text-white shadow-lg opacity-100")
-        .removeClass("opacity-80 blur-[0.5px] animate-pulse");
+        .addClass("pointer-events-none bg-[#2f6b52] text-white")
+        .removeClass("bg-primary hover:bg-primary/95 active:bg-primary/90 active:scale-95");
 
-    $icon.removeClass("hidden").html(getSuccessContentHtml());
     $btn.find("[data-add-to-cart-spinner]").addClass("hidden");
+    $btn.find("[data-add-to-cart-icon]").removeClass("hidden").html(getSuccessContentHtml());
 }
 
 function applyDefault($btn, defaults, isOutOfStock) {
-    const $icon = $btn.find("[data-add-to-cart-icon]");
-
     $btn.prop("disabled", isOutOfStock)
         .attr("data-added-to-cart", "false")
-        .removeClass(
-            "bg-green-700 border-green-700 text-white shadow-lg opacity-100 " +
-            "opacity-80 blur-[0.5px] animate-pulse"
-        )
-        .attr("title", "");
+        .attr("title", "")
+        .addClass("bg-primary hover:bg-primary/95 active:bg-primary/90 active:scale-95")
+        .removeClass("pointer-events-none bg-[#2f6b52] text-white");
 
-    $icon.removeClass("hidden").html(defaults.iconHtml);
     $btn.find("[data-add-to-cart-spinner]").addClass("hidden");
+    $btn.find("[data-add-to-cart-icon]").removeClass("hidden").html(defaults.iconHtml);
 }
 
 function setButtonState($btn, state) {
@@ -98,13 +90,11 @@ function setButtonState($btn, state) {
     }
 }
 
-export async function addToCart(bookId, amount = 1, $btn = null) {
+export async function addToCart(bookId, amount = 1, $btn = null, onSuccess = null) {
     const contextPath = getContextPath();
-    if (!contextPath) return null;
+    if (!contextPath) return;
 
     setButtonState($btn, BUTTON_STATE.LOADING);
-
-    let success = false;
 
     setTimeout(async () => {
         try {
@@ -120,27 +110,17 @@ export async function addToCart(bookId, amount = 1, $btn = null) {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                success = true;
-
                 updateCartItemsCount(data.count);
                 setButtonState($btn, BUTTON_STATE.SUCCESS);
+                showFeedbackMessage(data.message || "Book added successfully.", true);
 
-                showFeedbackMessage(
-                    data.message || "Book added successfully.",
-                    true
-                );
+                onSuccess?.();
             } else {
-                showFeedbackMessage(
-                    data.message || "Failed to add book.",
-                    false
-                );
+                showFeedbackMessage(data.message || "Failed to add book.", false);
             }
-
-            return data;
 
         } catch {
             showFeedbackMessage("Failed to add book.", false);
-            return null;
 
         } finally {
             setTimeout(() => {
@@ -156,7 +136,7 @@ export function initBookCard() {
     if (initialized) return;
     initialized = true;
 
-    $(document).on("click", "[data-add-to-cart-button]", function (e) {
+    $(document).on("click", "[data-add-to-cart-button]", async function (e) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -164,7 +144,6 @@ export function initBookCard() {
 
         if ($btn.prop("disabled")) return;
 
-        addToCart($btn.data("book-id"), 1, $btn).then();
+        await addToCart($btn.data("book-id"), 1, $btn);
     });
 }
-

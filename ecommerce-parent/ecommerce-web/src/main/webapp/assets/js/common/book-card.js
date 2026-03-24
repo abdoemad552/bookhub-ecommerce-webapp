@@ -134,7 +134,7 @@ export async function addToCart(bookId, amount = 1, button = null) {
     try {
         const body = new URLSearchParams();
         body.set("bookId", bookId);
-        body.set("amount", amount);
+        body.set("amount", String(amount));
 
         const response = await fetch(`${contextPath}/cart`, {
             method: "POST",
