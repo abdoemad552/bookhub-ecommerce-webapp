@@ -64,7 +64,26 @@
 <!-- ── Toast notifications ── -->
 <div id="um-toast-container" aria-live="polite" aria-atomic="true"></div>
 
-<!--USER DETAIL MODAL -->
+<!-- ── Cancel Order Confirmation Dialog ── -->
+<div id="um-confirm-backdrop" role="alertdialog" aria-modal="true" aria-labelledby="um-confirm-title">
+  <div id="um-confirm-panel">
+    <div class="um-confirm-icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+      </svg>
+    </div>
+    <h4 id="um-confirm-title">Cancel this order?</h4>
+    <p id="um-confirm-desc">
+      This will permanently cancel the order. This action cannot be undone.
+    </p>
+    <div class="um-confirm-actions">
+      <button id="um-confirm-no" class="um-confirm-btn um-confirm-btn--no">Keep Order</button>
+      <button id="um-confirm-yes" class="um-confirm-btn um-confirm-btn--yes">Yes, Cancel</button>
+    </div>
+  </div>
+</div>
 <div id="um-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="um-modal-title">
   <div id="um-modal-panel">
 

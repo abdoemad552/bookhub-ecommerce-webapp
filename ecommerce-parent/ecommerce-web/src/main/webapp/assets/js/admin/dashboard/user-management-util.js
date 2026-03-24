@@ -353,3 +353,38 @@ export function dismissToast(toast) {
     toast.classList.add("um-toast-hide");
     toast.addEventListener("transitionend", () => toast.remove(), {once: true});
 }
+
+// Confirm dialog
+export function showConfirm(orderCode) {
+    return new Promise(resolve => {
+        const backdrop = document.getElementById("um-confirm-backdrop");
+        const desc     = document.getElementById("um-confirm-desc");
+        const yesBtn   = document.getElementById("um-confirm-yes");
+        const noBtn    = document.getElementById("um-confirm-no");
+        if (!backdrop || !yesBtn || !noBtn) { resolve(false); return; }
+
+        if (desc) {
+            desc.textContent = orderCode
+                ? `Are you sure you want to cancel order ${orderCode}? This action cannot be undone.`
+                : "This will permanently cancel the order. This action cannot be undone.";
+        }
+
+        backdrop.classList.add("is-open");
+
+        function cleanup(result) {
+            backdrop.classList.remove("is-open");
+            yesBtn.removeEventListener("click", onYes);
+            noBtn.removeEventListener("click",  onNo);
+            backdrop.removeEventListener("click", onBackdrop);
+            resolve(result);
+        }
+
+        const onYes      = () => cleanup(true);
+        const onNo       = () => cleanup(false);
+        const onBackdrop = e => { if (e.target === backdrop) cleanup(false); };
+
+        yesBtn.addEventListener("click",   onYes,      {once: true});
+        noBtn.addEventListener("click",    onNo,       {once: true});
+        backdrop.addEventListener("click", onBackdrop);
+    });
+}

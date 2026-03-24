@@ -4,7 +4,7 @@ import {
     $, roleBadge, fmtMoney,
     renderPagination, renderRows,
     updateRoleActionBtn, showToast,
-    buildOrderCard
+    buildOrderCard, showConfirm
 } from "./user-management-util.js";
 
 import {state} from "./user-management.js";
@@ -118,11 +118,17 @@ export async function fetchUserDetails(userId) {
 
 // Cancel order
 export async function cancelOrder(orderId, btn) {
-    // Prevent double-click
     if (btn.disabled) return;
+
+    // Read order code for the confirm message before disabling the button
+    const wrap      = btn.closest(".um-order-card-wrap");
+    const orderCode = wrap?.querySelector(".um-order-code")?.textContent?.trim() ?? null;
+
+    const confirmed = await showConfirm(orderCode);
+    if (!confirmed) return;
+
     btn.disabled = true;
 
-    let wrap;
     let statusEl;
     let prevClass;
     let prevText;
@@ -141,32 +147,31 @@ export async function cancelOrder(orderId, btn) {
 
         if (data.error || data.success === false) {
             showToast(data.message ?? "Server rejected cancellation", "error");
+            btn.disabled = false;
             return;
         }
 
-        // Hide the cancel button immediately (optimistic)
+        // Hide the cancel button immediately
         btn.classList.add("um-cancel-order-btn--hiding");
 
-        // Immediately flip the card to "Canceled"
-        wrap = btn.closest(".um-order-card-wrap");
-        statusEl = wrap?.querySelector(".um-order-status");
+        // Flip the status badge to "Cancelled"
+        statusEl  = wrap?.querySelector(".um-order-status");
         prevClass = statusEl ? [...statusEl.classList].find(c => c.startsWith("status-")) : null;
-        prevText = statusEl?.textContent ?? "";
+        prevText  = statusEl?.textContent ?? "";
 
         if (statusEl) {
-            statusEl.className = "um-order-status status-cancelled";
+            statusEl.className   = "um-order-status status-cancelled";
             statusEl.textContent = "Cancelled";
         }
 
-        // Confirmed: remove button from DOM
         btn.remove();
         showToast("Order cancelled successfully.", "success");
 
         // Decrement totalSpent immediately using the order's displayed amount
-        const totalEl = wrap?.querySelector(".um-order-total");
-        const spentEl = document.getElementById("um-modal-spent");
+        const totalEl  = wrap?.querySelector(".um-order-total");
+        const spentEl  = document.getElementById("um-modal-spent");
         if (totalEl && spentEl) {
-            const orderAmount = parseFloat(totalEl.textContent.replace(/[^0-9.]/g, "")) || 0;
+            const orderAmount  = parseFloat(totalEl.textContent.replace(/[^0-9.]/g, "")) || 0;
             const currentSpent = parseFloat(spentEl.textContent.replace(/[^0-9.]/g, "")) || 0;
             spentEl.textContent = fmtMoney(Math.max(0, currentSpent - orderAmount));
         }
@@ -174,9 +179,9 @@ export async function cancelOrder(orderId, btn) {
     } catch (err) {
         console.error("Cancel order error:", err);
 
-        // Rollback optimistic update
+        // Rollback
         if (statusEl && prevClass) {
-            statusEl.className = `um-order-status ${prevClass}`;
+            statusEl.className   = `um-order-status ${prevClass}`;
             statusEl.textContent = prevText;
         }
         btn.classList.remove("um-cancel-order-btn--hiding");
