@@ -134,8 +134,6 @@ public class EmailService {
 
     public void sendToggleRoleMail(UserDTO user) {
 
-        UserRole newRole = (user.getRole() == UserRole.USER) ? UserRole.ADMIN : UserRole.USER;
-
         String subject = "🔐 Your Account Role Has Been Updated";
 
         String body = """
@@ -157,7 +155,7 @@ public class EmailService {
             BookHub Team
             """.formatted(
                 user.getUsername(),
-                newRole.getPrettyName()
+                user.getRole().getPrettyName()
         );
 
         CompletableFuture.runAsync(() ->
