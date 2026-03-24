@@ -12,7 +12,6 @@ import com.iti.jets.service.interfaces.WishlistService;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class WishlistServiceImpl extends ContextHandler implements WishlistService {
 
@@ -115,17 +114,18 @@ public class WishlistServiceImpl extends ContextHandler implements WishlistServi
     }
 
     private BookCardDTO toBookCardDto(Book book) {
-        String authorName = book.getBookAuthors() == null ? ""
+        List<String> authorNames = book.getBookAuthors() == null ? List.of()
                 : book.getBookAuthors().stream()
                 .map(bookAuthor -> bookAuthor.getAuthor() == null ? null : bookAuthor.getAuthor().getName())
                 .filter(name -> name != null && !name.isBlank())
+                .distinct()
                 .sorted(Comparator.naturalOrder())
-                .collect(Collectors.joining(", "));
+                .toList();
 
         return BookCardDTO.builder()
                 .id(book.getId())
                 .title(book.getTitle())
-                .author(authorName)
+                .authors(authorNames)
                 .averageRating(book.getAverageRating() == null ? 0 : (int) Math.round(book.getAverageRating()))
                 .description(book.getDescription())
                 .price(book.getPrice())
