@@ -4,6 +4,7 @@ import com.iti.jets.model.dto.response.OrderDTO;
 import com.iti.jets.model.dto.response.OrderItemDTO;
 import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
+import com.iti.jets.model.enums.UserRole;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.OrderService;
 import com.iti.jets.util.PathStorage;
@@ -60,15 +61,19 @@ public class OrderConfirmationServlet extends HttpServlet {
             return;
         }
 
-        // Validate ownership
-        Long orderId = Long.parseLong(orderIdParam);
-
+        // Validate ownership in case of normal users
         UserDTO user = (UserDTO) session.getAttribute("user");
+        Long orderId = Long.parseLong(orderIdParam);
+        if (user.getRole() == UserRole.USER) {
 
-        if (!orderService.isOrderOwnedByUser(orderId, user.getId())) {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            req.getRequestDispatcher(PathStorage.FORBIDDEN_PAGE).forward(req, resp);
-            return;
+            if (!orderService.isOrderOwnedByUser(orderId, user.getId())) {
+                resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                req.getRequestDispatcher(PathStorage.FORBIDDEN_PAGE).forward(req, resp);
+                return;
+            }
+        }else{
+            req.setAttribute("AdminRequest", true);
+            req.setAttribute("orderId", orderId);
         }
 
         req.getRequestDispatcher(PathStorage.ORDER_CONFIRMATION).forward(req, resp);

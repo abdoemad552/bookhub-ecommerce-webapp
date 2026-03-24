@@ -11,17 +11,6 @@
         <span id="um-total-label" class="font-medium text-foreground"></span>
       </p>
     </div>
-
-    <!-- Search -->
-    <div class="um-search-wrap">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-           aria-hidden="true">
-        <circle cx="11" cy="11" r="8"/>
-        <path d="m21 21-4.3-4.3"/>
-      </svg>
-      <input id="um-search" type="search" class="um-search-input" placeholder="Search users" autocomplete="off"/>
-    </div>
   </div>
 
   <!-- ── Table card ── -->
@@ -33,34 +22,10 @@
           <th>User</th>
           <th>Email</th>
           <th>Role</th>
-          <th>Joined</th>
-          <th></th>
+          <th>Actions</th>
         </tr>
         </thead>
         <tbody id="um-tbody">
-        <!-- Skeleton rows while loading -->
-        <c:forEach begin="1" end="10">
-          <tr>
-            <td>
-              <div class="flex items-center gap-3">
-                <div class="um-skeleton w-9 h-9 rounded-full"></div>
-                <div class="um-skeleton h-3.5 w-28 rounded"></div>
-              </div>
-            </td>
-            <td>
-              <div class="um-skeleton h-3 w-40 rounded"></div>
-            </td>
-            <td>
-              <div class="um-skeleton h-5 w-16 rounded-full"></div>
-            </td>
-            <td>
-              <div class="um-skeleton h-3 w-20 rounded"></div>
-            </td>
-            <td>
-              <div class="um-skeleton h-7 w-20 rounded-lg"></div>
-            </td>
-          </tr>
-        </c:forEach>
         </tbody>
       </table>
     </div>
@@ -96,98 +61,89 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-USER DETAIL MODAL
-════════════════════════════════════════════ -->
+<!--USER DETAIL MODAL -->
 <div id="um-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="um-modal-title">
   <div id="um-modal-panel">
 
-    <!-- Modal header -->
-    <div class="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
-      <h3 id="um-modal-title" class="text-base font-bold text-foreground">User Details</h3>
-      <button id="um-modal-close"
-              class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground cursor-pointer"
-              aria-label="Close">
+    <!-- ── Hero banner (avatar + name + email + role) ── -->
+    <div class="um-modal-hero shrink-0">
+      <!-- Close button -->
+      <button id="um-modal-close" class="um-modal-hero-close" aria-label="Close">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
              fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M18 6 6 18"/>
           <path d="m6 6 12 12"/>
         </svg>
       </button>
-    </div>
 
-    <!-- Modal body (scrollable) -->
-    <div id="um-modal-body" class="px-5 py-5 space-y-5">
-
-      <!-- User hero -->
       <div class="flex items-center gap-4">
-        <div id="um-modal-avatar-wrap"></div>
-        <div class="min-w-0">
-          <p id="um-modal-name" class="text-base font-bold text-foreground truncate"></p>
-          <p id="um-modal-email" class="text-sm text-muted-foreground truncate"></p>
-          <div id="um-modal-role-wrap" class="mt-1.5"></div>
+        <div id="um-modal-avatar-wrap" class="um-modal-avatar-ring"></div>
+        <div class="min-w-0 flex-1">
+          <p id="um-modal-name" class="text-lg font-bold text-foreground truncate leading-tight"></p>
+          <p id="um-modal-email" class="text-sm text-muted-foreground truncate mt-0.5"></p>
+          <div id="um-modal-role-wrap" class="mt-2"></div>
         </div>
       </div>
 
-      <!-- Stats row -->
-      <div class="flex gap-3">
-        <div class="um-stat-card">
-          <span class="stat-label">Total Orders</span>
-          <span id="um-modal-orders" class="stat-value">—</span>
+      <!-- Stats strip inside hero -->
+      <div class="um-stats-strip">
+        <div class="um-stat-pill">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+            <path d="M3.103 6.034h17.794"/>
+            <path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/>
+          </svg>
+          <div>
+            <span class="um-stat-pill-label">Total Orders</span>
+            <span id="um-modal-orders" class="um-stat-pill-value">—</span>
+          </div>
         </div>
-        <div class="um-stat-card">
-          <span class="stat-label">Total Spent</span>
-          <span id="um-modal-spent" class="stat-value">—</span>
-        </div>
-        <div class="um-stat-card">
-          <span class="stat-label">Member Since</span>
-          <span id="um-modal-joined" class="stat-value text-base!"></span>
-        </div>
-      </div>
-
-      <!-- Grant admin toggle -->
-      <div class="um-toggle-wrap">
-        <label class="um-toggle" id="um-toggle-label">
-          <input type="checkbox" id="um-admin-toggle"/>
-          <span class="um-toggle-slider"></span>
-        </label>
-        <div class="min-w-0">
-          <p class="text-sm font-semibold text-foreground">Grant Admin Access</p>
-          <p class="text-xs text-muted-foreground mt-0.5">Admin users can manage products, orders, and other users.</p>
-        </div>
-        <span id="um-toggle-spinner" class="ml-auto shrink-0 hidden">
-                    <svg class="animate-spin w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" opacity=".25"/>
-                        <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3"
-                              stroke-linecap="round"/>
-                    </svg>
-                </span>
-      </div>
-
-      <!-- Order history -->
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Recent Orders</p>
-        <div id="um-modal-orders-list" class="space-y-0">
-          <!-- populated by JS -->
-          <div class="um-empty-state py-6 text-xs">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M16 10a4 4 0 0 1-8 0"/>
-              <path d="M3.103 6.034h17.794"/>
-              <path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/>
-            </svg>
-            <p>No orders yet</p>
+        <div class="um-stat-divider"></div>
+        <div class="um-stat-pill">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" x2="12" y1="2" y2="22"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+          <div>
+            <span class="um-stat-pill-label">Total Spent</span>
+            <span id="um-modal-spent" class="um-stat-pill-value">—</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Modal footer -->
-    <div class="px-5 py-4 border-t border-border shrink-0 flex justify-end">
-      <button id="um-modal-close-btn"
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-transparent font-semibold text-sm text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors cursor-pointer">
-        Close
+    <!-- ── Scrollable body ── -->
+    <div id="um-modal-body">
+
+      <!-- Recent Orders section -->
+      <div class="px-5 pt-5 pb-1">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recent Orders</p>
+        </div>
+        <div id="um-modal-orders-list">
+          <!-- Populated by JS — loading state shown initially via populateModalBase -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Footer: Grant / Revoke + Close ── -->
+    <div class="um-modal-footer shrink-0">
+      <button id="um-role-action-btn" class="um-footer-role-btn" data-user-id="" data-is-admin="false">
+        <span id="um-role-btn-spinner" class="hidden">
+          <svg class="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" opacity=".25"/>
+            <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span id="um-role-btn-icon">
+          <!-- icon swapped by JS -->
+        </span>
+        <span id="um-role-btn-text">Grant Admin</span>
       </button>
     </div>
+
   </div>
 </div>

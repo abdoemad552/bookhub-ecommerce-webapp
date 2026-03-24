@@ -28,8 +28,8 @@
         <span class="text-xl font-bold text-foreground tracking-tight">Book<span class="text-primary">Hub</span></span>
       </a>
 
-            <!-- Right actions -->
-            <div class="flex items-center gap-3 shrink-0">
+      <!-- Right actions -->
+      <div class="flex items-center gap-3 shrink-0">
 
         <!-- Cart -->
         <a class="relative shrink-0" href="${pageContext.request.contextPath}/cart">
@@ -50,95 +50,97 @@
           </button>
         </a>
 
-                <c:choose>
-                    <c:when test="${empty sessionScope.user}">
-                        <a href="${pageContext.request.contextPath}/login" class="shrink-0">
-                            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold bg-background shadow-xs hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-all border h-10 px-6 rounded-xl cursor-pointer">
-                                Sign In
-                            </button>
-                        </a>
-                        <a href="${pageContext.request.contextPath}/signup" class="hidden sm:block shrink-0">
-                            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground h-10 px-6 rounded-xl transition-all relative cursor-pointer">
-                                Sign Up
-                            </button>
-                        </a>
-                    </c:when>
-                    <c:otherwise>
-                        <c:if test="${sessionScope.user.role eq 'ADMIN'}">
-                            <a href="${pageContext.request.contextPath}/admin/dashboard" class="shrink-0">
-                                <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground h-10 rounded-xl px-6">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-column w-4 h-4 text-current" aria-hidden="true">
-                                        <path d="M3 3v16a2 2 0 0 0 2 2h16"></path>
-                                        <path d="M18 17V9"></path>
-                                        <path d="M13 17V5"></path>
-                                        <path d="M8 17v-3"></path>
-                                    </svg>
-                                    Dashboard
-                                </button>
-                            </a>
-                        </c:if>
-                        <div id="avatar-dropdown-container" class="relative">
-                            <button id="avatar-btn"
-                                    class="flex items-center gap-2 p-1 rounded-full hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                                    aria-expanded="true" aria-haspopup="true">
-                                <div class="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center border-2 border-primary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                         stroke-linejoin="round" class="lucide lucide-user w-5 h-5 text-primary"
-                                         aria-hidden="true">
-                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                        <circle cx="12" cy="7" r="4"></circle>
-                                    </svg>
-                                </div>
-                                <svg id="chevron" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                     stroke-linecap="round" stroke-linejoin="round"
-                                     class="lucide lucide-chevron-down w-4 h-4 text-muted-foreground transition-transform duration-200"
-                                     aria-hidden="true">
-                                    <path d="m6 9 6 6 6-6"></path>
-                                </svg>
-                            </button>
-                            <div id="dropdown"
-                                 class="absolute right-0 mt-2 w-48 bg-card rounded-lg border border-border shadow-lg overflow-hidden transition-all duration-200 origin-top-right opacity-0 scale-95 invisible"
-                                 aria-expanded="false">
-                                <div class="px-4 py-3 border-b border-border bg-muted/30">
-                                    <p class="text-sm font-semibold text-foreground truncate">${sessionScope.user.username}</p>
-                                    <p class="text-xs text-muted-foreground truncate">${sessionScope.user.email}</p>
-                                </div>
-                                <div class="py-1">
-                                    <a href="${pageContext.request.contextPath}/profile"
-                                       class="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                             stroke-linecap="round" stroke-linejoin="round"
-                                             class="lucide lucide-user w-4 h-4 text-muted-foreground"
-                                             aria-hidden="true">
-                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                            <circle cx="12" cy="7" r="4"></circle>
-                                        </svg>
-                                        Profile
-                                    </a>
-                                    <a href="${pageContext.request.contextPath}/profile"
-                                       class="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                             stroke-linecap="round" stroke-linejoin="round"
-                                             class="lucide lucide-package w-4 h-4 text-muted-foreground"
-                                             aria-hidden="true">
-                                            <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
-                                            <path d="M12 22V12"></path>
-                                            <polyline points="3.29 7 12 12 20.71 7"></polyline>
-                                            <path d="m7.5 4.27 9 5.15"></path>
-                                        </svg>
-                                        Orders
-                                    </a>
-                                </div>
-                                <div class="border-t border-border py-1">
-                                    <!-- Hidden form — submits POST to log out servlet -->
-                                    <form id="logout-form" action="${pageContext.request.contextPath}/logout"
-                                          method="post"
-                                          style="display:none;">
-                                    </form>
+        <c:choose>
+          <c:when test="${empty sessionScope.user}">
+            <a href="${pageContext.request.contextPath}/login" class="shrink-0">
+              <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold bg-background shadow-xs hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-all border h-10 px-6 rounded-xl cursor-pointer">
+                Sign In
+              </button>
+            </a>
+            <a href="${pageContext.request.contextPath}/signup" class="hidden sm:block shrink-0">
+              <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground h-10 px-6 rounded-xl transition-all relative cursor-pointer">
+                Sign Up
+              </button>
+            </a>
+          </c:when>
+          <c:otherwise>
+            <c:if test="${sessionScope.user.role eq 'ADMIN'}">
+              <a href="${pageContext.request.contextPath}/admin/dashboard" class="shrink-0">
+                <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground h-10 rounded-xl px-6">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                       class="lucide lucide-chart-column w-4 h-4 text-current" aria-hidden="true">
+                    <path d="M3 3v16a2 2 0 0 0 2 2h16"></path>
+                    <path d="M18 17V9"></path>
+                    <path d="M13 17V5"></path>
+                    <path d="M8 17v-3"></path>
+                  </svg>
+                  Dashboard
+                </button>
+              </a>
+            </c:if>
+            <div id="avatar-dropdown-container" class="relative">
+              <button id="avatar-btn"
+                      class="flex items-center gap-2 p-1 rounded-full hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                      aria-expanded="true" aria-haspopup="true">
+                <div class="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center border-2 border-primary">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                       fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                       stroke-linejoin="round" class="lucide lucide-user w-5 h-5 text-primary"
+                       aria-hidden="true">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </div>
+                <svg id="chevron" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-chevron-down w-4 h-4 text-muted-foreground transition-transform duration-200"
+                     aria-hidden="true">
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </button>
+              <div id="dropdown"
+                   class="absolute right-0 mt-2 w-48 bg-card rounded-lg border border-border shadow-lg overflow-hidden transition-all duration-200 origin-top-right opacity-0 scale-95 invisible"
+                   aria-expanded="false">
+                <div class="px-4 py-3 border-b border-border bg-muted/30">
+                  <p class="text-sm font-semibold text-foreground truncate">${sessionScope.user.username}</p>
+                  <p class="text-xs text-muted-foreground truncate">${sessionScope.user.email}</p>
+                </div>
+                <div class="py-1">
+                  <a href="${pageContext.request.contextPath}/profile"
+                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-user w-4 h-4 text-muted-foreground"
+                         aria-hidden="true">
+                      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Profile
+                  </a>
+                  <a href="${pageContext.request.contextPath}/profile"
+                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-package w-4 h-4 text-muted-foreground"
+                         aria-hidden="true">
+                      <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+                      <path d="M12 22V12"></path>
+                      <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                      <path d="m7.5 4.27 9 5.15"></path>
+                    </svg>
+                    Orders
+                  </a>
+                </div>
+                <div class="border-t border-border py-1">
+                  <!-- Hidden form — submits POST to log out servlet -->
+                  <form id="logout-form" action="${pageContext.request.contextPath}/logout"
+                        method="post"
+                        style="display:none;">
+                  </form>
 
                   <button type="button"
                           onclick="document.getElementById('logout-form').submit();"

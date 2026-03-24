@@ -2,9 +2,12 @@ package com.iti.jets.service.implementation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iti.jets.mapper.UserMapper;
 import com.iti.jets.model.dto.request.PlaceOrderRequestDTO;
 import com.iti.jets.model.dto.response.OrderDTO;
 import com.iti.jets.model.dto.response.OrderItemDTO;
+import com.iti.jets.model.dto.response.UserDTO;
+import com.iti.jets.model.dto.response.UserOrderHistoryDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.model.dto.response.factory.ResponseFactory;
 import com.iti.jets.model.entity.*;
@@ -34,15 +37,18 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
     private final OrderRepository orderRepository;
     private final BookRepository bookRepository;
     private final CartRepository cartRepository;
+    private final UserMapper userMapper;
 
     public OrderServiceImpl(OrderRepository orderRepository,
                             UserRepository userRepository,
                             BookRepository bookRepository,
-                            CartRepository cartRepository) {
+                            CartRepository cartRepository,
+                            UserMapper userMapper) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
         this.cartRepository = cartRepository;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -55,7 +61,7 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
             }
 
             BaseResponse<Order> res = buildOrderEntity(request, userOpt.get());
-            if(res.isFailure()){
+            if (res.isFailure()) {
                 return ResponseFactory.failure(res.getMessage());
             }
             Order orderEntity = res.getData();
@@ -174,6 +180,55 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
         });
     }
 
+    @Override
+    public BaseResponse<UserOrderHistoryDTO> loadOrderHistory(Long userId) {
+        return executeInContext(() -> {
+            Optional<User> userOpt = userRepository.findById(userId);
+            if (userOpt.isEmpty()) {
+                return ResponseFactory.failure("Invalid User");
+            }
+
+            User user = userOpt.get();
+            Set<Order> orders = user.getOrders();
+            Set<OrderDTO> orderDtos = new HashSet<>();
+            double totalSpent = 0;
+
+            for (Order order : orders) {
+                totalSpent += order.getTotalPrice().doubleValue();
+                orderDtos.add(
+                        OrderDTO.builder()
+                                .orderId(order.getId())
+                                .orderStatus(order.getStatus())
+                                .orderCode("ORD-" + order.getCreatedAt().getYear() + "-" + order.getId())
+                                .createdAt(order.getCreatedAt())
+                                .totalPrice(order.getTotalPrice().doubleValue())
+                                .build()
+                );
+            }
+
+            UserOrderHistoryDTO userOrderHistoryDto = UserOrderHistoryDTO.builder()
+                    .totalOrders(orders.size())
+                    .totalSpent(totalSpent)
+                    .recentOrders(orderDtos)
+                    .build();
+
+            return ResponseFactory.success("Orders Loaded", userOrderHistoryDto);
+        });
+    }
+
+    @Override
+    public UserDTO getOwnedUser(Long orderId) {
+        return executeInContext(() -> {
+            Optional<Order> orderOpt = orderRepository.findById(orderId);
+            if(orderOpt.isEmpty()){
+                return null;
+            }
+
+            Order order = orderOpt.get();
+            return userMapper.toDTO(order.getUser());
+        });
+    }
+
     // Helpers
     private OrderDTO buildOrderDTO(Order order) {
         Set<OrderItemDTO> items = new HashSet<>();
@@ -248,10 +303,10 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
             );
 
             // Update book data
-            if(book.getStockQuantity() - item.getQuantity() < 0){
+            if (book.getStockQuantity() - item.getQuantity() < 0) {
                 return ResponseFactory.failure("Only  " + book.getStockQuantity() + " items available in stock from " + book.getTitle());
             }
-            if(book.getStockQuantity() == 0){
+            if (book.getStockQuantity() == 0) {
                 return ResponseFactory.failure("This book: " + book.getTitle() + " is out of stock");
             }
             book.setStockQuantity(book.getStockQuantity() - item.getQuantity());

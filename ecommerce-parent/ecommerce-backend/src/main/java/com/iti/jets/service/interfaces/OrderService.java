@@ -2,6 +2,8 @@ package com.iti.jets.service.interfaces;
 
 import com.iti.jets.model.dto.request.PlaceOrderRequestDTO;
 import com.iti.jets.model.dto.response.OrderDTO;
+import com.iti.jets.model.dto.response.UserDTO;
+import com.iti.jets.model.dto.response.UserOrderHistoryDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.model.entity.Order;
 import com.iti.jets.model.enums.OrderStatus;
@@ -21,4 +23,8 @@ public interface OrderService {
     BaseResponse<Void> cancelOrder(Order order);
 
     boolean isOrderOwnedByUser(Long orderId, Long userId);
+
+    BaseResponse<UserOrderHistoryDTO> loadOrderHistory(Long userId);
+
+    UserDTO getOwnedUser(Long orderId);
 }
