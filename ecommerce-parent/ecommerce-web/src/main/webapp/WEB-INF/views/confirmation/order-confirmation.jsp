@@ -14,7 +14,6 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/order-payment-review.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/order-confirmation.css">
   <script type="module" src="${pageContext.request.contextPath}/assets/js/confirmation/orderConfirmation.js"></script>
-  <script src="${pageContext.request.contextPath}/assets/js/admin/dashboard/cancel-order.js"></script>
 </head>
 
 <body class="font-google-sans antialiased">
@@ -51,17 +50,6 @@
         </div>
       </c:otherwise>
     </c:choose>
-
-    <!-- JS alert -->
-    <div id="js-alert" class="alert-banner alert-error" style="display:none;" role="alert">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="12" y1="8" x2="12" y2="12"></line>
-        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-      </svg>
-      <span id="js-alert-text"></span>
-    </div>
 
     <%-- Order ID card — same width as all other cards --%>
     <div class="card-modern oc-reveal oc-reveal--2" style="padding:20px;">
