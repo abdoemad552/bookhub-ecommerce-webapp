@@ -168,10 +168,16 @@ public class User {
     }
 
     public void setInterests(Set<Category> categories) {
-        interests.clear();
-        if (categories != null) {
-            categories.forEach(this::addInterest);
-        }
+        Set<Category> desiredCategories = categories == null ? Set.of() : new HashSet<>(categories);
+
+        interests.removeIf(userInterest ->
+                userInterest.getCategory() == null || !desiredCategories.contains(userInterest.getCategory())
+        );
+
+        Set<Category> currentCategories = getCategories();
+        desiredCategories.stream()
+                .filter(category -> !currentCategories.contains(category))
+                .forEach(this::addInterest);
     }
 
     // Special getter

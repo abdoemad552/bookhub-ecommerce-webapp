@@ -31,14 +31,32 @@
                  class="px-3 py-2 bg-muted/50 rounded-lg border border-border text-sm text-primary font-medium truncate">${selectedCategory}</div>
         </div>
         <div id="categories-container" class="overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0">
-            <div class="space-y-1 bg-muted/50 rounded-lg p-2 border border-border">
-                <button data-category="all" data-category-value="" class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${selectedCategoryValue eq 'all' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">All Books</button>
-                <button data-category="fiction" data-category-value="Fiction" class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${selectedCategoryValue eq 'fiction' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">Fiction</button>
-                <button data-category="science-fiction" data-category-value="Science Fiction" class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${selectedCategoryValue eq 'science-fiction' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">Science Fiction</button>
-                <button data-category="fantasy" data-category-value="Fantasy" class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${selectedCategoryValue eq 'fantasy' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">Fantasy</button>
-                <button data-category="self-help" data-category-value="Self-Help" class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${selectedCategoryValue eq 'self-help' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">Self-Help</button>
-                <button data-category="non-fiction" data-category-value="Non-Fiction" class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${selectedCategoryValue eq 'non-fiction' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">Non-Fiction</button>
-                <button data-category="biography" data-category-value="Biography" class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${selectedCategoryValue eq 'biography' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">Biography</button>
+            <div class="space-y-1 bg-muted/50 rounded-lg p-2 border border-border max-h-80 overflow-y-auto pr-1">
+                <button
+                        data-category="all"
+                        data-category-value=""
+                        data-category-label="All Books"
+                        class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${selectedCategoryValue eq 'all' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">
+                    All Books
+                </button>
+                <c:if test="${requestScope.exploreHasInterestFilter}">
+                    <button
+                            data-category="my-interests"
+                            data-category-value="my-interests"
+                            data-category-label="My Interests"
+                            class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${selectedCategoryValue eq 'my-interests' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">
+                        My Interests
+                    </button>
+                </c:if>
+                <c:forEach items="${requestScope.exploreCategories}" var="category">
+                    <button
+                            data-category="${category.name}"
+                            data-category-value="${category.name}"
+                            data-category-label="${category.name}"
+                            class="category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${selectedCategoryValue eq category.name ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">
+                        ${category.name}
+                    </button>
+                </c:forEach>
             </div>
         </div>
     </div>
