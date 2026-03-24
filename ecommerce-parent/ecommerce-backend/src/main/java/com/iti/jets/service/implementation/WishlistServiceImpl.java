@@ -1,5 +1,6 @@
 package com.iti.jets.service.implementation;
 
+import com.iti.jets.model.dto.response.AuthorDTO;
 import com.iti.jets.model.dto.response.BookCardDTO;
 import com.iti.jets.model.entity.Book;
 import com.iti.jets.model.entity.Wishlist;
@@ -114,22 +115,31 @@ public class WishlistServiceImpl extends ContextHandler implements WishlistServi
     }
 
     private BookCardDTO toBookCardDto(Book book) {
-        List<String> authorNames = book.getBookAuthors() == null ? List.of()
+        List<AuthorDTO> authorDtos = book.getBookAuthors() == null ? List.of()
                 : book.getBookAuthors().stream()
-                .map(bookAuthor -> bookAuthor.getAuthor() == null ? null : bookAuthor.getAuthor().getName())
-                .filter(name -> name != null && !name.isBlank())
-                .distinct()
-                .sorted(Comparator.naturalOrder())
+                .map(bookAuthor -> bookAuthor.getAuthor())
+                .filter(author -> author != null && author.getName() != null && !author.getName().isBlank())
+                .collect(java.util.stream.Collectors.toMap(
+                        author -> author.getId(),
+                        author -> {
+                            AuthorDTO dto = new AuthorDTO();
+                            dto.setId(author.getId());
+                            dto.setName(author.getName());
+                            return dto;
+                        },
+                        (existing,newOne) -> existing
+                ))
+                .values().stream()
+                .sorted(Comparator.comparing(AuthorDTO::getName))
                 .toList();
 
         return BookCardDTO.builder()
                 .id(book.getId())
                 .title(book.getTitle())
-                .authors(authorNames)
-                .averageRating(book.getAverageRating() == null ? 0 : (int) Math.round(book.getAverageRating()))
+                .authors(authorDtos)
+                .averageRating(book.getAverageRating() == null ? 0 : Math.round(book.getAverageRating()))
                 .description(book.getDescription())
-                .price(book.getPrice())
-                .coverPicUrl(book.getImageUrl())
+                .price(book.getPrice() == null ? 0.0 : book.getPrice().doubleValue())
                 .stockQuantity(book.getStockQuantity() == null ? 0 : book.getStockQuantity())
                 .build();
     }
