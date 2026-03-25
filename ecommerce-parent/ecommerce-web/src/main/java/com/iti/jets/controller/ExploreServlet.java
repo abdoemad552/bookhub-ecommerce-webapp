@@ -8,6 +8,9 @@ import com.iti.jets.mock.dto.BookCardDto;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.BookService;
 import com.iti.jets.util.PathStorage;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
+import jakarta.json.bind.JsonbConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -27,10 +30,15 @@ public class ExploreServlet extends HttpServlet {
     private static final int DEFAULT_PAGE_SIZE = 12;
 
     private BookService bookService;
+    private Jsonb jsonb;
 
     @Override
     public void init() {
         bookService = ServiceFactory.getInstance().getBookService();
+
+        JsonbConfig config = new JsonbConfig();
+        config.withFormatting(true);
+        jsonb = JsonbBuilder.create(config);
     }
 
     @Override
@@ -38,13 +46,13 @@ public class ExploreServlet extends HttpServlet {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws ServletException, IOException {
-        int     pageNumber       = parsePositiveInteger(request.getParameter("page"), 1);
-        int     pageSize         = parsePositiveInteger(request.getParameter("size"), DEFAULT_PAGE_SIZE);
-        String  query            = normalizeText(request.getParameter("query"));
-        String  category         = normalizeCategory(request.getParameter("category"));
-        int     maxPrice         = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
-        int     minPrice         = parsePositiveInteger(request.getParameter("minPrice"), DEFAULT_MIN_PRICE);
-        String  sort             = normalizeSortCriteria(request.getParameter("sort"));
+        int     page       = parsePositiveInteger(request.getParameter("page"), 1);
+        int     size       = parsePositiveInteger(request.getParameter("size"), DEFAULT_PAGE_SIZE);
+        String  query      = normalizeText(request.getParameter("query"));
+        String  category   = normalizeCategory(request.getParameter("category"));
+        int     maxPrice   = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
+        int     minPrice   = parsePositiveInteger(request.getParameter("minPrice"), DEFAULT_MIN_PRICE);
+        String  sort       = normalizeSortCriteria(request.getParameter("sort"));
 
         System.out.println(request.getParameter("page"));
         System.out.println(request.getParameter("size"));
@@ -62,9 +70,15 @@ public class ExploreServlet extends HttpServlet {
             .sortCriteria(sort)
             .build();
 
-        PageResponseDTO<BookCardDTO> books = bookService.findAllBookCard(pageNumber, pageSize, filter);
+        PageResponseDTO<BookCardDTO> booksPage = bookService.findAllBookCard(page, size, filter);
 
-        request.setAttribute("pagination", books);
+        request.setAttribute("pagination", booksPage);
+
+        request.setAttribute("query", query);
+        request.setAttribute("category", category);
+        request.setAttribute("minPrice", minPrice);
+        request.setAttribute("maxPrice", maxPrice);
+        request.setAttribute("sort", sort);
 
         request.getRequestDispatcher(PathStorage.EXPLORE_PAGE).forward(request, response);
     }
@@ -74,13 +88,13 @@ public class ExploreServlet extends HttpServlet {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws ServletException, IOException {
-        int     pageNumber       = parsePositiveInteger(request.getParameter("page"), 1);
-        int     pageSize         = parsePositiveInteger(request.getParameter("size"), DEFAULT_PAGE_SIZE);
-        String  query            = normalizeText(request.getParameter("query"));
-        String  category         = normalizeCategory(request.getParameter("category"));
-        int     maxPrice         = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
-        int     minPrice         = parsePositiveInteger(request.getParameter("minPrice"), DEFAULT_MIN_PRICE);
-        String  sort             = normalizeSortCriteria(request.getParameter("sort"));
+        int     page       = parsePositiveInteger(request.getParameter("page"), 1);
+        int     size       = parsePositiveInteger(request.getParameter("size"), DEFAULT_PAGE_SIZE);
+        String  query      = normalizeText(request.getParameter("query"));
+        String  category   = normalizeCategory(request.getParameter("category"));
+        int     maxPrice   = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
+        int     minPrice   = parsePositiveInteger(request.getParameter("minPrice"), DEFAULT_MIN_PRICE);
+        String  sort       = normalizeSortCriteria(request.getParameter("sort"));
 
         System.out.println(request.getParameter("page"));
         System.out.println(request.getParameter("size"));
@@ -98,9 +112,10 @@ public class ExploreServlet extends HttpServlet {
             .sortCriteria(sort)
             .build();
 
-        PageResponseDTO<BookCardDTO> books = bookService.findAllBookCard(pageNumber, pageSize, filter);
+        PageResponseDTO<BookCardDTO> booksPage = bookService.findAllBookCard(page, size, filter);
 
-        request.setAttribute("pagination", books);
+        System.out.println(jsonb.toJson(booksPage));
+        request.setAttribute("pagination", booksPage);
 
         request.getRequestDispatcher(PathStorage.EXPLORE_BOOKS_CONTAINER).forward(request, response);
     }
@@ -121,9 +136,7 @@ public class ExploreServlet extends HttpServlet {
             return null;
         }
 
-        return "all".equalsIgnoreCase(normalizedCategory) || "all books".equalsIgnoreCase(normalizedCategory)
-                ? null
-                : normalizedCategory;
+        return "all".equalsIgnoreCase(normalizedCategory) ? null : normalizedCategory;
     }
 
     private String normalizeText(String rawValue) {
@@ -145,10 +158,6 @@ public class ExploreServlet extends HttpServlet {
             case "price-low-to-high", "price-high-to-low", "rating" -> normalizedSortCriteria.trim().toLowerCase(Locale.ROOT);
             default -> "featured";
         };
-    }
-
-    private String toSlug(String value) {
-        return value.toLowerCase(Locale.ROOT).replace(' ', '-');
     }
 
     private BookCardDto toBookCardDto(Book book) {

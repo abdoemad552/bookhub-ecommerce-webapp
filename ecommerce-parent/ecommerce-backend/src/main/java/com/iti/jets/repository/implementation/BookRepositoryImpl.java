@@ -81,14 +81,19 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
                 }
 
                 if (filter.getSearchQuery() != null && !filter.getSearchQuery().isBlank()) {
-                    String normalizedSearchQuery = "%" + filter.getSearchQuery().trim().toLowerCase(Locale.ROOT) + "%";
+                    String searchQuery = "%" + filter.getSearchQuery().trim() + "%";
+
                     predicates.add(
                         criteriaBuilder.or(
-                            criteriaBuilder.like(criteriaBuilder.lower(bookRoot.get("title")), normalizedSearchQuery),
-                            criteriaBuilder.like(criteriaBuilder.lower(bookRoot.get("description")), normalizedSearchQuery)
+                            criteriaBuilder.like(bookRoot.get("title").as(String.class), searchQuery),
+                            criteriaBuilder.like(
+                                criteriaBuilder.coalesce(bookRoot.get("description"), "").as(String.class),
+                                searchQuery
+                            )
                         )
                     );
                 }
+
             }
 
             List<Order> orderBy = buildOrderBy(criteriaBuilder, bookRoot, filter);
@@ -152,13 +157,12 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
                 }
 
                 if (filter.getSearchQuery() != null && !filter.getSearchQuery().isBlank()) {
-                    String normalizedSearchQuery =
-                        "%" + filter.getSearchQuery().trim().toLowerCase(Locale.ROOT) + "%";
+                    String searchQuery = "%" + filter.getSearchQuery().trim() + "%";
 
                     predicates.add(
                         cb.or(
-                            cb.like(cb.lower(bookRoot.get("title")), normalizedSearchQuery),
-                            cb.like(cb.lower(bookRoot.get("description")), normalizedSearchQuery)
+                            cb.like(bookRoot.get("title").as(String.class), searchQuery),
+                            cb.like(cb.coalesce(bookRoot.get("description"), "").as(String.class), searchQuery)
                         )
                     );
                 }

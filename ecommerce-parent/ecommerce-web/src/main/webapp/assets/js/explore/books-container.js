@@ -78,7 +78,7 @@ export class FilterBooksContainer {
         }
 
         this._bindEvents();
-        this._fetch(0);
+        this._fetch(1);
     }
 
     _fetch(page) {
@@ -87,12 +87,14 @@ export class FilterBooksContainer {
         const filterOptions = getCurrentState();
         $.ajax({
             url: `${getContextPath()}/explore`,
-            method: "GET",
+            method: "POST",
             data: { ...filterOptions, page, size: this._pageSize },
             dataType: "html"
         })
-        .done((books) => {
-
+        .done((content) => {
+            setTimeout(() => {
+                this._$container.html(content);
+            }, 1500);
         })
         .fail(jaXHR => {
             console.log(jqXHR.message);

@@ -17,12 +17,14 @@
 <body class="font-google-sans antialiased">
 <div class="min-h-screen bg-background">
     <jsp:include page="../common/header.jsp"/>
-    <div class="w-full mx-auto px-4 py-8">
+    <div class="max-w-7xl mx-auto px-4 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div class="lg:col-span-1">
                 <jsp:include page="sidebar-filter.jsp"/>
             </div>
             <div id="filter-books-container" class="lg:col-span-3">
+                <!-- Books goes here... -->
+<%--                <jsp:include page="books-container.jsp"/>--%>
             </div>
         </div>
     </div>

@@ -27,7 +27,7 @@
     <c:choose>
         <c:when test="${not empty pagination.content}">
             <c:set var="books" scope="request" value="${pagination.content}"/>
-            <jsp:include page="../common/book-card.jsp"/>
+            <jsp:include page="../common/book-card-h.jsp"/>
         </c:when>
         <c:otherwise>
             <div class="md:col-span-2 xl:col-span-3 rounded-xl border border-border bg-card shadow-sm p-8 text-center">
@@ -41,22 +41,36 @@
     </c:choose>
 </div>
 
-<div class="flex items-center justify-center gap-2 mt-8">
-    <button data-page="${pagination.page - 1}" type="button" class="pagination-page inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground h-8 rounded-md gap-1.5 px-3" <c:if test="${pagination.page eq 1}">disabled="disabled"</c:if>>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left w-4 h-4" aria-hidden="true">
-            <path d="m15 18-6-6 6-6"></path>
-        </svg>
-    </button>
+<c:if test="${pagination.totalPages gt 1}">
+    <div class="flex items-center justify-center gap-1 mt-8">
 
-    <c:forEach begin="${pagination.left}" end="${pagination.right}" var="i">
-        <button data-page="${i}" type="button" class="pagination-page inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all cursor-default h-8 rounded-md gap-1.5 px-3 ${i eq pagination.page ? 'text-primary-foreground bg-primary hover:bg-primary/90' : 'text-foreground bg-background hover:bg-primary/30'}">
-            ${currentPageNumber}
+        <button data-page="${pagination.page - 1}" type="button"
+                class="pagination-page inline-flex items-center justify-center w-9 h-9 rounded-full border border-border bg-background text-muted-foreground transition-all hover:bg-muted hover:text-foreground hover:border-primary/30 disabled:pointer-events-none disabled:opacity-40 cursor-pointer"
+                <c:if test="${pagination.page eq 1}">disabled="disabled"</c:if>>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m15 18-6-6 6-6"/>
+            </svg>
         </button>
-    </c:forEach>
 
-    <button data-page="${pagination.page + 1}" type="button" class="pagination-page inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground h-8 rounded-md gap-1.5 px-3" <c:if test="${pagination.page ge pagination.totalPages}">disabled="disabled"</c:if>>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right w-4 h-4" aria-hidden="true">
-            <path d="m9 18 6-6-6-6"></path>
-        </svg>
-    </button>
-</div>
+        <c:forEach begin="${pagination.left}" end="${pagination.right}" var="i">
+            <button data-page="${i}" type="button"
+                    class="pagination-page inline-flex items-center justify-center w-9 h-9 rounded-full text-sm font-medium transition-all
+                       ${i eq pagination.page
+                           ? 'bg-primary text-primary-foreground shadow-sm cursor-default pointer-events-none'
+                           : 'bg-background text-foreground border border-border hover:bg-muted hover:border-primary/30 cursor-pointer'}">
+                    ${i}
+            </button>
+        </c:forEach>
+
+        <button data-page="${pagination.page + 1}" type="button"
+                class="pagination-page inline-flex items-center justify-center w-9 h-9 rounded-full border border-border bg-background text-muted-foreground transition-all hover:bg-muted hover:text-foreground hover:border-primary/30 disabled:pointer-events-none disabled:opacity-40 cursor-pointer"
+                <c:if test="${pagination.page ge pagination.totalPages}">disabled="disabled"</c:if>>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m9 18 6-6-6-6"/>
+            </svg>
+        </button>
+
+    </div>
+</c:if>

@@ -64,10 +64,11 @@ export function getCurrentState() {
 
 function applyFilters(nextState) {
     console.log("Submitting: " + JSON.stringify(getCurrentState()));
+
     $.ajax({
         url: `${getContextPath()}/explore`,
         method: "POST",
-        data: getCurrentState()
+        data: nextState
     })
     .done(content => {
         $("#filter-books-container").html(content);
@@ -133,6 +134,10 @@ function makeCategoryButton(id, label, isSelected) {
     const activeClasses   = "bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold";
     const inactiveClasses = "hover:bg-primary/5 active:bg-primary/10 text-foreground";
 
+    if (isSelected) {
+
+    }
+
     return $("<button>")
         .addClass("category-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer")
         .addClass(isSelected ? activeClasses : inactiveClasses)
@@ -164,6 +169,8 @@ async function loadCategories() {
                 });
 
                 console.log(categories);
+
+                $("#selected-category").text(categoriesMapping[currentId]);
 
                 $list.empty();
                 $list.append(makeCategoryButton("all", "All Books", currentId === "all"));

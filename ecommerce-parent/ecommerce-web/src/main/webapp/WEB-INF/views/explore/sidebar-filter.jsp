@@ -6,7 +6,7 @@
             <path d="m21 21-4.34-4.34"></path>
             <circle cx="11" cy="11" r="8"></circle>
         </svg>
-        <input id="search-input" type="text" placeholder="Search books..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150"/>
+        <input id="search-input" type="text" placeholder="Search books..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150" value="${requestScope.query}"/>
     </div>
 
     <div class="mb-3">
@@ -23,8 +23,8 @@
         </button>
         <div class="overflow-hidden transition-all duration-300 ease-in-out max-h-12 opacity-100">
             <div id="selected-category"
-                 data-selected-category-value="${selectedCategoryValue}"
-                 class="px-3 py-2 bg-muted/50 rounded-lg border border-border text-sm text-primary font-medium truncate">${selectedCategory}</div>
+                 data-selected-category-value="${empty requestScope.category ? "all" : requestScope.category}"
+                 class="px-3 py-2 bg-muted/50 rounded-lg border border-border text-sm text-primary font-medium truncate">Loading...</div>
         </div>
         <div id="categories-container" class="overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0">
             <div id="categories-list" class="space-y-1 bg-muted/50 rounded-lg p-2 border border-border max-h-48 overflow-y-auto custom-scrollbar">
@@ -41,7 +41,7 @@
             <div class="flex-1">
                 <label class="text-xs text-muted-foreground font-medium mb-1 block">Min</label>
                 <div class="relative">
-                    <input id="min-price-input" type="number" min="0" max="999999" class="w-full p-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150" placeholder="0"/>
+                    <input id="min-price-input" type="number" min="0" max="999999" class="w-full p-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150" placeholder="0" value="${requestScope.minPrice}"/>
                 </div>
             </div>
 
@@ -50,7 +50,7 @@
             <div class="flex-1">
                 <label class="text-xs text-muted-foreground font-medium mb-1 block">Max</label>
                 <div class="relative">
-                    <input id="max-price-input" type="number" min="0" max="999999" class="w-full p-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150" placeholder="999999"/>
+                    <input id="max-price-input" type="number" min="0" max="999999" class="w-full p-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150" placeholder="999999" value="${requestScope.maxPrice}"/>
                 </div>
             </div>
         </div>
@@ -65,13 +65,12 @@
             Min price must be less than or equal to max price.
         </p>
 
-
         <div class="flex items-center justify-between mt-3 px-1">
             <span class="text-xs text-muted-foreground">
-                <span id="min-price">0</span> EGP
+                <span id="min-price">${empty requestScope.minPrice ? 0      : requestScope.minPrice}</span> EGP
             </span>
             <span class="text-xs text-muted-foreground">
-                <span id="max-price">999999</span> EGP
+                <span id="max-price">${empty requestScope.maxPrice ? 999999 : requestScope.maxPrice}</span> EGP
             </span>
         </div>
     </div>
@@ -90,22 +89,22 @@
         </button>
         <div class="overflow-hidden transition-all duration-300 ease-in-out max-h-12 opacity-100">
             <div id="selected-sort-criteria"
-                 data-selected-sort-criteria="${selectedSortCriteria}"
+                 data-selected-sort-criteria="${empty requestScope.sort ? "featured" : requestScope.sort}"
                  class="px-3 py-2 bg-muted/50 rounded-lg border border-border text-sm text-primary font-medium truncate">
                 <c:choose>
-                    <c:when test="${selectedSortCriteria eq 'price-low-to-high'}">Price: Low to High</c:when>
-                    <c:when test="${selectedSortCriteria eq 'price-high-to-low'}">Price: High to Low</c:when>
-                    <c:when test="${selectedSortCriteria eq 'rating'}">Top Rated</c:when>
+                    <c:when test="${requestScope.sort eq 'price-low-to-high'}">Price: Low to High</c:when>
+                    <c:when test="${requestScope.sort eq 'price-high-to-low'}">Price: High to Low</c:when>
+                    <c:when test="${requestScope.sort eq 'rating'}">Top Rated</c:when>
                     <c:otherwise>Featured</c:otherwise>
                 </c:choose>
             </div>
         </div>
         <div id="sort-container" class="overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0">
             <div class="space-y-1 bg-muted/50 rounded-lg p-2 border border-border">
-                <button data-criteria="featured" class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${selectedSortCriteria eq 'featured' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">Featured</button>
-                <button data-criteria="price-low-to-high" class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${selectedSortCriteria eq 'price-low-to-high' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">Price: Low to High</button>
-                <button data-criteria="price-high-to-low" class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${selectedSortCriteria eq 'price-high-to-low' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">Price: High to Low</button>
-                <button data-criteria="rating" class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${selectedSortCriteria eq 'rating' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">Top Rated</button>
+                <button data-criteria="featured"            class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${requestScope.sort eq 'featured' or empty requestScope.sort ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">Featured</button>
+                <button data-criteria="price-low-to-high"   class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${requestScope.sort eq 'price-low-to-high' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">Price: Low to High</button>
+                <button data-criteria="price-high-to-low"   class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${requestScope.sort eq 'price-high-to-low' ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">Price: High to Low</button>
+                <button data-criteria="rating"              class="sort-btn w-full text-left px-3 py-2 rounded-md transition-all duration-200 truncate cursor-pointer ${requestScope.sort eq 'rating'            ? 'bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-semibold' : 'hover:bg-primary/5 active:bg-primary/10 text-foreground'}">Top Rated</button>
             </div>
         </div>
     </div>

@@ -27,7 +27,7 @@ public class PageResponseDTO<T> {
         this.size          = size;
         this.totalElements = totalElements;
         this.totalPages    = (size == 0) ? 0 : (int) Math.ceil((double) totalElements / size);
-        this.left          = Math.max(0, page - DELTA);
-        this.right         = Math.min(this.totalPages - 1, page + DELTA);
+        this.left          = Math.max(1, page - DELTA);
+        this.right         = Math.min(this.totalPages, page + DELTA);
     }
 }
