@@ -165,7 +165,13 @@ export function renderRows(users) {
     const noResults = $("#um-no-results");
     if (!tbody) return;
 
-    if (!users.length) {
+    // Exclude the currently logged-in admin from the table
+    const currentUserId = document.getElementById("um-current-user-id")?.content ?? null;
+    const visible = currentUserId
+        ? users.filter(u => String(u.id) !== String(currentUserId))
+        : users;
+
+    if (!visible.length) {
         tbody.innerHTML = "";
         noResults?.classList.remove("hidden");
         return;
@@ -173,7 +179,7 @@ export function renderRows(users) {
 
     noResults?.classList.add("hidden");
 
-    tbody.innerHTML = users.map(user => `
+    tbody.innerHTML = visible.map(user => `
         <tr>
             <td>
                 <div class="flex items-center gap-3">

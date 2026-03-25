@@ -39,7 +39,7 @@ export async function loadPage(page = 1) {
         if (state.destroyed) return;
 
         const users = data.users ?? data ?? [];
-        state.totalUsers = data.totalCount ?? users.length;
+        state.totalUsers = data.totalCount - 1 ?? users.length - 1;
         state.totalPages = Math.ceil(state.totalUsers / PAGE_SIZE);
 
         const label = $("#um-total-label");
