@@ -111,15 +111,17 @@ function setAddToCartButtonState(button, state) {
 }
 
 export function showFeedbackMessage(message, isSuccess) {
+    const icon = isSuccess
+        ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`
+        : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+
     const alert = document.createElement('div');
     alert.className = `alert-banner ${isSuccess ? 'alert-success' : 'alert-error'} fixed top-24 right-4 z-[60] max-w-sm shadow-lg`;
-    alert.textContent = message;
+    alert.innerHTML = `<span class="alert-icon">${icon}</span><span>${message}</span>`;
 
     document.body.appendChild(alert);
 
-    setTimeout(() => {
-        alert.remove();
-    }, 3000);
+    setTimeout(() => alert.remove(), 4000);
 }
 
 export async function addToCart(bookId, amount = 1, button = null) {
