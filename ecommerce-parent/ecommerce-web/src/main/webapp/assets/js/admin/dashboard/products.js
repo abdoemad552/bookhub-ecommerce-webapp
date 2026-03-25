@@ -1,10 +1,6 @@
 /**
  * products.js
- * Orchestrates the Products tab:
- *   - loads tab HTML
- *   - initialises BooksTable (fetch + render)
- *   - initialises Add / Edit dialogs
- *   - wires mutations back to table.reload()
+ * Orchestrates the Products tab.
  */
 
 import { getContextPath }  from '../../util.js';
@@ -18,7 +14,7 @@ let addDialog  = null;
 let editDialog = null;
 
 export async function initProducts() {
-    destroyProducts(); // always clean up before re-initialising
+    destroyProducts();
 
     const $mainContent = $('#main-content');
     if (!$mainContent.length) return;
@@ -31,9 +27,13 @@ export async function initProducts() {
         return;
     }
 
+    // ── Unify the "Add New Book" button with the rest of the dashboard ────────
+    const $addBtn = $('#open-add-book-modal-btn');
+    $addBtn.removeClass().addClass('products-header-btn');
+
     // ── Table ────────────────────────────────────────────────────────────────
     table = new BooksTable({
-        onEdit: (book) => editDialog.openWith(book),
+        onEdit:   (book)   => editDialog.openWith(book),
         onDelete: (bookId) => _handleDelete(bookId),
     });
     table.init();
@@ -62,9 +62,9 @@ export function destroyProducts() {
 }
 
 // ── Delete ────────────────────────────────────────────────────────────────────
-
-function _handleDelete(bookId) {
-    if (!confirm('Delete this book? This cannot be undone.')) return;
+async function _handleDelete(bookId) {
+    const confirmed = await showConfirm('This will permanently delete the book. This action cannot be undone.');
+    if (!confirmed) return;
 
     $.ajax({
         url:    `${getContextPath()}/admin/books/${bookId}`,
@@ -76,6 +76,36 @@ function _handleDelete(bookId) {
         })
         .fail((jqXHR) => {
             console.error('Delete failed:', jqXHR.status, jqXHR.responseText);
-            showFeedbackMessage("Failed to delete the book, try again.", true);
+            showFeedbackMessage("Failed to delete the book, try again.", false);
         });
+}
+
+export function showConfirm(message) {
+    return new Promise(resolve => {
+        const backdrop = document.getElementById('book-confirm-backdrop');
+        const desc     = document.getElementById('book-confirm-desc');
+        const yesBtn   = document.getElementById('book-confirm-yes');
+        const noBtn    = document.getElementById('book-confirm-no');
+        if (!backdrop || !yesBtn || !noBtn) { resolve(false); return; }
+
+        if (desc && message) desc.textContent = message;
+
+        backdrop.classList.add('is-open');
+
+        function cleanup(result) {
+            backdrop.classList.remove('is-open');
+            yesBtn.removeEventListener('click', onYes);
+            noBtn.removeEventListener('click',  onNo);
+            backdrop.removeEventListener('click', onBackdrop);
+            resolve(result);
+        }
+
+        const onYes      = () => cleanup(true);
+        const onNo       = () => cleanup(false);
+        const onBackdrop = e => { if (e.target === backdrop) cleanup(false); };
+
+        yesBtn.addEventListener('click',   onYes,      { once: true });
+        noBtn.addEventListener('click',    onNo,       { once: true });
+        backdrop.addEventListener('click', onBackdrop);
+    });
 }

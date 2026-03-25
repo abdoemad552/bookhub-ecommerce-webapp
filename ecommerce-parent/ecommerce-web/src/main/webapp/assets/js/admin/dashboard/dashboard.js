@@ -3,9 +3,6 @@ import { initProducts,       destroyProducts       } from "./products.js";
 import { initOverview,       destroyOverview       } from "./overview.js";
 
 // ── Tab registry ──────────────────────────────────────────────────────────────
-// Each entry pairs an init function with its corresponding destroy function.
-// destroy is called on the PREVIOUS tab before the next one is initialized.
-
 const tabRegistry = {
     "overview-ctrl-btn": {
         init:    initOverview,
@@ -21,7 +18,8 @@ const tabRegistry = {
     },
 };
 
-let activeTabId = null; // tracks which tab is currently mounted
+let activeTabId   = null;
+let isSwitching   = false; // guard against rapid clicks during animation
 
 // ── Active button styling ─────────────────────────────────────────────────────
 
@@ -38,17 +36,51 @@ function setActiveCtrlButton($btn) {
         .append('<span class="active-border absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></span>');
 }
 
-// ── Tab switching ─────────────────────────────────────────────────────────────
+// ── Tab switching with transition ─────────────────────────────────────────────
 
 function switchTab(id) {
-    if (id === activeTabId) return; // already on this tab — do nothing
+    if (id === activeTabId) return;
+    if (isSwitching) return;
 
-    // Tear down the current tab before mounting the next one
-    if (activeTabId && tabRegistry[activeTabId]?.destroy) {
-        tabRegistry[activeTabId].destroy();
-    }
-
+    const $main = $("#main-content");
+    const prevId = activeTabId;
     activeTabId = id;
+
+    // If there's existing content, animate it out first
+    if (prevId && $main.children().length) {
+        isSwitching = true;
+
+        // Destroy the previous tab immediately (stops any in-flight fetches)
+        if (tabRegistry[prevId]?.destroy) {
+            tabRegistry[prevId].destroy();
+        }
+
+        // Animate exit
+        $main.addClass("tab-leaving");
+
+        setTimeout(() => {
+            $main.removeClass("tab-leaving");
+            $main.empty();
+            isSwitching = false;
+            _mountTab(id, $main);
+        }, 150); // matches tab-leaving transition duration
+
+    } else {
+        // First load — no exit animation needed
+        if (prevId && tabRegistry[prevId]?.destroy) {
+            tabRegistry[prevId].destroy();
+        }
+        _mountTab(id, $main);
+    }
+}
+
+function _mountTab(id, $main) {
+    // Add enter class — children will stagger in via CSS
+    $main.addClass("tab-entering");
+
+    // Remove the class after animations finish so it can re-trigger next time
+    const longestDelay = 280 + 260; // last child delay + animation duration
+    setTimeout(() => $main.removeClass("tab-entering"), longestDelay);
 
     if (tabRegistry[id]?.init) {
         tabRegistry[id].init();
@@ -68,11 +100,9 @@ function initPageControls() {
 function init() {
     initPageControls();
 
-    // Activate the default tab
     const defaultTabId = "overview-ctrl-btn";
     setActiveCtrlButton($(`#${defaultTabId}`));
     switchTab(defaultTabId);
 }
 
-// $(document).ready() — works whether the script runs before or after DOMContentLoaded
 $(init);

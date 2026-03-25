@@ -34,11 +34,14 @@
 }
 
 .um-table tbody tr {
-    border-bottom: 1px solid var(--border);
     transition: background 0.15s ease;
 }
-
-.um-table tbody tr:last-child { border-bottom: none; }
+.um-table tbody td {
+    border-bottom: 1px solid var(--border);
+}
+.um-table tbody tr:last-child td {
+    border-bottom: none;
+}
 
 .um-table tbody tr:hover { background: var(--accent)/40; }
 
@@ -46,6 +49,10 @@
     padding: 0.875rem 1rem;
     color: var(--foreground);
     vertical-align: middle;
+}
+
+.um-table-wrapper  table tbody tr:hover {
+    background: rgba(120, 53, 15, .03);
 }
 
 /* ── Avatar ── */
