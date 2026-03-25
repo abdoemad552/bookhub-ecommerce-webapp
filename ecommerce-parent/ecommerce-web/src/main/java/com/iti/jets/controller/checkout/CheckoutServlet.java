@@ -127,7 +127,7 @@ public class CheckoutServlet extends HttpServlet {
                 .status(OrderStatus.PROCESSING)
                 .totalPrice(cart.getTotalPrice())
                 .items(orderItems)
-                .government(Government.valueOf(req.getParameter("government").toUpperCase()))
+                .government(Government.fromPrettyName(req.getParameter("government")))
                 .addressType(AddressType.valueOf(req.getParameter("addressType").toUpperCase()))
                 .city(req.getParameter("city"))
                 .street(req.getParameter("street"))
