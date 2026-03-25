@@ -1,10 +1,10 @@
 package com.iti.jets.controller;
 
 import com.iti.jets.model.dto.request.BookFilterDTO;
+import com.iti.jets.model.dto.response.BookCardDTO;
 import com.iti.jets.model.dto.response.ReviewDTO;
 import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.model.entity.Book;
-import com.iti.jets.mock.dto.BookCardDto;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.BookService;
 import com.iti.jets.service.interfaces.ReviewService;
@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @WebServlet("/books/*")
 public class BookInfoServlet extends HttpServlet {
@@ -68,7 +67,7 @@ public class BookInfoServlet extends HttpServlet {
         request.setAttribute("bookAverageRating", (int) Math.floor(averageRating));
         request.setAttribute("bookAverageRatingValue", String.format(Locale.US, "%.1f", averageRating));
         request.setAttribute("bookReviewCount", book.getRatingCount() == null ? reviews.size() : book.getRatingCount());
-        request.setAttribute("bookFormatLabel", formatLabel(book.getBookType() == null ? "" : book.getBookType().name()));
+        request.setAttribute("bookFormatLabel", book.getBookType() == null ? "" : book.getBookType().getPrettyName());
         request.setAttribute("reviews", reviews);
         request.setAttribute("reviewsPageSize", REVIEWS_PAGE_SIZE);
         request.setAttribute("canLoadMoreReviews", reviews.size() >= REVIEWS_PAGE_SIZE);
@@ -99,35 +98,8 @@ public class BookInfoServlet extends HttpServlet {
         }
     }
 
-    private String formatLabel(String value) {
-        if (value == null || value.isBlank()) {
-            return "";
-        }
-
-        String normalized = value.toLowerCase(Locale.ROOT).replace('_', ' ');
-        String[] parts = normalized.split(" ");
-        StringBuilder builder = new StringBuilder();
-
-        for (String part : parts) {
-            if (part.isBlank()) {
-                continue;
-            }
-
-            if (!builder.isEmpty()) {
-                builder.append(' ');
-            }
-
-            builder.append(Character.toUpperCase(part.charAt(0)));
-            if (part.length() > 1) {
-                builder.append(part.substring(1));
-            }
-        }
-
-        return builder.toString();
-    }
-
-    private List<BookCardDto> findRelatedBooks(Book currentBook) {
-        Map<Integer, BookCardDto> relatedBooks = new LinkedHashMap<>();
+    private List<BookCardDTO> findRelatedBooks(Book currentBook) {
+        Map<Long, BookCardDTO> relatedBooks = new LinkedHashMap<>();
         String currentCategory = currentBook.getCategory() == null ? null : currentBook.getCategory().getName();
 
         if (currentCategory != null && !currentCategory.isBlank()) {
@@ -138,14 +110,14 @@ public class BookInfoServlet extends HttpServlet {
 
             bookService.findAll(1, RELATED_BOOKS_COUNT + 4, filter).stream()
                     .filter(book -> !book.getId().equals(currentBook.getId()))
-                    .map(this::toBookCardDto)
+                    .map(BookCardDTO::from)
                     .forEach(book -> relatedBooks.putIfAbsent(book.getId(), book));
         }
 
         if (relatedBooks.size() < RELATED_BOOKS_COUNT) {
             bookService.findAllFeatured().stream()
                     .filter(book -> !book.getId().equals(currentBook.getId()))
-                    .map(this::toBookCardDto)
+                    .map(BookCardDTO::from)
                     .forEach(book -> relatedBooks.putIfAbsent(book.getId(), book));
         }
 
@@ -153,24 +125,6 @@ public class BookInfoServlet extends HttpServlet {
                 .stream()
                 .limit(RELATED_BOOKS_COUNT)
                 .toList();
-    }
-
-    private BookCardDto toBookCardDto(Book book) {
-        String authorNames = book.getBookAuthors()
-                .stream()
-                .map(bookAuthor -> bookAuthor.getAuthor().getName())
-                .collect(Collectors.joining(", "));
-
-        return new BookCardDto(
-                Math.toIntExact(book.getId()),
-                book.getTitle(),
-                authorNames,
-                book.getDescription(),
-                book.getAverageRating() == null ? 0 : Math.round(book.getAverageRating()),
-                book.getPrice() == null ? 0 : book.getPrice().doubleValue(),
-                book.getImageUrl(),
-                book.getStockQuantity() == null ? 0 : book.getStockQuantity()
-        );
     }
 
     private void forwardToNotFound(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

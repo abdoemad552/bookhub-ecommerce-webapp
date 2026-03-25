@@ -7,6 +7,7 @@ import com.iti.jets.model.entity.Book;
 import com.iti.jets.mock.dto.BookCardDto;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.BookService;
+import com.iti.jets.service.interfaces.CategoryService;
 import com.iti.jets.util.PathStorage;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -30,11 +31,13 @@ public class ExploreServlet extends HttpServlet {
     private static final int DEFAULT_PAGE_SIZE = 12;
 
     private BookService bookService;
+    private CategoryService categoryService;
     private Jsonb jsonb;
 
     @Override
     public void init() {
         bookService = ServiceFactory.getInstance().getBookService();
+        categoryService = ServiceFactory.getInstance().getCategoryService();
 
         JsonbConfig config = new JsonbConfig();
         config.withFormatting(true);
@@ -62,6 +65,21 @@ public class ExploreServlet extends HttpServlet {
         System.out.println(request.getParameter("maxPrice"));
         System.out.println(request.getParameter("sort"));
 
+        String categoryName = "All Books";
+
+        if (category != null) {
+            try {
+                Long categoryId = Long.parseLong(category);
+                var categoryDTO = categoryService.findById(categoryId);
+
+                if (categoryDTO != null) {
+                    categoryName = categoryDTO.getName();
+                }
+            } catch (NumberFormatException e) {
+                // Do nothing...
+            }
+        }
+
         BookFilterDTO filter = BookFilterDTO.builder()
             .searchQuery(query)
             .category(category)
@@ -76,6 +94,7 @@ public class ExploreServlet extends HttpServlet {
 
         request.setAttribute("query", query);
         request.setAttribute("category", category);
+        request.setAttribute("categoryName", categoryName);
         request.setAttribute("minPrice", minPrice);
         request.setAttribute("maxPrice", maxPrice);
         request.setAttribute("sort", sort);
@@ -136,7 +155,12 @@ public class ExploreServlet extends HttpServlet {
             return null;
         }
 
-        return "all".equalsIgnoreCase(normalizedCategory) ? null : normalizedCategory;
+        try {
+            Long.parseLong(normalizedCategory);
+            return normalizedCategory;
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private String normalizeText(String rawValue) {

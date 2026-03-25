@@ -1,4 +1,4 @@
-import {initBookCard} from "../common/book-card.js";
+import {initBookCard} from "../common/book-card-jq.js";
 import {initHeader} from "../common/header.js";
 import {initCategoriesCarousel} from "./categories-carousel.js";
 import {initFeaturedBooksCarousel} from "./featured-books-carousel.js";

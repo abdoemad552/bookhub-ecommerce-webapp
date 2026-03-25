@@ -1,5 +1,6 @@
 import {getContextPath} from "../util.js";
 import {showFeedbackMessage} from "../common/book-card.js";
+import {FilterBooksContainer} from "./books-container.js";
 
 let isCategoriesOpen = false;
 let isSortOpen = false;
@@ -62,20 +63,9 @@ export function getCurrentState() {
     };
 }
 
-function applyFilters(nextState) {
-    console.log("Submitting: " + JSON.stringify(getCurrentState()));
-
-    $.ajax({
-        url: `${getContextPath()}/explore`,
-        method: "POST",
-        data: nextState
-    })
-    .done(content => {
-        $("#filter-books-container").html(content);
-    })
-    .fail(jqXHR => {
-        console.error(jqXHR.message);
-    });
+function applyFilters(state) {
+    console.log("Filtering for", JSON.stringify(state));
+    filterBooksContainer.filter(1, state);
 }
 
 function bindSearchInput() {
@@ -89,7 +79,7 @@ function bindSearchInput() {
         clearTimeout(searchDebounceId);
 
         searchDebounceId = setTimeout(() => {
-            // applyFilters(getCurrentState());
+            applyFilters(getCurrentState());
         }, 350);
     });
 }
@@ -153,7 +143,7 @@ function bindCategoryButtons($buttonsList) {
         if (currentCategory === nextCategory) return;
 
         setSelectedCategory(nextCategory);
-        // applyFilters(getCurrentState());
+        applyFilters(getCurrentState());
     });
 }
 
@@ -221,7 +211,7 @@ function bindSortButtons(container) {
         }
 
         setSelectedSortCriteria(nextSortCriteria);
-        // applyFilters(getCurrentState());
+        applyFilters(getCurrentState());
     });
 }
 
@@ -269,12 +259,24 @@ function bindFilterSubmit() {
     });
 }
 
+let filterBooksContainer = new FilterBooksContainer({
+    preFilter: () => {
+        $("#grid-selected-category").text("Loading...");
+        $("#grid-results-count").empty();
+    },
+    postFilter: () => {
+
+    }
+});
+
 export function initSidebarFilter() {
     const container = document.getElementById("sidebar-filter");
 
     if (!container) {
         return;
     }
+
+    filterBooksContainer.init();
 
     bindSearchInput();
     loadCategories();

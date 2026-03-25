@@ -19,6 +19,7 @@ public class BookCardDTO {
     private List<AuthorDTO> authors;
     private String description;
     private double averageRating;
+    private int exactAverageRating;
     private BigDecimal price;
     private String coverPicUrl;
     private int stockQuantity;
@@ -37,6 +38,7 @@ public class BookCardDTO {
                 .toList(),
             book.getDescription(),
             book.getAverageRating(),
+            book.getAverageRating().intValue(),
             book.getPrice(),
             book.getImageUrl(),
             book.getStockQuantity()

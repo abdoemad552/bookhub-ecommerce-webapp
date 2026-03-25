@@ -183,15 +183,15 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
     public List<Book> findAllFeatured() {
         return executeReadOnly(em ->
                 em.createQuery(
-                                "SELECT DISTINCT b FROM Book b " +
-                                        "LEFT JOIN FETCH b.category " +
-                                        "LEFT JOIN FETCH b.bookAuthors ba " +
-                                        "LEFT JOIN FETCH ba.author " +
-                                        "ORDER BY COALESCE(b.averageRating, 0) DESC, COALESCE(b.soldQuantity, 0) DESC, b.title ASC",
-                                getEntityClass()
-                        )
-                        .setMaxResults(12)
-                        .getResultList()
+                    "SELECT DISTINCT b FROM Book b " +
+                    "LEFT JOIN FETCH b.category " +
+                    "LEFT JOIN FETCH b.bookAuthors ba " +
+                    "LEFT JOIN FETCH ba.author " +
+                    "ORDER BY COALESCE(b.averageRating, 0) DESC, COALESCE(b.soldQuantity, 0) DESC, b.title ASC",
+                    getEntityClass()
+                )
+                .setMaxResults(12)
+                .getResultList()
         );
     }
 

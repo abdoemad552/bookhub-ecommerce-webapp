@@ -5,7 +5,7 @@
             <path d="m15 18-6-6 6-6"></path>
         </svg>
     </button>
-    <div id="featured-books-pane" class="flex gap-4 md:gap-6 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth py-2" style="scrollbar-width:none;-ms-overflow-style:none">
+    <div id="featured-books-pane" class="book-carousel flex gap-4 md:gap-6 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth py-2" style="scrollbar-width:none;-ms-overflow-style:none">
         <c:forEach begin="1" end="15">
             <div class="animate-pulse bg-card text-card-foreground rounded-xl border shadow-sm shrink-0 w-72 sm:w-80 md:w-96 overflow-hidden flex flex-row h-44 sm:h-48 md:h-52">
 

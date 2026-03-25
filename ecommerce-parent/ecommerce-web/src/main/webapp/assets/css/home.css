@@ -776,3 +776,8 @@ a.help-card-link:hover .help-card-arrow {
         opacity: .3;
     }
 }
+
+.book-carousel .bg-card {
+    width: 18rem;
+    flex-shrink: 0;
+}
