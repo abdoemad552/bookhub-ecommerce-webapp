@@ -52,6 +52,10 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
     public BaseResponse<String> placeOrder(PlaceOrderRequestDTO request) {
         return executeInContext(() -> {
 
+            if (request == null) {
+                return ResponseFactory.failure("Your cart is empty or already checked out.");
+            }
+
             Optional<User> userOpt = userRepository.findById(request.getUserId());
             if (userOpt.isEmpty()) {
                 return ResponseFactory.failure("Invalid User");

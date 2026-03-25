@@ -2,7 +2,6 @@ package com.iti.jets.controller.checkout;
 
 import com.iti.jets.model.dto.request.PlaceOrderRequestDTO;
 import com.iti.jets.model.dto.response.CartDTO;
-import com.iti.jets.model.dto.response.CartItemDTO;
 import com.iti.jets.model.dto.response.OrderItemDTO;
 import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
@@ -15,7 +14,6 @@ import com.iti.jets.service.interfaces.CartService;
 import com.iti.jets.service.interfaces.OrderService;
 import com.iti.jets.util.PathStorage;
 import jakarta.json.Json;
-import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -45,7 +43,6 @@ public class CheckoutServlet extends HttpServlet {
         orderService = ServiceFactory.getInstance().getOrderService();
         emailService = ServiceFactory.getInstance().getEmailService();
     }
-
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

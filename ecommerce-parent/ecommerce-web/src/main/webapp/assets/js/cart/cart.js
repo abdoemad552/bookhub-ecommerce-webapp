@@ -157,6 +157,15 @@ function initCartPage() {
 function init() {
     initHeader();
     initCartPage();
+
+    window.addEventListener("pageshow", function (event) {
+        const fromCheckout = sessionStorage.getItem("fromCheckout");
+
+        if (event.persisted && fromCheckout === "true") {
+            sessionStorage.removeItem("fromCheckout");
+            window.location.reload();
+        }
+    });
 }
 
 $(document).on("DOMContentLoaded", () => init());
