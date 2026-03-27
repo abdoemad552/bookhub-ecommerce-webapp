@@ -17,10 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @WebServlet("/books/*")
 public class BookInfoServlet extends HttpServlet {
@@ -104,7 +101,7 @@ public class BookInfoServlet extends HttpServlet {
 
         if (currentCategory != null && !currentCategory.isBlank()) {
             BookFilterDTO filter = BookFilterDTO.builder()
-                    .category(String.valueOf(currentBook.getCategory().getId()))
+                    .categoryIds(Set.of(currentBook.getCategory().getId()))
                     .sortCriteria("featured")
                     .build();
 

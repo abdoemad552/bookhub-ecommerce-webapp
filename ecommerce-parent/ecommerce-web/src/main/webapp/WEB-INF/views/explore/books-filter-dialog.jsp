@@ -58,7 +58,7 @@
                     <div class="flex-1">
                         <label class="text-xs text-muted-foreground font-medium mb-2 block">Min (EGP)</label>
                         <div class="relative">
-                            <input id="min-price-input" type="number" min="0" max="999999" class="w-full p-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150" placeholder="0" value="0"/>
+                            <input id="min-price-input" type="number" min="0" max="999999" class="w-full p-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150" placeholder="0" value="${empty requestScope.minPrice ? 0 : requestScope.minPrice}"/>
                         </div>
                     </div>
 
@@ -67,7 +67,7 @@
                     <div class="flex-1">
                         <label class="text-xs text-muted-foreground font-medium mb-2 block">Max (EGP)</label>
                         <div class="relative">
-                            <input id="max-price-input" type="number" min="0" max="999999" class="w-full p-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150" placeholder="999999" value="999999"/>
+                            <input id="max-price-input" type="number" min="0" max="999999" class="w-full p-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150" placeholder="999999" value="${empty requestScope.maxPrice ? 999999 : requestScope.maxPrice}"/>
                         </div>
                     </div>
                 </div>
@@ -93,22 +93,22 @@
                     <div class="flex flex-wrap gap-1">
 
                         <button data-criteria="featured"
-                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium border border-border bg-card text-foreground hover:border-accent/50 transition cursor-pointer select-none">
+                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium border text-foreground transition cursor-pointer select-none ${requestScope.sort eq 'featured' or empty requestScope.sort ? 'border-accent bg-accent/10' : 'border-border bg-card hover:border-accent/50'}">
                             Featured
                         </button>
 
                         <button data-criteria="price-low-to-high"
-                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium border border-border bg-card text-foreground hover:border-accent/50 transition cursor-pointer select-none">
+                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium border text-foreground transition cursor-pointer select-none ${requestScope.sort eq 'price-low-to-high' ? 'border-accent bg-accent/10' : 'border-border bg-card hover:border-accent/50'}">
                             Price: Low to High
                         </button>
 
                         <button data-criteria="price-high-to-low"
-                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium border border-border bg-card text-foreground hover:border-accent/50 transition cursor-pointer select-none">
+                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium border text-foreground transition cursor-pointer select-none ${requestScope.sort eq 'price-high-to-low' ? 'border-accent bg-accent/10' : 'border-border bg-card hover:border-accent/50'}">
                             Price: High to Low
                         </button>
 
                         <button data-criteria="rating"
-                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium border border-border bg-card text-foreground hover:border-accent/50 transition cursor-pointer select-none">
+                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium border text-foreground transition cursor-pointer select-none ${requestScope.sort eq 'rating'            ? 'border-accent bg-accent/10' : 'border-border bg-card hover:border-accent/50'}">
                             Top Rated
                         </button>
                     </div>

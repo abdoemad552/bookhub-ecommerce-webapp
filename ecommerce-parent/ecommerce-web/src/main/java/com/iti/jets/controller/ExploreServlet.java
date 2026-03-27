@@ -19,8 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @WebServlet("/explore")
@@ -49,40 +48,25 @@ public class ExploreServlet extends HttpServlet {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws ServletException, IOException {
-        int     page       = parsePositiveInteger(request.getParameter("page"), 1);
-        int     size       = parsePositiveInteger(request.getParameter("size"), DEFAULT_PAGE_SIZE);
-        String  query      = normalizeText(request.getParameter("query"));
-        String  category   = normalizeCategory(request.getParameter("category"));
-        int     maxPrice   = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
-        int     minPrice   = parsePositiveInteger(request.getParameter("minPrice"), DEFAULT_MIN_PRICE);
-        String  sort       = normalizeSortCriteria(request.getParameter("sort"));
+        int       page        = parsePositiveInteger(request.getParameter("page"), 1);
+        int       size        = parsePositiveInteger(request.getParameter("size"), DEFAULT_PAGE_SIZE);
+        String    query       = normalizeText(request.getParameter("query"));
+        Set<Long> categoryIds = normalizeCategoryIds(request.getParameterValues("category[]"));
+        int       maxPrice    = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
+        int       minPrice    = parsePositiveInteger(request.getParameter("minPrice"), DEFAULT_MIN_PRICE);
+        String    sort        = normalizeSortCriteria(request.getParameter("sort"));
 
         System.out.println(request.getParameter("page"));
         System.out.println(request.getParameter("size"));
         System.out.println(request.getParameter("query"));
-        System.out.println(request.getParameter("category"));
+        System.out.println(Arrays.toString(request.getParameterValues("category[]")));
         System.out.println(request.getParameter("minPrice"));
         System.out.println(request.getParameter("maxPrice"));
         System.out.println(request.getParameter("sort"));
 
-        String categoryName = "All Books";
-
-        if (category != null) {
-            try {
-                Long categoryId = Long.parseLong(category);
-                var categoryDTO = categoryService.findById(categoryId);
-
-                if (categoryDTO != null) {
-                    categoryName = categoryDTO.getName();
-                }
-            } catch (NumberFormatException e) {
-                // Do nothing...
-            }
-        }
-
         BookFilterDTO filter = BookFilterDTO.builder()
             .searchQuery(query)
-            .category(category)
+            .categoryIds(categoryIds)
             .minPrice(minPrice)
             .maxPrice(maxPrice)
             .sortCriteria(sort)
@@ -93,8 +77,7 @@ public class ExploreServlet extends HttpServlet {
         request.setAttribute("pagination", booksPage);
 
         request.setAttribute("query", query);
-        request.setAttribute("category", category);
-        request.setAttribute("categoryName", categoryName);
+        request.setAttribute("categoryIds", categoryIds);
         request.setAttribute("minPrice", minPrice);
         request.setAttribute("maxPrice", maxPrice);
         request.setAttribute("sort", sort);
@@ -107,25 +90,25 @@ public class ExploreServlet extends HttpServlet {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws ServletException, IOException {
-        int     page       = parsePositiveInteger(request.getParameter("page"), 1);
-        int     size       = parsePositiveInteger(request.getParameter("size"), DEFAULT_PAGE_SIZE);
-        String  query      = normalizeText(request.getParameter("query"));
-        String  category   = normalizeCategory(request.getParameter("category"));
-        int     maxPrice   = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
-        int     minPrice   = parsePositiveInteger(request.getParameter("minPrice"), DEFAULT_MIN_PRICE);
-        String  sort       = normalizeSortCriteria(request.getParameter("sort"));
+        int       page        = parsePositiveInteger(request.getParameter("page"), 1);
+        int       size        = parsePositiveInteger(request.getParameter("size"), DEFAULT_PAGE_SIZE);
+        String    query       = normalizeText(request.getParameter("query"));
+        Set<Long> categoryIds = normalizeCategoryIds(request.getParameterValues("category[]"));
+        int       maxPrice    = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
+        int       minPrice    = parsePositiveInteger(request.getParameter("minPrice"), DEFAULT_MIN_PRICE);
+        String    sort        = normalizeSortCriteria(request.getParameter("sort"));
 
         System.out.println(request.getParameter("page"));
         System.out.println(request.getParameter("size"));
         System.out.println(request.getParameter("query"));
-        System.out.println(request.getParameter("category"));
+        System.out.println(Arrays.toString(request.getParameterValues("category[]")));
         System.out.println(request.getParameter("minPrice"));
         System.out.println(request.getParameter("maxPrice"));
         System.out.println(request.getParameter("sort"));
 
         BookFilterDTO filter = BookFilterDTO.builder()
             .searchQuery(query)
-            .category(category)
+            .categoryIds(categoryIds)
             .minPrice(minPrice)
             .maxPrice(maxPrice)
             .sortCriteria(sort)
@@ -148,19 +131,16 @@ public class ExploreServlet extends HttpServlet {
         }
     }
 
-    private String normalizeCategory(String rawCategory) {
-        String normalizedCategory = normalizeText(rawCategory);
-
-        if (normalizedCategory == null) {
-            return null;
+    private Set<Long> normalizeCategoryIds(String[] strCategoryIds) {
+        if (strCategoryIds == null) return Set.of();
+        Set<Long> categoryIds = new HashSet<>();
+        for (String strCategoryId : strCategoryIds) {
+            try {
+                categoryIds.add(Long.parseLong(strCategoryId));
+            } catch (NumberFormatException ignored) {
+            }
         }
-
-        try {
-            Long.parseLong(normalizedCategory);
-            return normalizedCategory;
-        } catch (NumberFormatException e) {
-            return null;
-        }
+        return categoryIds;
     }
 
     private String normalizeText(String rawValue) {

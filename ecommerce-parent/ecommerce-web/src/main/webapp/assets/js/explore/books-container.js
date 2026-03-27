@@ -1,4 +1,5 @@
 import {getContextPath} from "../util.js";
+import {getCurrentState} from "./filter-books-dialog.js";
 
 const LAYOUT_CLASSES = {
     1: { grid: 'grid-cols-1',                               placeholder: '' },
@@ -15,6 +16,8 @@ export class FilterBooksContainer {
         this._pageSize = 12;
         this._$container = null;
         this._layout = parseInt(localStorage.getItem(STORAGE_KEY) || '1', 10);
+        this._activeRequest = null;
+        this._isLoading = false;
     }
 
     init() {
@@ -30,8 +33,24 @@ export class FilterBooksContainer {
         this._applyLayoutToGrid();
     }
 
-    filter(page, filterOptions) {
-        this._fetch(page, filterOptions);
+    filter(page = 1, filterOptions = getCurrentState(), debounceTime) {
+        this._fetch(page, filterOptions, debounceTime);
+    }
+
+    abort() {
+        if (this._activeRequest) {
+            this._activeRequest.abort();
+        }
+    }
+
+    showSkeleton() {
+        if (!this._isLoading) {
+            this._fadeOut().then(() => {
+                this._isLoading = true;
+                this._showSkeleton();
+                this._fadeIn();
+            });
+        }
     }
 
     // ── Layout ────────────────────────────────────────────────────────────────
@@ -117,6 +136,7 @@ export class FilterBooksContainer {
     // ── Skeleton ──────────────────────────────────────────────────────────────
 
     _showSkeleton() {
+        $("#grid-results-count").empty();
         const { grid } = LAYOUT_CLASSES[this._layout];
 
         let gridItems = '';
@@ -160,20 +180,19 @@ export class FilterBooksContainer {
 
     // ── Fetch ─────────────────────────────────────────────────────────────────
 
-    _fetch(page, filterOptions = {}) {
-        this._fadeOut().then(() => {
-            this._showSkeleton();
-            this._fadeIn();
-        });
+    _fetch(page, filterOptions = {}, debounceTime) {
+        if (debounceTime) {
+            clearTimeout(this._debounceTimerId);
+        }
 
-        $.ajax({
+        this.abort();
+        this.showSkeleton();
+
+        this._activeRequest = $.ajax({
             url: `${getContextPath()}/explore`,
             method: "POST",
             data: { ...filterOptions, page, size: this._pageSize },
-            dataType: "html",
-            beforeSend: (jqXHR) => {
-                $("#grid-results-count").empty();
-            }
+            dataType: "html"
         })
         .done((content) => {
             setTimeout(() => {
@@ -181,6 +200,7 @@ export class FilterBooksContainer {
                     this._$container.html(content);
                     this._applyLayoutToGrid();
                     this._fadeIn();
+                    this._isLoading = false;
 
                     // Update the result count in the static header
                     const total = parseInt(
@@ -194,7 +214,7 @@ export class FilterBooksContainer {
                         $('#grid-results-count').text(`(${total} ${total === 1 ? 'Result' : 'Results'})`);
                     }
                 });
-            }, 1500);
+            }, 750);
         })
         .fail((jqXHR) => {
             console.error('FilterBooksContainer fetch failed:', jqXHR.statusText);

@@ -21,15 +21,15 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @ToString
 public class BookCardDTO {
-    private Long id;
-    private String title;
+    private Long            id;
+    private String          title;
     private List<AuthorDTO> authors;
-    private String description;
-    private double averageRating;
-    private int exactAverageRating;
-    private BigDecimal price;
-    private String coverPicUrl;
-    private int stockQuantity;
+    private String          description;
+    private double          averageRating;
+    private int             exactAverageRating;
+    private BigDecimal      price;
+    private String          coverPicUrl;
+    private int             stockQuantity;
 
     public String getAuthor() {
         if (authors == null || authors.isEmpty()) {
@@ -37,10 +37,10 @@ public class BookCardDTO {
         }
 
         return authors.stream()
-                .filter(Objects::nonNull)
-                .map(AuthorDTO::getName)
-                .filter(name -> name != null && !name.isBlank())
-                .collect(Collectors.joining(", "));
+            .filter(Objects::nonNull)
+            .map(AuthorDTO::getName)
+            .filter(name -> name != null && !name.isBlank())
+            .collect(Collectors.joining(", "));
     }
 
     public static BookCardDTO from(Book book) {

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 
 public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implements BookRepository {
 
@@ -43,8 +42,8 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
     @Override
     public List<Book> findAll(int pageNumber, int pageSize, BookFilterDTO filter) {
         return executeReadOnly(em -> {
-            CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-            CriteriaQuery<Book> criteriaQuery = criteriaBuilder.createQuery(getEntityClass());
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Book> criteriaQuery = cb.createQuery(getEntityClass());
             Root<Book> bookRoot = criteriaQuery.from(getEntityClass());
 
             bookRoot.fetch("category", JoinType.LEFT);
@@ -53,19 +52,14 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
             List<Predicate> predicates = new ArrayList<>();
 
             if (filter != null) {
-                if (filter.getCategory() != null && !filter.getCategory().isBlank()) {
+                if (filter.getCategoryIds() != null && !filter.getCategoryIds().isEmpty()) {
                     Join<Book, Category> categoryJoin = bookRoot.join("category", JoinType.LEFT);
-                    predicates.add(
-                        criteriaBuilder.equal(
-                            categoryJoin.get("id"),
-                            filter.getCategory().trim()
-                        )
-                    );
+                    predicates.add(categoryJoin.get("id").in(filter.getCategoryIds()));
                 }
 
                 if (filter.getMinPrice() > 0) {
                     predicates.add(
-                        criteriaBuilder.greaterThanOrEqualTo(
+                        cb.greaterThanOrEqualTo(
                             bookRoot.get("price"),
                             BigDecimal.valueOf(filter.getMinPrice())
                         )
@@ -74,7 +68,7 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
 
                 if (filter.getMaxPrice() > 0) {
                     predicates.add(
-                        criteriaBuilder.lessThanOrEqualTo(
+                        cb.lessThanOrEqualTo(
                             bookRoot.get("price"),
                             BigDecimal.valueOf(filter.getMaxPrice())
                         )
@@ -82,22 +76,21 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
                 }
 
                 if (filter.getSearchQuery() != null && !filter.getSearchQuery().isBlank()) {
-                    String searchQuery = "%" + filter.getSearchQuery().trim() + "%";
+                    String trimmedSearchQuery = filter.getSearchQuery().trim();
+                    String titleSearchQuery = buildContainsPattern(trimmedSearchQuery.toLowerCase(Locale.ROOT));
+                    String descriptionSearchQuery = buildContainsPattern(trimmedSearchQuery);
 
                     predicates.add(
-                        criteriaBuilder.or(
-                            criteriaBuilder.like(bookRoot.get("title").as(String.class), searchQuery),
-                            criteriaBuilder.like(
-                                criteriaBuilder.coalesce(bookRoot.get("description"), "").as(String.class),
-                                searchQuery
-                            )
+                        cb.or(
+                            cb.like(cb.lower(bookRoot.get("title")), titleSearchQuery, '\\'),
+                            cb.like(bookRoot.get("description"), descriptionSearchQuery, '\\')
                         )
                     );
                 }
 
             }
 
-            List<Order> orderBy = buildOrderBy(criteriaBuilder, bookRoot, filter);
+            List<Order> orderBy = buildOrderBy(cb, bookRoot, filter);
 
             criteriaQuery.select(bookRoot)
                     .distinct(true)
@@ -128,15 +121,9 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
             List<Predicate> predicates = new ArrayList<>();
 
             if (filter != null) {
-                if (filter.getCategory() != null && !filter.getCategory().isBlank()) {
+                if (filter.getCategoryIds() != null && !filter.getCategoryIds().isEmpty()) {
                     Join<Book, Category> categoryJoin = bookRoot.join("category", JoinType.LEFT);
-
-                    predicates.add(
-                        cb.equal(
-                            categoryJoin.get("id"),
-                            filter.getCategory().trim()
-                        )
-                    );
+                    predicates.add(categoryJoin.get("id").in(filter.getCategoryIds()));
                 }
 
                 if (filter.getMinPrice() > 0) {
@@ -158,12 +145,14 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
                 }
 
                 if (filter.getSearchQuery() != null && !filter.getSearchQuery().isBlank()) {
-                    String searchQuery = "%" + filter.getSearchQuery().trim() + "%";
+                    String trimmedSearchQuery = filter.getSearchQuery().trim();
+                    String titleSearchQuery = buildContainsPattern(trimmedSearchQuery.toLowerCase(Locale.ROOT));
+                    String descriptionSearchQuery = buildContainsPattern(trimmedSearchQuery);
 
                     predicates.add(
                         cb.or(
-                            cb.like(bookRoot.get("title").as(String.class), searchQuery),
-                            cb.like(cb.coalesce(bookRoot.get("description"), "").as(String.class), searchQuery)
+                            cb.like(cb.lower(bookRoot.get("title")), titleSearchQuery, '\\'),
+                            cb.like(bookRoot.get("description"), descriptionSearchQuery, '\\')
                         )
                     );
                 }
@@ -254,11 +243,13 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
     }
 
     private String buildContainsPattern(String searchValue) {
-        String escapedSearchValue = searchValue
-                .replace("\\", "\\\\")
-                .replace("%", "\\%")
-                .replace("_", "\\_");
+        if (searchValue == null) return "%";
 
-        return "%" + escapedSearchValue + "%";
+        String escaped = searchValue
+            .replace("\\", "\\\\")
+            .replace("%", "\\%")
+            .replace("_", "\\_");
+
+        return "%" + escaped + "%";
     }
 }

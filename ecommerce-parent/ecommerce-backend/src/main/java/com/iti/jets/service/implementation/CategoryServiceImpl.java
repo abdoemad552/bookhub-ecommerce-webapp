@@ -3,15 +3,16 @@ package com.iti.jets.service.implementation;
 import com.iti.jets.mapper.CategoryMapper;
 import com.iti.jets.model.dto.response.CategoryDTO;
 import com.iti.jets.model.entity.Category;
-import com.iti.jets.model.entity.User;
 import com.iti.jets.repository.interfaces.CategoryRepository;
 import com.iti.jets.service.generic.ContextHandler;
 import com.iti.jets.service.interfaces.CategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class CategoryServiceImpl extends ContextHandler implements CategoryService {
 
@@ -57,9 +58,7 @@ public class CategoryServiceImpl extends ContextHandler implements CategoryServi
     public void delete(Long id) {
         executeInContext(() -> {
             Optional<Category> categoryOpt = categoryRepository.findById(id);
-            if (categoryOpt.isPresent()) {
-                categoryRepository.delete(categoryOpt.get());
-            }
+            categoryOpt.ifPresent(categoryRepository::delete);
         });
     }
 
@@ -71,5 +70,10 @@ public class CategoryServiceImpl extends ContextHandler implements CategoryServi
     @Override
     public boolean existsById(Long id) {
         return executeInContext(() -> categoryRepository.existsById(id));
+    }
+
+    @Override
+    public Set<Long> filterExists(Collection<Long> ids) {
+        return executeInContext(() -> categoryRepository.filterExists(ids));
     }
 }

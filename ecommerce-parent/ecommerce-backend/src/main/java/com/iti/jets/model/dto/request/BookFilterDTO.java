@@ -14,8 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookFilterDTO {
-    private String category;
-    private Set<String> categories;
+    private Set<Long> categoryIds;
     private double minPrice;
     private double maxPrice;
     private String searchQuery;

@@ -49,7 +49,7 @@ function validate() {
 
 export function getCurrentState() {
     const query      = $("#search-input").val().trim() || "";
-    const categories = $("#categories-list")
+    const category   = $("#categories-list")
         .find(".selected-category")
         .map(function () { return $(this).data("category") })
         .get();
@@ -59,7 +59,7 @@ export function getCurrentState() {
 
     return {
         query,
-        categories,
+        category,
         minPrice,
         maxPrice,
         sort
