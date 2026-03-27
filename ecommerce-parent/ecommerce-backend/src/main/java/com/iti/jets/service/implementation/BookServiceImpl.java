@@ -16,6 +16,7 @@ import com.iti.jets.repository.interfaces.CategoryRepository;
 import com.iti.jets.service.generic.ContextHandler;
 import com.iti.jets.service.interfaces.BookService;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -172,9 +173,9 @@ public class BookServiceImpl extends ContextHandler implements BookService {
                 .authors(authorDtos)
                 .averageRating(book.getAverageRating() == null ? 0 : Math.round(book.getAverageRating()))
                 .description(book.getDescription())
-                .price(book.getPrice() == null ? 0.0 : book.getPrice().doubleValue())
+                .price(book.getPrice() == null ? BigDecimal.ZERO : book.getPrice())
                 .stockQuantity(book.getStockQuantity() == null ? 0 : book.getStockQuantity())
-                .imageUrl(book.getImageUrl())
+                .coverPicUrl(book.getImageUrl())
                 .build();
     }
 }

@@ -23,6 +23,7 @@ public class StatsRepositoryImpl implements StatsRepository {
         return em.createQuery("""
             SELECT COALESCE(SUM(o.totalPrice), 0)
             FROM Order o
+            WHERE o.status != "CANCELLED"
             """
             , BigDecimal.class).getSingleResult();
     }
@@ -87,7 +88,7 @@ public class StatsRepositoryImpl implements StatsRepository {
         EntityManager em = JPAConfig.getEntityManager();
         return em.createQuery("""
             SELECT new com.iti.jets.model.dto.response.UserRoleStatsDTO(
-            SUM(CASE WHEN u.role = 'ADMIN' THEN 1 ELSE 0 END),
+            SUM(CASE WHEN u.role = 'ADMIN' OR u.role = 'MAIN_ADMIN' THEN 1 ELSE 0 END),
             SUM(CASE WHEN u.role = 'USER' THEN 1 ELSE 0 END)
             )
             FROM User u

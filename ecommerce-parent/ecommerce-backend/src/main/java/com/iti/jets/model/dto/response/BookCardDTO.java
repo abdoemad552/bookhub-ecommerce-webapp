@@ -7,11 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
@@ -25,7 +21,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @ToString
 public class BookCardDTO {
-    private long id;
+    private Long id;
     private String title;
     private List<AuthorDTO> authors;
     private String description;
@@ -34,8 +30,6 @@ public class BookCardDTO {
     private BigDecimal price;
     private String coverPicUrl;
     private int stockQuantity;
-    private String imageUrl;
-    // TODO: Tags...
 
     public String getAuthor() {
         if (authors == null || authors.isEmpty()) {
@@ -47,10 +41,6 @@ public class BookCardDTO {
                 .map(AuthorDTO::getName)
                 .filter(name -> name != null && !name.isBlank())
                 .collect(Collectors.joining(", "));
-    }
-
-    public String getCoverPicUrl() {
-        return imageUrl;
     }
 
     public static BookCardDTO from(Book book) {
