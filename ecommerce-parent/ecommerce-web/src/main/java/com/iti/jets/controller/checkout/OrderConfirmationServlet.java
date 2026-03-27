@@ -64,18 +64,16 @@ public class OrderConfirmationServlet extends HttpServlet {
         // Validate ownership in case of normal users
         UserDTO user = (UserDTO) session.getAttribute("user");
         Long orderId = Long.parseLong(orderIdParam);
-        if (user.getRole() == UserRole.USER) {
-
-            if (!orderService.isOrderOwnedByUser(orderId, user.getId())) {
+        if (!orderService.isOrderOwnedByUser(orderId, user.getId())) {
+            if (user.getRole() != UserRole.USER) {
+                req.setAttribute("AdminRequest", true);
+                req.setAttribute("orderId", orderId);
+            } else {
                 resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 req.getRequestDispatcher(PathStorage.FORBIDDEN_PAGE).forward(req, resp);
                 return;
             }
-        }else{
-            req.setAttribute("AdminRequest", true);
-            req.setAttribute("orderId", orderId);
         }
-
         req.getRequestDispatcher(PathStorage.ORDER_CONFIRMATION).forward(req, resp);
     }
 

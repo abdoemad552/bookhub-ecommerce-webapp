@@ -12,7 +12,7 @@
  *   table.destroy();       // remove listeners
  */
 
-import { getContextPath } from '../../util.js';
+import {getContextPath} from '../../util.js';
 
 const SKELETON_ROW_COUNT = 10;
 
@@ -52,9 +52,9 @@ const ICON_NEXT = `
 // ── Stock badge helper ────────────────────────────────────────────────────────
 
 function stockBadge(qty) {
-    if (qty <= 0)  return `<span class="px-2 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-600 select-none">${qty} units</span>`;
+    if (qty <= 0) return `<span class="px-2 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-600 select-none">${qty} units</span>`;
     if (qty <= 10) return `<span class="px-2 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-600 select-none">${qty} units</span>`;
-    return             `<span class="px-2 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 select-none">${qty} units</span>`;
+    return `<span class="px-2 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 select-none">${qty} units</span>`;
 }
 
 // ── Stock badge helper ────────────────────────────────────────────────────────
@@ -92,7 +92,7 @@ function actionButtons(book) {
 
 function desktopRow(book) {
     return `
-        <tr class="border-b border-border hover:bg-muted/30 transition-colors select-none" data-book-row="${book.id}">
+        <tr class="border-b border-border hover:bg-muted/30 transition-colors select-none books-row-animate" data-book-row="${book.id}">
             <td class="px-6 py-4 text-foreground font-medium"><a href="${getContextPath()}/books/${book.id}" class="hover:text-primary hover:underline transition-colors">${book.title}</a></td>
             <td class="px-6 py-4 text-muted-foreground">${authorsRefs(book.authors)}</td>
             <td class="px-6 py-4">
@@ -145,7 +145,7 @@ function mobileCard(book) {
 // ── Skeleton rows ─────────────────────────────────────────────────────────────
 
 function skeletonDesktopRows() {
-    return Array.from({ length: SKELETON_ROW_COUNT }, () => `
+    return Array.from({length: SKELETON_ROW_COUNT}, () => `
         <tr class="border-b border-border animate-pulse">
             <td class="px-6 py-4"><div class="h-4 bg-muted rounded w-3/4"></div></td>
             <td class="px-6 py-4"><div class="h-4 bg-muted rounded w-1/2"></div></td>
@@ -157,7 +157,7 @@ function skeletonDesktopRows() {
 }
 
 function skeletonMobileCards() {
-    return Array.from({ length: SKELETON_ROW_COUNT }, () => `
+    return Array.from({length: SKELETON_ROW_COUNT}, () => `
         <div class="p-4 space-y-3 animate-pulse border-b border-border">
             <div class="flex items-start justify-between gap-3">
                 <div class="space-y-2 flex-1">
@@ -220,10 +220,10 @@ function paginationHTML(page, totalPages) {
     const nextDisabled = page >= totalPages - 1;
 
     // Build page number buttons — show at most 5 around current page
-    const range   = [];
-    const delta   = 2;
-    const left    = Math.max(0, page - delta);
-    const right   = Math.min(totalPages - 1, page + delta);
+    const range = [];
+    const delta = 2;
+    const left = Math.max(0, page - delta);
+    const right = Math.min(totalPages - 1, page + delta);
 
     for (let i = left; i <= right; i++) range.push(i);
 
@@ -279,10 +279,10 @@ export class BooksTable {
      * @param {Function} options.onDelete  — called with bookId when Delete is clicked
      */
     constructor(options = {}) {
-        this.options     = options;
+        this.options = options;
         this._currentPage = 0;
-        this._pageSize    = 10;
-        this._$container  = null; // set in init()
+        this._pageSize = 10;
+        this._$container = null; // set in init()
     }
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -312,24 +312,23 @@ export class BooksTable {
     // ── Fetching ──────────────────────────────────────────────────────────────
 
     _fetch(page) {
-        this._showSkeleton();
         $.ajax({
-            url:      `${getContextPath()}/admin/books`,
-            method:   'GET',
-            data:     { page, size: this._pageSize },
+            url: `${getContextPath()}/admin/books`,
+            method: 'GET',
+            data: {page, size: this._pageSize},
             dataType: 'json',
         })
-        .done((data) => {
-            setTimeout(() => {
+            .done((data) => {
+
                 console.log(data);
                 this._currentPage = data.page ?? page;
                 this._render(data.content ?? [], data.totalPages ?? 1);
-            }, 2000);
-        })
-        .fail((jqXHR) => {
-            console.log(jqXHR.message);
-            this._showError(jqXHR.status);
-        });
+
+            })
+            .fail((jqXHR) => {
+                console.log(jqXHR.message);
+                this._showError(jqXHR.status);
+            });
     }
 
     // ── Rendering ─────────────────────────────────────────────────────────────
@@ -362,9 +361,9 @@ export class BooksTable {
             return;
         }
 
-        const desktopRows  = books.map(desktopRow).join('');
-        const mobileCards  = books.map(mobileCard).join('');
-        const pagination   = paginationHTML(this._currentPage, totalPages);
+        const desktopRows = books.map(desktopRow).join('');
+        const mobileCards = books.map(mobileCard).join('');
+        const pagination = paginationHTML(this._currentPage, totalPages);
 
         this._$container.html(`
             <div class="hidden md:block overflow-x-auto">

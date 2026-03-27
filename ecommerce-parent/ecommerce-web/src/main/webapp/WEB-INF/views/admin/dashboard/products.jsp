@@ -323,20 +323,35 @@
             <form id="book-form" novalidate class="px-6 py-5 space-y-5">
 
                 <%-- Hidden book ID — read by editBookDialog.js on submit --%>
-                <input type="hidden" id="book-id" name="id" />
+                <input type="hidden" id="book-id" name="id"/>
 
-                <div class="space-y-1.5">
-                    <label for="book-title" class="block text-sm font-medium text-slate-700 select-none">
-                        Book Title <span class="text-red-400" aria-hidden="true">*</span>
-                    </label>
-                    <input id="book-title" name="title" type="text" required
-                           placeholder="e.g. The Midnight Library"
-                           class="field-input w-full px-3.5 py-2.5 text-sm text-slate-900
-                                  placeholder-slate-400 border border-slate-200 rounded-lg bg-white
-                                  transition-all duration-150"/>
-                    <p class="hidden text-xs text-red-500" data-error="book-title"></p>
+                <%-- ISBN + Title --%>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="space-y-1.5">
+                        <label for="book-isbn" class="block text-sm font-medium text-slate-700 select-none">
+                            ISBN <span class="text-red-400" aria-hidden="true">*</span>
+                        </label>
+                        <input id="book-isbn" name="isbn" type="text" required
+                               placeholder="978-3-16-148410-0"
+                               class="field-input w-full px-3.5 py-2.5 text-sm text-slate-900
+                                      placeholder-slate-400 border border-slate-200 rounded-lg bg-white
+                                      transition-all duration-150"/>
+                        <p class="hidden text-xs text-red-500" data-error="book-isbn"></p>
+                    </div>
+                    <div class="space-y-1.5 sm:col-span-2">
+                        <label for="book-title" class="block text-sm font-medium text-slate-700 select-none">
+                            Book Title <span class="text-red-400" aria-hidden="true">*</span>
+                        </label>
+                        <input id="book-title" name="title" type="text" required
+                               placeholder="e.g. The Midnight Library"
+                               class="field-input w-full px-3.5 py-2.5 text-sm text-slate-900
+                                      placeholder-slate-400 border border-slate-200 rounded-lg bg-white
+                                      transition-all duration-150"/>
+                        <p class="hidden text-xs text-red-500" data-error="book-title"></p>
+                    </div>
                 </div>
 
+                <%-- Authors --%>
                 <fieldset class="space-y-2">
                     <div class="flex items-center justify-between">
                         <legend class="text-sm font-medium text-slate-700 select-none">
@@ -366,7 +381,20 @@
                     </div>
                 </fieldset>
 
-                <div class="grid grid-cols-2 gap-4">
+                <%-- Description --%>
+                <div class="space-y-1.5">
+                    <label for="book-description" class="block text-sm font-medium text-slate-700 select-none">
+                        Description
+                    </label>
+                    <textarea id="book-description" name="description" rows="3"
+                              placeholder="A brief synopsis of the book..."
+                              class="field-input w-full px-3.5 py-2.5 text-sm text-slate-900
+                                     placeholder-slate-400 border border-slate-200 rounded-lg bg-white
+                                     transition-all duration-150 resize-none"></textarea>
+                </div>
+
+                <%-- Price + Stock + Pages --%>
+                <div class="grid grid-cols-3 gap-4">
                     <div class="space-y-1.5">
                         <label for="book-price" class="block text-sm font-medium text-slate-700 select-none">
                             Price ($) <span class="text-red-400" aria-hidden="true">*</span>
@@ -380,43 +408,96 @@
                     </div>
                     <div class="space-y-1.5">
                         <label for="book-qty" class="block text-sm font-medium text-slate-700 select-none">
-                            Quantity <span class="text-red-400" aria-hidden="true">*</span>
+                            Stock <span class="text-red-400" aria-hidden="true">*</span>
                         </label>
-                        <input id="book-qty" name="quantity" type="number" min="0" step="1" required
+                        <input id="book-qty" name="stockQuantity" type="number" min="0" step="1" required
                                placeholder="50"
                                class="field-input w-full px-3.5 py-2.5 text-sm text-slate-900
                                       placeholder-slate-400 border border-slate-200 rounded-lg bg-white
                                       transition-all duration-150"/>
                         <p class="hidden text-xs text-red-500" data-error="book-qty"></p>
                     </div>
+                    <div class="space-y-1.5">
+                        <label for="book-pages" class="block text-sm font-medium text-slate-700 select-none">
+                            Pages <span class="text-red-400" aria-hidden="true">*</span>
+                        </label>
+                        <input id="book-pages" name="pages" type="number" min="1" step="1" required
+                               placeholder="320"
+                               class="field-input w-full px-3.5 py-2.5 text-sm text-slate-900
+                                      placeholder-slate-400 border border-slate-200 rounded-lg bg-white
+                                      transition-all duration-150"/>
+                        <p class="hidden text-xs text-red-500" data-error="book-pages"></p>
+                    </div>
                 </div>
 
-                <div class="space-y-1.5">
-                    <label for="book-category" class="block text-sm font-medium text-slate-700 select-none">
-                        Category <span class="text-red-400" aria-hidden="true">*</span>
-                    </label>
-                    <div class="relative">
-                        <select id="book-category" name="category" required
-                                class="field-input w-full px-3.5 py-2.5 pr-9 text-sm text-slate-900
-                                       border border-slate-200 rounded-lg bg-white appearance-none
-                                       transition-all duration-150 cursor-pointer">
-                            <option value="">Select a category...</option>
-                            <option value="Fiction">Fiction</option>
-                            <option value="Science Fiction">Science Fiction</option>
-                            <option value="Fantasy">Fantasy</option>
-                            <option value="Self-Help">Self-Help</option>
-                            <option value="Non-Fiction">Non-Fiction</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
-                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path d="m6 9 6 6 6-6"/>
-                            </svg>
+                <%-- Category + Book Type --%>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label for="book-category" class="block text-sm font-medium text-slate-700 select-none">
+                            Category <span class="text-red-400" aria-hidden="true">*</span>
+                        </label>
+                        <div class="relative">
+                            <select id="book-category" name="category" required
+                                    class="field-input w-full px-3.5 py-2.5 pr-9 text-sm text-slate-900
+                                           border border-slate-200 rounded-lg bg-white appearance-none
+                                           transition-all duration-150 cursor-pointer">
+                                <option value="">Select a category...</option>
+                                <option value="Fiction">Fiction</option>
+                                <option value="Science Fiction">Science Fiction</option>
+                                <option value="Fantasy">Fantasy</option>
+                                <option value="Self-Help">Self-Help</option>
+                                <option value="Non-Fiction">Non-Fiction</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
+                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="m6 9 6 6 6-6"/>
+                                </svg>
+                            </div>
                         </div>
+                        <p class="hidden text-xs text-red-500" data-error="book-category"></p>
                     </div>
-                    <p class="hidden text-xs text-red-500" data-error="book-category"></p>
+                    <div class="space-y-1.5">
+                        <label for="book-type" class="block text-sm font-medium text-slate-700 select-none">
+                            Book Type <span class="text-red-400" aria-hidden="true">*</span>
+                        </label>
+                        <div class="relative">
+                            <select id="book-type" name="bookType" required
+                                    class="field-input w-full px-3.5 py-2.5 pr-9 text-sm text-slate-900
+                                           border border-slate-200 rounded-lg bg-white appearance-none
+                                           transition-all duration-150 cursor-pointer">
+                                <option value="">Select type...</option>
+                                <option value="HARDCOVER">Hardcover</option>
+                                <option value="PAPERBACK">Paperback</option>
+                                <option value="EBOOK">E-Book</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
+                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="m6 9 6 6 6-6"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="hidden text-xs text-red-500" data-error="book-type"></p>
+                    </div>
                 </div>
+
+                <%-- Publish Date --%>
+                <div class="space-y-1.5">
+                    <label for="book-publish-date" class="block text-sm font-medium text-slate-700 select-none">
+                        Publish Date <span class="text-red-400" aria-hidden="true">*</span>
+                    </label>
+                    <input id="book-publish-date" name="publishDate" type="date" required
+                           class="field-input w-full px-3.5 py-2.5 text-sm text-slate-900
+                                  border border-slate-200 rounded-lg bg-white
+                                  transition-all duration-150 cursor-pointer"/>
+                    <p class="hidden text-xs text-red-500" data-error="book-publish-date"></p>
+                </div>
+
+                <%-- Hidden image URL (edit mode uses existing URL, no re-upload) --%>
+                <input type="hidden" id="book-image-url" name="imageUrl"/>
 
             </form>
 
@@ -457,4 +538,77 @@
         <div id="books-table-container"></div>
     </div>
 
+</div>
+<%-- ══════════════════════════════════════════════════════════════════════════
+     DELETE BOOK CONFIRMATION DIALOG
+     Placed OUTSIDE the page wrapper so it is never clipped by a stacking
+     context created by the <dialog> elements above.
+     CSS is self-contained below via a <style> block; it mirrors the UM
+     confirm dialog design exactly, scoped to book-confirm-* IDs.
+════════════════════════════════════════════════════════════════════════════ --%>
+<style>
+    #book-confirm-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 9998; /* below toasts (9999) but above everything else */
+        background: rgba(0, 0, 0, 0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        pointer-events: none;
+        opacity: 0;
+        transition: background 0.2s ease, opacity 0.2s ease;
+    }
+
+    #book-confirm-backdrop.is-open {
+        background: rgba(0, 0, 0, 0.5);
+        pointer-events: all;
+        opacity: 1;
+    }
+
+    #book-confirm-panel {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 1.125rem;
+        width: 100%;
+        max-width: 360px;
+        padding: 1.75rem 1.5rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.20);
+        transform: scale(0.93) translateY(10px);
+        opacity: 0;
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+    }
+
+    #book-confirm-backdrop.is-open #book-confirm-panel {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+</style>
+
+<div id="book-confirm-backdrop" role="alertdialog" aria-modal="true" aria-labelledby="book-confirm-title">
+    <div id="book-confirm-panel">
+        <div class="um-confirm-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6"/><path d="M14 11v6"/>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+            </svg>
+        </div>
+        <h4 id="book-confirm-title">Delete this book?</h4>
+        <p id="book-confirm-desc">
+            This will permanently delete the book. This action cannot be undone.
+        </p>
+        <div class="um-confirm-actions">
+            <button id="book-confirm-no"  class="um-confirm-btn um-confirm-btn--no">Keep Book</button>
+            <button id="book-confirm-yes" class="um-confirm-btn um-confirm-btn--yes">Yes, Delete</button>
+        </div>
+    </div>
 </div>

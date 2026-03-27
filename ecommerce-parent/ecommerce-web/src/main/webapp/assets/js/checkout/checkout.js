@@ -243,7 +243,8 @@ $('checkout-form').addEventListener('submit', async function (e) {
             showAlert(data.message);
         } else {
             initHeader();
-            window.location.href = `${ORDER_CONFIRMATION}?orderId=${data.orderId}`;
+            sessionStorage.setItem("fromCheckout", "true");
+            window.location.replace(`${ORDER_CONFIRMATION}?orderId=${data.orderId}`);
         }
     } catch (err) {
         submitBtn.disabled = false;

@@ -39,7 +39,7 @@ export async function loadPage(page = 1) {
         if (state.destroyed) return;
 
         const users = data.users ?? data ?? [];
-        state.totalUsers = data.totalCount ?? users.length;
+        state.totalUsers = data.totalCount - 1 ?? users.length - 1;
         state.totalPages = Math.ceil(state.totalUsers / PAGE_SIZE);
 
         const label = $("#um-total-label");
@@ -119,15 +119,17 @@ export async function fetchUserDetails(userId) {
 // Cancel order
 export async function cancelOrder(orderId, btn) {
     if (btn.disabled) return;
+    btn.disabled = true;
 
     // Read order code for the confirm message before disabling the button
     const wrap      = btn.closest(".um-order-card-wrap");
     const orderCode = wrap?.querySelector(".um-order-code")?.textContent?.trim() ?? null;
 
     const confirmed = await showConfirm(orderCode);
-    if (!confirmed) return;
-
-    btn.disabled = true;
+    if (!confirmed) {
+        btn.disabled = false;
+        return;
+    }
 
     let statusEl;
     let prevClass;

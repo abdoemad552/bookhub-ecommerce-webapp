@@ -2,6 +2,8 @@
 
 <div class="space-y-5" id="um-root">
 
+  <meta id="um-current-user-id" content="${sessionScope.user.id}">
+
   <!-- ── Header row ── -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
     <div>
