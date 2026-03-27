@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implements BookRepository {
 
@@ -27,10 +28,10 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
         return executeReadOnly(em ->
             em.createQuery(
                 "SELECT DISTINCT b FROM Book b " +
-                        "LEFT JOIN FETCH b.category " +
-                        "LEFT JOIN FETCH b.bookAuthors ba " +
-                        "LEFT JOIN FETCH ba.author " +
-                        "WHERE b.id = :id",
+                "LEFT JOIN FETCH b.category " +
+                "LEFT JOIN FETCH b.bookAuthors ba " +
+                "LEFT JOIN FETCH ba.author " +
+                "WHERE b.id = :id",
                 getEntityClass()
             )
             .setParameter("id", id)
@@ -250,5 +251,14 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
 
         orderBy.add(criteriaBuilder.asc(bookRoot.get("title")));
         return orderBy;
+    }
+
+    private String buildContainsPattern(String searchValue) {
+        String escapedSearchValue = searchValue
+                .replace("\\", "\\\\")
+                .replace("%", "\\%")
+                .replace("_", "\\_");
+
+        return "%" + escapedSearchValue + "%";
     }
 }

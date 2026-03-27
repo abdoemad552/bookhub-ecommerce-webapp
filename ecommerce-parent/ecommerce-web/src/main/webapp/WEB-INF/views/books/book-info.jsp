@@ -203,7 +203,7 @@
             <div class="rounded-2xl sm:rounded-3xl border border-border bg-card shadow-sm px-4 py-5 sm:px-6 sm:py-6">
                 <div class="flex items-center justify-between gap-4 mb-5">
                     <h2 class="text-lg sm:text-xl font-semibold tracking-tight text-foreground">Reviews</h2>
-                    <span class="text-sm text-muted-foreground">${bookReviewCount} reviews</span>
+                    <span id="book-reviews-total" class="text-sm text-muted-foreground">${bookReviewCount} reviews</span>
                 </div>
 
                 <div id="reviews-list" class="space-y-3 sm:space-y-4">

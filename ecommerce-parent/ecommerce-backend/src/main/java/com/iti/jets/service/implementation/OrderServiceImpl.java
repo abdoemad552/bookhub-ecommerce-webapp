@@ -2,9 +2,12 @@ package com.iti.jets.service.implementation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iti.jets.mapper.UserMapper;
 import com.iti.jets.model.dto.request.PlaceOrderRequestDTO;
 import com.iti.jets.model.dto.response.OrderDTO;
 import com.iti.jets.model.dto.response.OrderItemDTO;
+import com.iti.jets.model.dto.response.UserDTO;
+import com.iti.jets.model.dto.response.UserOrderHistoryDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.model.dto.response.factory.ResponseFactory;
 import com.iti.jets.model.entity.*;
@@ -21,10 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class OrderServiceImpl extends ContextHandler implements OrderService {
 
@@ -34,27 +34,38 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
     private final OrderRepository orderRepository;
     private final BookRepository bookRepository;
     private final CartRepository cartRepository;
+    private final UserMapper userMapper;
 
     public OrderServiceImpl(OrderRepository orderRepository,
                             UserRepository userRepository,
                             BookRepository bookRepository,
-                            CartRepository cartRepository) {
+                            CartRepository cartRepository,
+                            UserMapper userMapper) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
         this.cartRepository = cartRepository;
+        this.userMapper = userMapper;
     }
 
     @Override
     public BaseResponse<String> placeOrder(PlaceOrderRequestDTO request) {
         return executeInContext(() -> {
 
+            if (request == null) {
+                return ResponseFactory.failure("Your cart is empty or already checked out.");
+            }
+
             Optional<User> userOpt = userRepository.findById(request.getUserId());
             if (userOpt.isEmpty()) {
                 return ResponseFactory.failure("Invalid User");
             }
 
-            Order orderEntity = buildOrderEntity(request, userOpt.get());
+            BaseResponse<Order> res = buildOrderEntity(request, userOpt.get());
+            if (res.isFailure()) {
+                return ResponseFactory.failure(res.getMessage());
+            }
+            Order orderEntity = res.getData();
             orderRepository.update(orderEntity);
 
             // Update the current user
@@ -137,7 +148,9 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
             }
 
             order.setStatus(OrderStatus.CANCELLED);
+            order.getUser().setCreditLimit(order.getUser().getCreditLimit().add(order.getTotalPrice()));
             orderRepository.update(order);
+            userRepository.update(order.getUser());
 
             return ResponseFactory.success("Order cancelled successfully");
         });
@@ -167,6 +180,70 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
             Order order = orderOpt.get();
 
             return Objects.equals(order.getUser().getId(), userId);
+        });
+    }
+
+    @Override
+    public List<OrderDTO> findAllByUserId(Long userId) {
+        if (userId == null) {
+            return List.of();
+        }
+
+        return executeInContext(() -> orderRepository.findAllByUserId(userId)
+                .stream()
+                .map(this::buildOrderDTO)
+                .toList());
+    }
+
+    @Override
+    public BaseResponse<UserOrderHistoryDTO> loadOrderHistory(Long userId) {
+        return executeInContext(() -> {
+            Optional<User> userOpt = userRepository.findById(userId);
+            if (userOpt.isEmpty()) {
+                return ResponseFactory.failure("Invalid User");
+            }
+
+            User user = userOpt.get();
+            Set<Order> orders = user.getOrders();
+            Set<OrderDTO> orderDtos = new HashSet<>();
+            double totalSpent = 0;
+
+            for (Order order : orders) {
+
+                if (order.getStatus() != OrderStatus.CANCELLED) {
+                    totalSpent += order.getTotalPrice().doubleValue();
+                }
+                orderDtos.add(
+                        OrderDTO.builder()
+                                .orderId(order.getId())
+                                .orderStatus(order.getStatus())
+                                .orderCode("ORD-" + order.getCreatedAt().getYear() + "-" + order.getId())
+                                .createdAt(order.getCreatedAt())
+                                .totalPrice(order.getTotalPrice().doubleValue())
+                                .build()
+                );
+            }
+
+            UserOrderHistoryDTO userOrderHistoryDto = UserOrderHistoryDTO.builder()
+                    .totalOrders(orders.size())
+                    .totalSpent(totalSpent)
+                    .recentOrders(orderDtos)
+                    .build();
+
+            return ResponseFactory.success("Orders Loaded", userOrderHistoryDto);
+        });
+    }
+
+    @Override
+    public UserDTO getOwnedUser(Long orderId) {
+        return executeInContext(() -> {
+            Optional<Order> orderOpt = orderRepository.findById(orderId);
+            if (orderOpt.isEmpty()) {
+                return null;
+            }
+
+            Order order = orderOpt.get();
+            return userMapper.toDTO(order.getUser());
         });
     }
 
@@ -206,7 +283,7 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
                 .build();
     }
 
-    private Order buildOrderEntity(PlaceOrderRequestDTO request, User user) {
+    private BaseResponse<Order> buildOrderEntity(PlaceOrderRequestDTO request, User user) {
 
         // Build Shipping address
         Address shippingAddress = Address.builder()
@@ -244,12 +321,18 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
             );
 
             // Update book data
+            if (book.getStockQuantity() - item.getQuantity() < 0) {
+                return ResponseFactory.failure("Only  " + book.getStockQuantity() + " items available in stock from " + book.getTitle());
+            }
+            if (book.getStockQuantity() == 0) {
+                return ResponseFactory.failure("This book: " + book.getTitle() + " is out of stock");
+            }
             book.setStockQuantity(book.getStockQuantity() - item.getQuantity());
-            book.setStockQuantity(book.getStockQuantity() + item.getQuantity());
+            book.setSoldQuantity(book.getSoldQuantity() + item.getQuantity());
             bookRepository.update(book);
         }
 
-        return orderEntity;
+        return ResponseFactory.success("Order entity formed", orderEntity);
     }
 
     private boolean updateCurrentUserData(User user, Order orderEntity, double totalPrice) {

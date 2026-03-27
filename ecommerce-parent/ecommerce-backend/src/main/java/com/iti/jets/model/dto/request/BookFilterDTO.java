@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @Builder
@@ -13,6 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BookFilterDTO {
     private String category;
+    private Set<String> categories;
     private double minPrice;
     private double maxPrice;
     private String searchQuery;

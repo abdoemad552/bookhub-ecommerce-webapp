@@ -28,8 +28,8 @@
                 <span class="text-xl font-bold text-foreground tracking-tight">Book<span class="text-primary">Hub</span></span>
             </a>
 
-            <!-- Right actions -->
-            <div class="flex items-center gap-3 shrink-0">
+      <!-- Right actions -->
+      <div class="flex items-center gap-3 shrink-0">
 
                 <!-- Cart -->
                 <a class="relative shrink-0" href="${pageContext.request.contextPath}/cart">
@@ -50,7 +50,7 @@
                     <c:when test="${empty sessionScope.user}">
                         <a href="${pageContext.request.contextPath}/login" class="shrink-0">
                             <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold bg-background shadow-xs hover:bg-accent hover:text-accent-foreground active:bg-accent/80 transition-all border h-10 px-6 rounded-xl cursor-pointer">
-                                Sign In
+                                Log In
                             </button>
                         </a>
                         <a href="${pageContext.request.contextPath}/signup" class="hidden sm:block shrink-0">
@@ -60,7 +60,7 @@
                         </a>
                     </c:when>
                     <c:otherwise>
-                        <c:if test="${sessionScope.user.role eq 'ADMIN'}">
+                        <c:if test="${sessionScope.user.role eq 'ADMIN' or sessionScope.user.role eq 'MAIN_ADMIN'}">
                             <a href="${pageContext.request.contextPath}/admin/dashboard" class="shrink-0">
                                 <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground h-10 rounded-xl px-6">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-column w-4 h-4 text-current" aria-hidden="true">
@@ -112,7 +112,7 @@
                                         </svg>
                                         Profile
                                     </a>
-                                    <a href="${pageContext.request.contextPath}/profile"
+                                    <a href="${pageContext.request.contextPath}/profile?tab=orders-info"
                                        class="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

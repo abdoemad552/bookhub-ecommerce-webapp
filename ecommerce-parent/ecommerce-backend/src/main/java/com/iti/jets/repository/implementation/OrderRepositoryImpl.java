@@ -3,16 +3,33 @@ package com.iti.jets.repository.implementation;
 import com.iti.jets.model.entity.Order;
 import com.iti.jets.repository.generic.BaseRepositoryImpl;
 import com.iti.jets.repository.interfaces.OrderRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> implements OrderRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrderRepositoryImpl.class.getName());
-
     public OrderRepositoryImpl() {
         super();
+    }
+
+    @Override
+    public List<Order> findAllByUserId(Long userId) {
+        if (userId == null) {
+            return List.of();
+        }
+
+        return executeReadOnly(em ->
+                em.createQuery(
+                                "SELECT DISTINCT o FROM Order o " +
+                                        "LEFT JOIN FETCH o.user " +
+                                        "LEFT JOIN FETCH o.items i " +
+                                        "LEFT JOIN FETCH i.book " +
+                                        "WHERE o.user.id = :userId " +
+                                        "ORDER BY o.createdAt DESC",
+                                getEntityClass()
+                        )
+                        .setParameter("userId", userId)
+                        .getResultList()
+        );
     }
 }

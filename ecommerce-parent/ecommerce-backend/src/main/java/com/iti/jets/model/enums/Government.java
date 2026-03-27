@@ -18,6 +18,15 @@ public enum Government {
         this.shipping = shipping;
     }
 
+    public static Government fromPrettyName(String prettyName) {
+        for (Government gov : Government.values()) {
+            if (gov.prettyName.equalsIgnoreCase(prettyName)) {
+                return gov;
+            }
+        }
+        throw new IllegalArgumentException("No enum constant for prettyName: " + prettyName);
+    }
+
     public String getPrettyName() {
         return this.prettyName;
     }
