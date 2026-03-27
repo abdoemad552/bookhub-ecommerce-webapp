@@ -127,6 +127,7 @@ export class FilterBooksDialog {
         const page = 1;
         const filterOptions = getCurrentState();
         this.options.onSubmit?.(page, filterOptions);
+        this._dialog.close();
     }
 
     _loadAndBindCategories() {
