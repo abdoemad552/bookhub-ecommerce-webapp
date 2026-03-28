@@ -9,6 +9,8 @@
 
 // ── Validation constants ──────────────────────────────────────────────────────
 
+import {getContextPath} from "../../util.js";
+
 /** Earliest sensible publish date (Gutenberg Bible era). */
 const PUBLISH_DATE_MIN = new Date('1450-01-01');
 
@@ -163,6 +165,35 @@ function validatePublishDate(raw) {
     return { ok: true, date };
 }
 
+export function loadCategories($dialog) {
+    const $select = $dialog.find('#book-category');
+    if (!$select.length) return Promise.resolve();
+
+    $select.empty().prop('disabled', true).append(
+        $('<option>', { value: '', text: 'Loading categories...', disabled: true, selected: true }),
+    );
+
+    return $.ajax({
+        url:      `${getContextPath()}/explore/categories?json`,
+        method:   'GET',
+        dataType: 'json',
+    })
+        .then((categories) => {
+            $select.empty().prop('disabled', false);
+            $select.append($('<option>', { value: '', text: 'Select a category...' }));
+            (Array.isArray(categories) ? categories : []).forEach(({ id, name }) => {
+                $select.append($('<option>', { value: name, text: name }));
+            });
+        })
+        .catch(() => {
+            $select.empty().prop('disabled', false);
+            $select.append(
+                $('<option>', { value: '', text: 'Select a category…' }),
+                $('<option>', { value: '', text: '⚠ Failed to load categories', disabled: true }),
+            );
+        });
+}
+
 // ── Public: error display ─────────────────────────────────────────────────────
 
 export function clearErrors($dialog) {
@@ -199,7 +230,7 @@ export function fieldError($dialog, inputId, msg) {
  *   authors: ["Name 1", "Name 2"]
  * }
  */
-export function validateBookForm($dialog) {
+export function validateAddBookForm($dialog) {
     clearErrors($dialog);
     let ok = true;
 
@@ -466,84 +497,219 @@ export function validateBookForm($dialog) {
             authors,
         },
     };
+}
 
-    // const isbn = $dialog.find('#book-isbn').val().trim();
-    // if (!isbn) { fieldError($dialog, 'book-isbn', 'ISBN is required.'); ok = false; }
-    //
-    // const title = $dialog.find('#book-title').val().trim();
-    // if (!title) { fieldError($dialog, 'book-title', 'Title is required.'); ok = false; }
-    //
-    // const price = parseFloat($dialog.find('#book-price').val());
-    // if (isNaN(price) || price < 0) { fieldError($dialog, 'book-price', 'Enter a valid price.'); ok = false; }
-    //
-    // const stockQuantity = parseInt($dialog.find('#book-qty').val(), 10);
-    // if (isNaN(stockQuantity) || stockQuantity < 0) { fieldError($dialog, 'book-qty', 'Enter a valid quantity.'); ok = false; }
-    //
-    // const pages = parseInt($dialog.find('#book-pages').val(), 10);
-    // if (isNaN(pages) || pages < 1) { fieldError($dialog, 'book-pages', 'Enter a valid page count.'); ok = false; }
-    //
-    // const category = $dialog.find('#book-category').val();
-    // if (!category) { fieldError($dialog, 'book-category', 'Please select a category.'); ok = false; }
-    //
-    // const bookType = $dialog.find('#book-type').val();
-    // if (!bookType) { fieldError($dialog, 'book-type', 'Please select a book type.'); ok = false; }
-    //
-    // const publishDate = $dialog.find('#book-publish-date').val();
-    // if (!publishDate) { fieldError($dialog, 'book-publish-date', 'Publish date is required.'); ok = false; }
-    //
-    // // ── Optional fields ───────────────────────────────────────────────────────
-    //
-    // const description = $dialog.find('#book-description').val().trim();
-    //
-    // const imageFile = $dialog.find('#book-image')[0]?.files?.[0] ?? null;
-    // if (imageFile) {
-    //     const ALLOWED = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-    //     const MAX_MB  = 5;
-    //     if (!ALLOWED.includes(imageFile.type)) {
-    //         fieldError($dialog, 'book-image', 'Only JPG, PNG, WEBP or GIF files are allowed.');
-    //         ok = false;
-    //     } else if (imageFile.size > MAX_MB * 1024 * 1024) {
-    //         fieldError($dialog, 'book-image', `File must be smaller than ${MAX_MB} MB.`);
-    //         ok = false;
-    //     }
-    // }
-    //
-    // // ── Authors ───────────────────────────────────────────────────────────────
-    //
-    // const authors = [];
-    // $dialog.find('#authors-list .author-row input').each(function () {
-    //     const v = $(this).val().trim();
-    //     if (v) authors.push(v);
-    // });
-    // if (authors.length === 0) {
-    //     // Mark the first author input
-    //     const $firstAuthor = $dialog.find('#authors-list .author-row:first-child input');
-    //     $firstAuthor.addClass('is-invalid').attr('aria-invalid', 'true');
-    //     ok = false;
-    // }
-    //
-    // if (!ok) {
-    //     const $first = $dialog.find('.is-invalid').first()[0];
-    //     if ($first) $first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    //     return { ok: false, payload: null };
-    // }
-    //
-    // return {
-    //     ok: true,
-    //     payload: {
-    //         isbn,
-    //         title,
-    //         description:   description || null,
-    //         pages,
-    //         price,
-    //         stockQuantity,
-    //         publishDate,          // "YYYY-MM-DD" — Java LocalDate parses this directly
-    //         imageFile:     imageFile || null,  // File object — caller builds FormData
-    //         bookType,
-    //         category,
-    //         authors,
-    //     }
-    // };
+export function validateEditBookForm($dialog) {
+    clearErrors($dialog);
+    let ok = true;
+
+    // ── ISBN ──────────────────────────────────────────────────────────────────
+    // Required. Accepts ISBN-10 or ISBN-13, with or without hyphens/spaces.
+    // The check digit is mathematically verified.
+
+    const isbnRaw    = $dialog.find('#book-isbn').val().trim();
+    let   isbnNorm   = '';
+
+    if (!isbnRaw) {
+        fieldError($dialog, 'book-isbn', 'ISBN is required.');
+        ok = false;
+    } else {
+        const isbnResult = validateISBN(isbnRaw);
+        if (!isbnResult.ok) {
+            fieldError($dialog, 'book-isbn', isbnResult.reason);
+            ok = false;
+        } else {
+            isbnNorm = isbnResult.normalized;
+        }
+    }
+
+    // ── Title ─────────────────────────────────────────────────────────────────
+
+    const title = $dialog.find('#book-title').val().trim();
+
+    if (!title) {
+        fieldError($dialog, 'book-title', 'Title is required.');
+        ok = false;
+    } else if (title.length > TITLE_MAX_LENGTH) {
+        fieldError($dialog, 'book-title', `Title must be ${TITLE_MAX_LENGTH} characters or fewer.`);
+        ok = false;
+    }
+
+    // ── Price ─────────────────────────────────────────────────────────────────
+
+    const priceRaw = $dialog.find('#book-price').val().trim();
+    const price    = /^\d+(\.\d{1,2})?$/.test(priceRaw) ? parseFloat(priceRaw) : NaN;
+
+    if (priceRaw === '') {
+        fieldError($dialog, 'book-price', 'Price is required.');
+        ok = false;
+    } else if (isNaN(price) || price < 0) {
+        fieldError($dialog, 'book-price', 'Price must be a positive number (e.g. 9.99 or 25).');
+        ok = false;
+    } else if (price === 0) {
+        fieldError($dialog, 'book-price', 'Price must be greater than zero.');
+        ok = false;
+    } else if (price > 999_999) {
+        fieldError($dialog, 'book-price', 'Price seems unrealistically high.');
+        ok = false;
+    }
+
+    // ── Stock quantity ────────────────────────────────────────────────────────
+
+    const stockRaw      = $dialog.find('#book-qty').val().trim();
+    const stockQuantity = parseNonNegativeInteger(stockRaw);
+
+    if (stockRaw === '') {
+        fieldError($dialog, 'book-qty', 'Stock quantity is required.');
+        ok = false;
+    } else if (isNaN(stockQuantity)) {
+        fieldError($dialog, 'book-qty', 'Stock quantity must be a whole non-negative number.');
+        ok = false;
+    } else if (stockQuantity > 999_999) {
+        fieldError($dialog, 'book-qty', 'Stock quantity seems unrealistically high.');
+        ok = false;
+    }
+
+    // ── Pages ─────────────────────────────────────────────────────────────────
+
+    const pagesRaw = $dialog.find('#book-pages').val().trim();
+    const pages    = parseNonNegativeInteger(pagesRaw);
+
+    if (pagesRaw === '') {
+        fieldError($dialog, 'book-pages', 'Page count is required.');
+        ok = false;
+    } else if (isNaN(pages) || pages < 1) {
+        fieldError($dialog, 'book-pages', 'Page count must be a whole number of at least 1.');
+        ok = false;
+    } else if (pages > 20_000) {
+        fieldError($dialog, 'book-pages', 'Page count seems unrealistically high (max 20 000).');
+        ok = false;
+    }
+
+    // ── Category ──────────────────────────────────────────────────────────────
+
+    const category = $dialog.find('#book-category').val() ?? '';
+
+    if (!category.trim()) {
+        fieldError($dialog, 'book-category', 'Please select a category.');
+        ok = false;
+    }
+
+    // ── Book type ─────────────────────────────────────────────────────────────
+
+    const bookType = $dialog.find('#book-type').val() ?? '';
+
+    if (!bookType.trim()) {
+        fieldError($dialog, 'book-type', 'Please select a book type.');
+        ok = false;
+    }
+
+    // ── Publish date ──────────────────────────────────────────────────────────
+
+    const publishDateRaw    = $dialog.find('#book-publish-date').val();
+    const publishDateResult = validatePublishDate(publishDateRaw);
+    let   publishDate       = '';
+
+    if (!publishDateResult.ok) {
+        fieldError($dialog, 'book-publish-date', publishDateResult.reason);
+        ok = false;
+    } else {
+        publishDate = publishDateRaw;
+    }
+
+    // ── Description (optional) ────────────────────────────────────────────────
+
+    const descriptionRaw = $dialog.find('#book-description').val().trim();
+    let   description    = null;
+
+    if (descriptionRaw) {
+        if (descriptionRaw.length > DESCRIPTION_MAX_LENGTH) {
+            fieldError(
+                $dialog,
+                'book-description',
+                `Description must be ${DESCRIPTION_MAX_LENGTH} characters or fewer ` +
+                `(currently ${descriptionRaw.length}).`,
+            );
+            ok = false;
+        } else {
+            description = descriptionRaw;
+        }
+    }
+
+    // ── Authors ───────────────────────────────────────────────────────────────
+
+    const authors        = [];
+    const seenAuthorKeys = new Set();
+    let   authorErrors   = false;
+
+    $dialog.find('#authors-list .author-row').each(function () {
+        const $input = $(this).find('input');
+        const name   = $input.val().trim();
+
+        if (!name) return; // silently skip blank rows
+
+        if (!isPlausibleHumanName(name)) {
+            $input.addClass('is-invalid').attr('aria-invalid', 'true');
+            const $rowErr = $(this).find('[data-error]');
+            if ($rowErr.length) {
+                $rowErr.text(`"${name}" does not look like a valid author name.`).removeClass('hidden');
+            }
+            authorErrors = true;
+            ok = false;
+            return;
+        }
+
+        const key = name.toLowerCase().replace(/\s+/g, ' ');
+        if (seenAuthorKeys.has(key)) {
+            $input.addClass('is-invalid').attr('aria-invalid', 'true');
+            authorErrors = true;
+            ok = false;
+            return;
+        }
+
+        seenAuthorKeys.add(key);
+        authors.push(name);
+    });
+
+    if (authors.length === 0 && !authorErrors) {
+        const $firstAuthorInput = $dialog.find('#authors-list .author-row:first-child input');
+        $firstAuthorInput.addClass('is-invalid').attr('aria-invalid', 'true');
+        fieldError($dialog, 'book-author-1', 'At least one author is required.');
+        ok = false;
+    }
+
+    if (authors.length > AUTHORS_MAX) {
+        ok = false;
+        $dialog.find('#authors-list .author-row').last().find('input')
+            .addClass('is-invalid').attr('aria-invalid', 'true');
+    }
+
+    // ── Scroll to first error & return ────────────────────────────────────────
+
+    if (!ok) {
+        const $first = $dialog.find('.is-invalid').first()[0];
+        if ($first) $first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return { ok: false, payload: null };
+    }
+
+    return {
+        ok: true,
+        payload: {
+            isbn: isbnNorm,
+            title,
+            description,
+            pages,
+            price,
+            stockQuantity,
+            publishDate,
+            bookType,
+            category,
+            authors,
+            // imageUrl is passed through from the hidden #book-image-url field by the
+            // caller (edit-book-dialog.js) — it is not validated here because the
+            // edit form never touches it; cover changes go through the table thumbnail.
+        },
+    };
 }
 
 // ── Authors ───────────────────────────────────────────────────────────────────
@@ -570,14 +736,9 @@ export function bindAuthorControls($dialog) {
             <div class="author-row flex items-center gap-2">
                 <input type="text" name="authors[]"
                        placeholder="Author ${n} name" aria-label="Author ${n}"
-                       class="field-input flex-1 px-3.5 py-2.5 text-sm text-slate-900
-                              placeholder-slate-400 border border-slate-200 rounded-lg
-                              bg-white transition-all duration-150" />
+                       class="field-input flex-1 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 border border-slate-200 rounded-lg bg-white transition-all duration-150" />
                 <button type="button" aria-label="Remove author ${n}"
-                        class="remove-author shrink-0 p-2 text-slate-400
-                               hover:text-red-500 hover:bg-red-50 rounded-lg
-                               transition-colors duration-150 focus-visible:outline-none
-                               focus-visible:ring-2 focus-visible:ring-red-400">
+                        class="remove-author shrink-0 p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400">
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
                          viewBox="0 0 24 24" fill="none" stroke="currentColor"
                          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
@@ -609,6 +770,8 @@ export function unbindAuthorControls($dialog) {
  * @param {Object} book  — shape matches BookAddRequestDTO + authors + id
  */
 export function populateBookForm($dialog, book) {
+    console.log(book);
+
     $dialog.find('#book-isbn').val(book.isbn ?? '');
     $dialog.find('#book-title').val(book.title ?? '');
     $dialog.find('#book-description').val(book.description ?? '');
@@ -626,23 +789,18 @@ export function populateBookForm($dialog, book) {
     const authors = Array.isArray(book.authors) ? book.authors : [];
     const $list   = $dialog.find('#authors-list');
 
-    $list.find('.author-row:first-child input').val(authors[0] ?? '');
+    $list.find('.author-row:first-child input').val(authors[0].name ?? '');
 
-    authors.slice(1).forEach((name, i) => {
+    authors.slice(1).forEach((author, i) => {
         const n   = i + 2;
         const row = $(`
             <div class="author-row flex items-center gap-2">
                 <input type="text" name="authors[]"
                        placeholder="Author ${n} name" aria-label="Author ${n}"
-                       value="${$('<div>').text(name).html()}"
-                       class="field-input flex-1 px-3.5 py-2.5 text-sm text-slate-900
-                              placeholder-slate-400 border border-slate-200 rounded-lg
-                              bg-white transition-all duration-150" />
+                       value="${$('<div>').text(author.name).html()}"
+                       class="field-input flex-1 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 border border-slate-200 rounded-lg bg-white transition-all duration-150" />
                 <button type="button" aria-label="Remove author ${n}"
-                        class="remove-author shrink-0 p-2 text-slate-400
-                               hover:text-red-500 hover:bg-red-50 rounded-lg
-                               transition-colors duration-150 focus-visible:outline-none
-                               focus-visible:ring-2 focus-visible:ring-red-400">
+                        class="remove-author shrink-0 p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400">
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
                          viewBox="0 0 24 24" fill="none" stroke="currentColor"
                          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"

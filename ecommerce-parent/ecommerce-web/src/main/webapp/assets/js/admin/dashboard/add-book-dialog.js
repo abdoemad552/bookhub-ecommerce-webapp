@@ -6,13 +6,14 @@
 import { BookDialog }        from './book-dialog.js';
 import {
     clearErrors,
-    validateBookForm,
+    validateAddBookForm,
     bindAuthorControls,
     unbindAuthorControls,
     resetAuthorRows,
     bindImageUpload,
     unbindImageUpload,
     resetImageUpload,
+    loadCategories,
 } from './book-form-utils.js';
 import { getContextPath } from '../../util.js';
 
@@ -41,6 +42,7 @@ export class AddBookDialog {
 
         bindAuthorControls($dialog);
         bindImageUpload($dialog);
+        loadCategories($dialog);
 
         $dialog.on('click.addBook', '#submit-btn', () => this._submit());
         $(document).on('click.addBook', '#open-add-book-modal-btn', () => this._dialog.open());
@@ -60,7 +62,7 @@ export class AddBookDialog {
 
     _submit() {
         const $dialog         = $('#add-book-dialog');
-        const { ok, payload } = validateBookForm($dialog);
+        const { ok, payload } = validateAddBookForm($dialog);
         if (!ok) return;
 
         // Disable submit while the request is in flight

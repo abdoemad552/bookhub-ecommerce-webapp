@@ -2,11 +2,9 @@ package com.iti.jets.service.implementation;
 
 import com.iti.jets.model.dto.request.BookAddRequestDTO;
 import com.iti.jets.model.dto.request.BookFilterDTO;
-import com.iti.jets.model.dto.request.ImageUploadRequest;
 import com.iti.jets.model.dto.response.AuthorDTO;
 import com.iti.jets.model.dto.response.BookCardDTO;
 import com.iti.jets.model.dto.response.BookAddResponseDTO;
-import com.iti.jets.model.dto.response.BookCardDTO;
 import com.iti.jets.model.dto.response.BookSummaryDTO;
 import com.iti.jets.model.dto.response.PageResponseDTO;
 import com.iti.jets.model.entity.Author;

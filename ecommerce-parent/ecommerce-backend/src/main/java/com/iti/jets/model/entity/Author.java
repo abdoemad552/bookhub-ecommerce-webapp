@@ -22,6 +22,7 @@ public class Author {
     private Long id;
 
     @Column(name = "name", nullable = false, length = 100)
+    @EqualsAndHashCode.Include
     private String name;
 
     @Lob

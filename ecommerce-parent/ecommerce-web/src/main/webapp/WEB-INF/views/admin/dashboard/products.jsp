@@ -168,9 +168,7 @@
                         </label>
                         <div class="relative">
                             <select id="book-category" name="category" required
-                                    class="field-input w-full px-3.5 py-2.5 pr-9 text-sm text-slate-900
-                                           border border-slate-200 rounded-lg bg-white appearance-none
-                                           transition-all duration-150 cursor-pointer">
+                                    class="field-input w-full px-3.5 py-2.5 pr-9 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white appearance-none transition-all duration-150 cursor-pointer">
                                 <option value="">Select a category...</option>
                                 <option value="Fiction">Fiction</option>
                                 <option value="Science Fiction">Science Fiction</option>

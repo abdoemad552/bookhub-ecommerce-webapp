@@ -21,14 +21,14 @@ public class BookAuthor {
     private BookAuthorId id = new BookAuthorId();
 
     @MapsId("bookId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "book_id")
     @EqualsAndHashCode.Include
     private Book book;
 
     @MapsId("authorId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "author_id", nullable = false)
     @EqualsAndHashCode.Include
@@ -37,6 +37,5 @@ public class BookAuthor {
     public BookAuthor(Book book, Author author) {
         this.book = book;
         this.author = author;
-        this.id = new BookAuthorId();
     }
 }
