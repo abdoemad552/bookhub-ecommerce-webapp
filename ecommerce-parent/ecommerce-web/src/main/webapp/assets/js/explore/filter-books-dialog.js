@@ -116,8 +116,8 @@ export class FilterBooksDialog {
 
     destroy() {
         const $dialog = $('#books-filter-dialog');
-        $dialog.off('click.addBook');
-        $(document).off('click.addBook');
+        $dialog.off('click.filterBooks');
+        $(document).off('click.filterBooks');
         this._dialog = null;
     }
 

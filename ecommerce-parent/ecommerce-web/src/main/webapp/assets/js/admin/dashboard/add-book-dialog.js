@@ -81,6 +81,8 @@ export class AddBookDialog {
 
         payload.authors.forEach(name => formData.append('authors', name));
 
+        console.log(payload);
+
         $.ajax({
             url:         `${getContextPath()}/admin/books`,
             method:      'POST',
@@ -88,33 +90,33 @@ export class AddBookDialog {
             contentType: false,
             processData: false,
         })
-            .done(() => {
-                this._setSubmitting($dialog, false);
-                this._showFeedback($dialog, 'Book added successfully!', true);
+        .done(() => {
+            this._setSubmitting($dialog, false);
+            this._showFeedback($dialog, 'Book added successfully!', true);
 
-                // Notify parent and close after a short delay so the user sees the message
-                this._feedbackTimer = setTimeout(() => {
-                    this.options.onSuccess?.();
-                    this._dialog.close();
-                }, CLOSE_DELAY);
-            })
-            .fail((jqXHR) => {
-                this._setSubmitting($dialog, false);
+            // Notify parent and close after a short delay so the user sees the message
+            this._feedbackTimer = setTimeout(() => {
+                this.options.onSuccess?.();
+                this._dialog.close();
+            }, CLOSE_DELAY);
+        })
+        .fail((jqXHR) => {
+            this._setSubmitting($dialog, false);
 
-                // Try to extract the server's error message from the JSON body
-                let message = 'Something went wrong. Please try again.';
-                try {
-                    const body = JSON.parse(jqXHR.responseText);
-                    if (body?.error) message = body.error;
-                } catch (_) { /* response wasn't JSON — keep the default message */ }
+            // Try to extract the server's error message from the JSON body
+            let message = 'Something went wrong. Please try again.';
+            try {
+                const body = JSON.parse(jqXHR.responseText);
+                if (body?.error) message = body.error;
+            } catch (_) { /* response wasn't JSON — keep the default message */ }
 
-                this._showFeedback($dialog, message, false);
+            this._showFeedback($dialog, message, false);
 
-                // Auto-dismiss the error message after a delay
-                this._feedbackTimer = setTimeout(() => {
-                    this._hideFeedback($dialog);
-                }, MESSAGE_DELAY);
-            });
+            // Auto-dismiss the error message after a delay
+            this._feedbackTimer = setTimeout(() => {
+                this._hideFeedback($dialog);
+            }, MESSAGE_DELAY);
+        });
     }
 
     // ── Feedback bar ──────────────────────────────────────────────────────────
@@ -207,7 +209,7 @@ export class AddBookDialog {
                         <path class="opacity-75" fill="currentColor"
                               d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
                     </svg>
-                    Adding…`);
+                    Adding...`);
         } else {
             $btn.prop('disabled', false)
                 .html(`

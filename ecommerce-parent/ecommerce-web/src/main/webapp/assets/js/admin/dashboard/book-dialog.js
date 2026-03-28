@@ -32,7 +32,6 @@ export class BookDialog {
     // ── Public API ──────────────────────────────────────────────────────────
 
     open() {
-        this._lockScroll();
         this.dialog.showModal();
         requestAnimationFrame(() => requestAnimationFrame(() => {
             this.$dialog.addClass('is-open');
@@ -50,7 +49,6 @@ export class BookDialog {
         setTimeout(() => {
             this.$dialog.removeClass('is-closing');
             this.dialog.close();
-            this._unlockScroll();
             this._isClosing = false;
             this.hooks.onClose?.();
         }, ANIM_MS);
@@ -76,17 +74,5 @@ export class BookDialog {
 
         // Close / cancel buttons (any element inside dialog with these ids)
         this.$dialog.on('click.bookDialog', '#close-btn, #cancel-btn', () => this.close());
-    }
-
-    _lockScroll() {
-        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-        $('body').css({
-            overflow: 'hidden',
-            paddingRight: scrollbarWidth > 0 ? scrollbarWidth + 'px' : ''
-        });
-    }
-
-    _unlockScroll() {
-        $('body').css({ overflow: '', paddingRight: '' });
     }
 }

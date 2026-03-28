@@ -64,7 +64,7 @@ public class AdminBooksServlet extends HttpServlet {
         int size = parseIntParam(request, "size", 10);
 
         page = Math.max(0, page);
-        size = Math.min(Math.max(1, size), 100);
+        size = Math.clamp(size, 1, 100);
 
         try {
             PageResponseDTO<BookSummaryDTO> result = bookService.findAllSummary(page, size);
