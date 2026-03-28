@@ -143,7 +143,7 @@ export class FilterBooksContainer {
         for (let i = 0; i < this._pageSize; i++) {
             gridItems += `
                 <div class="bg-card rounded-xl border border-border flex flex-row w-full overflow-hidden">
-                    <div class="w-24 sm:w-28 bg-primary/30 shrink-0 min-h-30"></div>
+                    <div class="w-24 sm:w-28 bg-muted shrink-0 min-h-30"></div>
                     <div class="p-3 sm:p-4 flex flex-col flex-1">
                         <div class="flex-1">
                             <div class="h-5 w-3/4 bg-muted rounded mb-2"></div>
