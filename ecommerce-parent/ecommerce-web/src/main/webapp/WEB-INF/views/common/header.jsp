@@ -62,14 +62,14 @@
                     <c:otherwise>
                         <c:if test="${sessionScope.user.role eq 'ADMIN' or sessionScope.user.role eq 'MAIN_ADMIN'}">
                             <a href="${pageContext.request.contextPath}/admin/dashboard" class="shrink-0">
-                                <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground h-10 rounded-xl px-6">
+                                <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground h-10 rounded-xl px-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-column w-4 h-4 text-current" aria-hidden="true">
                                         <path d="M3 3v16a2 2 0 0 0 2 2h16"></path>
                                         <path d="M18 17V9"></path>
                                         <path d="M13 17V5"></path>
                                         <path d="M8 17v-3"></path>
                                     </svg>
-                                    Dashboard
+                                    <span class="hidden sm:block">Dashboard</span>
                                 </button>
                             </a>
                         </c:if>

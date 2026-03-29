@@ -25,6 +25,22 @@ public class AuthorInfoServlet extends HttpServlet {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws ServletException, IOException {
+        String pathInfo = request.getPathInfo();
+
+        String strAuthorId = pathInfo.split("/")[1];
+
+        Long authorId;
+        try {
+            authorId = Long.parseLong(strAuthorId);
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,
+                pathInfo + " doesn't map to actual author");
+            return;
+        }
+
+        System.out.println(authorId);
+        request.setAttribute("authorId", authorId);
+
         request.getRequestDispatcher(PathStorage.AUTHOR_INFO_PAGE).forward(request, response);
     }
 }
