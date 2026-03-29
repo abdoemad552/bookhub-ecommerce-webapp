@@ -52,7 +52,7 @@ public class BaseRepositoryImpl<T, ID> implements BaseRepository<T, ID> {
         try {
             return action.apply(em);
         } catch (Exception e) {
-            throw new RepositoryException("Read operation failed for " + entityClass.getSimpleName(), e);
+            throw new RepositoryException("Read operation failed for " + entityClass.getSimpleName() + ": " + e.getMessage(), e);
         }
     }
 

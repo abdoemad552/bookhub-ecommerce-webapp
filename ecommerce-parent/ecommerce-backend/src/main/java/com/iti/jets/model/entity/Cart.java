@@ -32,7 +32,7 @@ public class Cart {
     private User user;
 
     @Column(name = "total_price")
-    private double totalPrice;
+    private Double totalPrice;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default

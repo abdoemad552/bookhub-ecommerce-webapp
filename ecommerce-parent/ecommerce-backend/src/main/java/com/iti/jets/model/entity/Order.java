@@ -38,10 +38,14 @@ public class Order {
     @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice;
 
+    @Column(name = "shipping_address", columnDefinition = "TEXT", nullable = false)
+    @Convert(converter = AddressConverter.class)
+    private Address shippingAddress;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     @Builder.Default
-    private OrderStatus status = OrderStatus.PENDING;
+    private OrderStatus status = OrderStatus.PROCESSING;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

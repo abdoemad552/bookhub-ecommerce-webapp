@@ -1,0 +1,120 @@
+
+/* ── Reset dialog defaults ── */
+dialog {
+    padding: 0;
+    border: none;
+    background: transparent;
+    overflow: visible;
+}
+
+/* ── Backdrop ── */
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0);
+    transition: background 0.25s ease;
+}
+
+dialog.is-open::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+/* ══════════════════════════════
+   MOBILE — bottom sheet
+══════════════════════════════ */
+@media (max-width: 639px) {
+    dialog {
+        position: fixed;
+        inset: auto 0 0 0;
+        width: 100%;
+        max-width: 100%; /* ← overrides the browser's built-in dialog max-width */
+        margin: 0;
+        transform: translateY(100%);
+        transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    dialog.is-open  { transform: translateY(0); }
+    dialog.is-closing { transform: translateY(100%); }
+    .dialog-panel {
+        border-radius: 1.25rem 1.25rem 0 0 !important;
+        max-height: 92svh;
+        overflow-y: auto;
+    }
+}
+
+/* ══════════════════════════════
+   DESKTOP — centered modal
+══════════════════════════════ */
+@media (min-width: 640px) {
+    dialog {
+        position: fixed;
+        inset: 0;
+        margin: auto;
+        width: 100%;
+        max-width: 36rem;
+        height: fit-content;
+        opacity: 0;
+        transform: scale(0.96) translateY(8px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    dialog.is-open {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    dialog.is-closing {
+        opacity: 0;
+        transform: scale(0.96) translateY(8px);
+    }
+    .dialog-panel { border-radius: 0.875rem !important; }
+}
+
+.field-input:focus {
+    outline: none;
+    border-color: oklch(0.35 0.08 30);
+    box-shadow: 0 0 0 3px oklch(0.35 0.08 30 / 0.12);
+}
+
+.field-input.is-invalid {
+    border-color: #f87171;
+}
+
+.field-input.is-invalid:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+/* ── Author row enter animation ── */
+@keyframes row-in {
+    from { opacity: 0; transform: translateY(-5px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.author-row { animation: row-in 0.18s ease forwards; }
+
+/* ── Scrollbar ── */
+.dialog-panel::-webkit-scrollbar { width: 4px; }
+.dialog-panel::-webkit-scrollbar-track { background: transparent; }
+.dialog-panel::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 9999px; }
+
+/* ── Panel: flex column so header/footer are fixed, form scrolls ── */
+.dialog-panel {
+    display: flex;
+    flex-direction: column;
+    max-height: 90svh;        /* cap on desktop */
+}
+
+/* ── Form body: the only scrolling region ── */
+.dialog-panel main {
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;            /* critical — lets a flex child shrink below content size */
+}
+
+/* ── Mobile: tighter cap since bottom sheet already reserves space ── */
+@media (max-width: 639px) {
+    .dialog-panel {
+        max-height: 92svh;
+    }
+}
+
+/* ── Thin scrollbar on the form ── */
+.dialog-panel main::-webkit-scrollbar       { width: 4px; }
+.dialog-panel main::-webkit-scrollbar-track { background: transparent; }
+.dialog-panel main::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 9999px; }

@@ -6,15 +6,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookFilterDTO {
-    private String category;
+    private Set<Long> categoryIds;
     private double minPrice;
     private double maxPrice;
     private String searchQuery;
     private String sortCriteria;
+    private boolean includeInterests;
 }

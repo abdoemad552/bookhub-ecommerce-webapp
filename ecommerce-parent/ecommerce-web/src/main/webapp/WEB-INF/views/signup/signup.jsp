@@ -19,10 +19,11 @@
 </head>
 
 <body class="font-google-sans antialiased">
+<jsp:include page="../common/header.jsp">
+    <jsp:param name="showCategoryNav" value="false"/>
+</jsp:include>
 <div class="min-h-screen bg-gradient-to-br from-background via-background to-accent/5
             flex flex-col relative">
-    <jsp:include page="../common/header.jsp"/>
-
     <main class="flex-1 flex items-center justify-center px-4 py-8 relative">
 
     <div class="absolute -top-20 -right-20 w-72 h-72 bg-accent/10 rounded-full blur-3xl animate-float opacity-25 pointer-events-none"></div>
@@ -34,17 +35,6 @@
 
             <!-- Brand -->
             <div class="animate-slide-down delay-1 mb-6">
-                <a href="${pageContext.request.contextPath}/home" class="flex items-center gap-3 mb-5">
-                    <div class="p-3 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="text-primary icon-pulse">
-                            <path d="M12 7v14"></path>
-                            <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
-                        </svg>
-                    </div>
-                    <h1 class="text-3xl font-bold text-gradient">BookHub</h1>
-                </a>
                 <h2 class="text-4xl font-bold text-foreground mb-1">Join Us</h2>
                 <p class="text-muted-foreground text-sm">Create your reading sanctuary</p>
             </div>
@@ -364,7 +354,7 @@
         </div>
     </div>
     </main>
-    <jsp:include page="../common/footer.jsp"/>
 </div>
+<jsp:include page="../common/footer.jsp"/>
 </body>
 </html>

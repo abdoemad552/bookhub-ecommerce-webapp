@@ -20,7 +20,7 @@ export function updateCartItemsCount(count) {
 async function loadCartItemsCount() {
     const cartCountBadge = getCartCountBadge();
 
-    if (!cartCountBadge || cartCountBadge.dataset.authenticated !== 'true') {
+    if (!cartCountBadge) {
         return;
     }
 
@@ -86,28 +86,4 @@ export function initHeader() {
     }
 
     loadCartItemsCount();
-    const openBtn = document.getElementById("open-search");
-    const closeBtn = document.getElementById("close-search");
-    const searchBar = document.getElementById("mobile-search");
-    const input = searchBar.querySelector("input");
-    let isSearchOpen = false;
-
-    openBtn.addEventListener("click", () => {
-        if(isSearchOpen){
-            isSearchOpen = false;
-            searchBar.classList.add("-translate-y-full", "opacity-0");
-            searchBar.classList.remove("translate-y-0", "opacity-100", "z-40");
-        }else{
-            isSearchOpen = true;
-            searchBar.classList.remove("-translate-y-full", "opacity-0");
-            searchBar.classList.add("translate-y-0", "opacity-100", "z-40");
-            setTimeout(() => input.focus(), 200);
-        }
-    });
-
-    closeBtn.addEventListener("click", () => {
-        isSearchOpen = false;
-        searchBar.classList.add("-translate-y-full", "opacity-0");
-        searchBar.classList.remove("translate-y-0", "opacity-100", "z-40");
-    });
 }

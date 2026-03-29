@@ -6,6 +6,7 @@ import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.service.extra.EmailService;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.AuthService;
+import com.iti.jets.service.interfaces.CartService;
 import com.iti.jets.util.CookieHandler;
 import com.iti.jets.util.PathStorage;
 import jakarta.json.Json;
@@ -16,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class LoginServlet extends HttpServlet {
@@ -24,11 +27,13 @@ public class LoginServlet extends HttpServlet {
 
     private AuthService authService;
     private EmailService emailService;
+    private CartService cartService;
 
     @Override
     public void init() {
         authService = ServiceFactory.getInstance().getAuthService();
         emailService = ServiceFactory.getInstance().getEmailService();
+        cartService = ServiceFactory.getInstance().getCartService();
     }
 
     @Override
@@ -73,13 +78,30 @@ public class LoginServlet extends HttpServlet {
 
             UserDTO loggedInUser = result.getData();
 
+            Object sessionCartObj = null;
             HttpSession oldSession = request.getSession(false);
             if (oldSession != null) {
+                sessionCartObj = oldSession.getAttribute("sessionCart");
+
                 // Check if this user login normally or comes form checkout page
                 redirectToHome = oldSession.getAttribute("comes_from_checkout") == null;
 
                 // Invalidate any old session first to prevent session fixation
                 oldSession.invalidate();
+            }
+
+            if (sessionCartObj != null) {
+                @SuppressWarnings("unchecked")
+                Map<Integer, Integer> sessionCart = (Map<Integer, Integer>) sessionCartObj;
+
+                System.out.println("Merging session cart: " + sessionCart);
+
+                for (Map.Entry<Integer, Integer> entry : sessionCart.entrySet()) {
+                    Integer bookId = entry.getKey();
+                    Integer quantity = entry.getValue();
+
+                    cartService.addToCart(Math.toIntExact(loggedInUser.getId()), bookId, quantity);
+                }
             }
 
             // Create session for this user (valid 30 minutes)
@@ -104,10 +126,10 @@ public class LoginServlet extends HttpServlet {
 
             // Send Confirmation Email to the user in a background thread
             if (loggedInUser.getEmailNotifications()) {
-                CompletableFuture.runAsync(() ->
-                        emailService.sendLoginNotification(loggedInUser)
-                );
+                emailService.sendLoginNotification(loggedInUser);
             }
+
+            mergeSessionCart(request, Math.toIntExact(loggedInUser.getId()));
         }
 
         // Send AJAX response to JS
@@ -118,6 +140,27 @@ public class LoginServlet extends HttpServlet {
                 .build();
 
         response.getWriter().write(json.toString());
+    }
+
+    private void mergeSessionCart(HttpServletRequest request, int userId) {
+        @SuppressWarnings("unchecked")
+        Map<Integer, Integer> sessionCart = (Map<Integer, Integer>)
+            request.getSession().getAttribute("sessionCart");
+
+        System.out.println("Merging session cart: " + sessionCart);
+        if (sessionCart == null || sessionCart.isEmpty()) {
+            return;
+        }
+
+        for (Map.Entry<Integer, Integer> entry : sessionCart.entrySet()) {
+            Integer bookId = entry.getKey();
+            Integer quantity = entry.getValue();
+
+            cartService.addToCart(userId, bookId, quantity);
+        }
+
+        // Clear session cart after merge
+        request.getSession().removeAttribute("sessionCart");
     }
 
     private LoginRequestDTO buildLoginRequest(HttpServletRequest req) {

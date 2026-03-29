@@ -75,10 +75,10 @@ public class Book {
     private Integer soldQuantity = 0;
 
     @Column(name = "average_rating")
-    private Double averageRating;
+    private Double averageRating = 0.0;
 
     @Column(name = "rating_count")
-    private Integer ratingCount;
+    private Integer ratingCount = 0;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default

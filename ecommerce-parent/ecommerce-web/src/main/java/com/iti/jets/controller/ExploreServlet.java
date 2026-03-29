@@ -1,33 +1,52 @@
 package com.iti.jets.controller;
 
 import com.iti.jets.model.dto.request.BookFilterDTO;
+import com.iti.jets.model.dto.response.BookCardDTO;
+import com.iti.jets.model.dto.response.PageResponseDTO;
+import com.iti.jets.model.dto.response.UserDTO;
+import com.iti.jets.model.dto.response.UserInterestsDTO;
 import com.iti.jets.model.entity.Book;
 import com.iti.jets.mock.dto.BookCardDto;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.BookService;
+import com.iti.jets.service.interfaces.CategoryService;
+import com.iti.jets.service.interfaces.UserService;
 import com.iti.jets.util.PathStorage;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
+import jakarta.json.bind.JsonbConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @WebServlet("/explore")
 public class ExploreServlet extends HttpServlet {
 
-    private static final int BOOKS_PAGE_SIZE = 9;
-    private static final int DEFAULT_MAX_PRICE = 1000;
+    private static final int DEFAULT_MIN_PRICE = 0;
+    private static final int DEFAULT_MAX_PRICE = 999999;
+    private static final int DEFAULT_PAGE_SIZE = 12;
 
     private BookService bookService;
+    private CategoryService categoryService;
+    private UserService userService;
+    private Jsonb jsonb;
 
     @Override
     public void init() {
         bookService = ServiceFactory.getInstance().getBookService();
+        categoryService = ServiceFactory.getInstance().getCategoryService();
+        userService = ServiceFactory.getInstance().getUserService();
+
+        JsonbConfig config = new JsonbConfig();
+        config.withFormatting(true);
+        jsonb = JsonbBuilder.create(config);
     }
 
     @Override
@@ -35,40 +54,89 @@ public class ExploreServlet extends HttpServlet {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws ServletException, IOException {
-        int pageNumber = parsePositiveInteger(request.getParameter("page"), 1);
-        String selectedCategory = normalizeCategory(request.getParameter("category"));
-        String searchQuery = normalizeText(request.getParameter("query"));
-        int maxPrice = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
-        String sortCriteria = normalizeSortCriteria(request.getParameter("sort"));
+        int       page        = parsePositiveInteger(request.getParameter("page"), 1);
+        int       size        = parsePositiveInteger(request.getParameter("size"), DEFAULT_PAGE_SIZE);
+        String    query       = normalizeText(request.getParameter("query"));
+        Set<Long> categoryIds = parseCategoryIds(request.getParameterValues("category[]"));
+        int       maxPrice    = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
+        int       minPrice    = parsePositiveInteger(request.getParameter("minPrice"), DEFAULT_MIN_PRICE);
+        String    sort        = normalizeSortCriteria(request.getParameter("sort"));
+        boolean   includeInterests = Boolean.parseBoolean(request.getParameter("includeInterests"));
+
+        mergeUserInterests(request, includeInterests, categoryIds);
+
+        System.out.println(request.getParameter("page"));
+        System.out.println(request.getParameter("size"));
+        System.out.println(request.getParameter("query"));
+        System.out.println(Arrays.toString(request.getParameterValues("category[]")));
+        System.out.println(request.getParameter("minPrice"));
+        System.out.println(request.getParameter("maxPrice"));
+        System.out.println(request.getParameter("sort"));
+        System.out.println(request.getParameter("includeInterests"));
 
         BookFilterDTO filter = BookFilterDTO.builder()
-                .category(selectedCategory)
-                .maxPrice(maxPrice)
-                .searchQuery(searchQuery)
-                .sortCriteria(sortCriteria)
-                .build();
+            .searchQuery(query)
+            .categoryIds(categoryIds)
+            .minPrice(minPrice)
+            .maxPrice(maxPrice)
+            .sortCriteria(sort)
+            .includeInterests(includeInterests)
+            .build();
 
-        List<BookCardDto> books = bookService.findAll(pageNumber, BOOKS_PAGE_SIZE, filter)
-                .stream()
-                .map(this::toBookCardDto)
-                .toList();
+        PageResponseDTO<BookCardDTO> booksPage = bookService.findAllBookCard(page, size, filter);
 
-        boolean hasNextPage = !bookService.findAll(pageNumber + 1, BOOKS_PAGE_SIZE, filter).isEmpty();
+        request.setAttribute("pagination", booksPage);
 
-        request.setAttribute("books", books);
-        request.setAttribute("bookCardVariant", "grid");
-        request.setAttribute("booksResultCount", books.size());
-        request.setAttribute("currentPageNumber", pageNumber);
-        request.setAttribute("hasPreviousPage", pageNumber > 1);
-        request.setAttribute("hasNextPage", hasNextPage);
-        request.setAttribute("selectedCategory", selectedCategory == null ? "All Books" : selectedCategory);
-        request.setAttribute("selectedCategoryParam", selectedCategory == null ? "" : selectedCategory);
-        request.setAttribute("selectedCategoryValue", selectedCategory == null ? "all" : toSlug(selectedCategory));
-        request.setAttribute("selectedSearchQuery", searchQuery == null ? "" : searchQuery);
-        request.setAttribute("selectedMaxPrice", maxPrice);
-        request.setAttribute("selectedSortCriteria", sortCriteria);
+        request.setAttribute("query", query);
+        request.setAttribute("categoryIds", categoryIds);
+        request.setAttribute("minPrice", minPrice);
+        request.setAttribute("maxPrice", maxPrice);
+        request.setAttribute("sort", sort);
+        request.setAttribute("includeInterests", includeInterests);
 
         request.getRequestDispatcher(PathStorage.EXPLORE_PAGE).forward(request, response);
+    }
+
+    @Override
+    protected void doPost(
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws ServletException, IOException {
+        int       page        = parsePositiveInteger(request.getParameter("page"), 1);
+        int       size        = parsePositiveInteger(request.getParameter("size"), DEFAULT_PAGE_SIZE);
+        String    query       = normalizeText(request.getParameter("query"));
+        Set<Long> categoryIds = parseCategoryIds(request.getParameterValues("category[]"));
+        int       maxPrice    = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
+        int       minPrice    = parsePositiveInteger(request.getParameter("minPrice"), DEFAULT_MIN_PRICE);
+        String    sort        = normalizeSortCriteria(request.getParameter("sort"));
+        boolean   includeInterests = Boolean.parseBoolean(request.getParameter("includeInterests"));
+
+        mergeUserInterests(request, includeInterests, categoryIds);
+
+        System.out.println(request.getParameter("page"));
+        System.out.println(request.getParameter("size"));
+        System.out.println(request.getParameter("query"));
+        System.out.println(Arrays.toString(request.getParameterValues("category[]")));
+        System.out.println(request.getParameter("minPrice"));
+        System.out.println(request.getParameter("maxPrice"));
+        System.out.println(request.getParameter("sort"));
+        System.out.println(request.getParameter("includeInterests"));
+
+        BookFilterDTO filter = BookFilterDTO.builder()
+            .searchQuery(query)
+            .categoryIds(categoryIds)
+            .minPrice(minPrice)
+            .maxPrice(maxPrice)
+            .sortCriteria(sort)
+            .includeInterests(includeInterests)
+            .build();
+
+        PageResponseDTO<BookCardDTO> booksPage = bookService.findAllBookCard(page, size, filter);
+
+        System.out.println(jsonb.toJson(booksPage));
+        request.setAttribute("pagination", booksPage);
+
+        request.getRequestDispatcher(PathStorage.EXPLORE_BOOKS_CONTAINER).forward(request, response);
     }
 
     private int parsePositiveInteger(String rawValue, int fallback) {
@@ -80,16 +148,17 @@ public class ExploreServlet extends HttpServlet {
         }
     }
 
-    private String normalizeCategory(String rawCategory) {
-        String normalizedCategory = normalizeText(rawCategory);
-
-        if (normalizedCategory == null) {
-            return null;
+    private Set<Long> parseCategoryIds(String[] strCategoryIds) {
+        Set<Long> categoryIds = new HashSet<>();
+        if (strCategoryIds != null) {
+            for (String strCategoryId : strCategoryIds) {
+                try {
+                    categoryIds.add(Long.parseLong(strCategoryId));
+                } catch (NumberFormatException ignored) {
+                }
+            }
         }
-
-        return "all".equalsIgnoreCase(normalizedCategory) || "all books".equalsIgnoreCase(normalizedCategory)
-                ? null
-                : normalizedCategory;
+        return categoryIds;
     }
 
     private String normalizeText(String rawValue) {
@@ -113,8 +182,30 @@ public class ExploreServlet extends HttpServlet {
         };
     }
 
-    private String toSlug(String value) {
-        return value.toLowerCase(Locale.ROOT).replace(' ', '-');
+    public void mergeUserInterests(
+        HttpServletRequest request,
+        boolean includeInterests,
+        Set<Long> categoryIds
+    ) {
+        HttpSession session = request.getSession(false);
+        if (
+            session != null &&
+            session.getAttribute("user") != null &&
+            includeInterests
+        ) {
+            UserDTO user = (UserDTO) session.getAttribute("user");
+            UserInterestsDTO userInterests
+                = userService.loadUserInterests(user.getId());
+
+            System.out.println(userInterests);
+            if (userInterests != null) {
+                categoryIds.addAll(userInterests.getInterests()
+                    .stream()
+                    .map(interest -> interest.getId())
+                    .collect(Collectors.toSet())
+                );
+            }
+        }
     }
 
     private BookCardDto toBookCardDto(Book book) {

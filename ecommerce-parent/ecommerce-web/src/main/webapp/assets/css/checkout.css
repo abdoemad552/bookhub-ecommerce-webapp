@@ -564,3 +564,56 @@
 }
 
 @keyframes nafSpin { to { transform: rotate(360deg); } }
+
+/* ════════════════════════════════════════
+   EMPTY CART STATE
+════════════════════════════════════════ */
+.empty-cart-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 32px 16px 8px;
+    gap: 12px;
+}
+
+.empty-cart-state__icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    background: rgba(120, 53, 15, .08);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+.empty-cart-state__icon svg {
+    width: 36px;
+    height: 36px;
+}
+
+.empty-cart-state__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0;
+}
+
+.empty-cart-state__sub {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.empty-cart-state__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 12px 24px;
+    font-size: 0.875rem;
+    text-decoration: none;
+}

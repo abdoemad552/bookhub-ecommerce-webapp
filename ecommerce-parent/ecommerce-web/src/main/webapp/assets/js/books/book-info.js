@@ -1,4 +1,4 @@
-import {addToCart, initBookCard, showFeedbackMessage} from "../common/book-card.js";
+import {addToCart, initBookCard, showFeedbackMessage} from "../common/book-card-jq.js";
 import {getContextPath, initHeader} from "../common/header.js";
 
 function escapeHtml(value) {
@@ -16,14 +16,14 @@ function renderReviewStars(rating) {
 
     for (let index = 0; index < safeRating; index += 1) {
         stars += `
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-[#d67724]" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-accent" aria-hidden="true">
                 <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
             </svg>`;
     }
 
     for (let index = safeRating; index < 5; index += 1) {
         stars += `
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e5e7eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-border" aria-hidden="true">
                 <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
             </svg>`;
     }
@@ -37,14 +37,14 @@ function renderAverageStars(averageRating) {
 
     for (let index = 0; index < safeAverageRating; index += 1) {
         stars += `
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true">
                 <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
             </svg>`;
     }
 
     for (let index = safeAverageRating; index < 5; index += 1) {
         stars += `
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e5e7eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6 text-border" aria-hidden="true">
                 <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
             </svg>`;
     }
@@ -54,17 +54,17 @@ function renderAverageStars(averageRating) {
 
 function renderReviewCard(review) {
     return `
-        <article class="book-review-card rounded-[22px] border border-[#ece7de] bg-[#fcfbf9] p-5 space-y-3" data-review-id="${escapeHtml(review.id)}">
+        <article class="book-review-card rounded-xl sm:rounded-[20px] border border-border bg-muted/40 p-3.5 sm:p-4 space-y-2.5 sm:space-y-3" data-review-id="${escapeHtml(review.id)}">
             <div class="flex items-center justify-between gap-4">
                 <div>
-                    <h3 class="font-semibold text-[#111111]">${escapeHtml(review.userFullName)}</h3>
-                    <p class="text-sm text-[#68707d]">${escapeHtml((review.createdAt || "").replace("T", " "))}</p>
+                    <h3 class="text-sm sm:text-base font-semibold text-foreground">${escapeHtml(review.userFullName)}</h3>
+                    <p class="text-xs sm:text-sm text-muted-foreground">${escapeHtml((review.createdAt || "").replace("T", " "))}</p>
                 </div>
-                <div class="flex items-center gap-1">
+                <div class="flex items-center gap-0.5 sm:gap-1 shrink-0">
                     ${renderReviewStars(review.rating)}
                 </div>
             </div>
-            <p class="text-[#68707d] leading-8">${escapeHtml(review.comment)}</p>
+            <p class="text-xs sm:text-[0.95rem] text-muted-foreground leading-6 sm:leading-7">${escapeHtml(review.comment)}</p>
         </article>`;
 }
 
@@ -74,24 +74,23 @@ function renderReviewForm(bookId) {
             <input type="hidden" name="bookId" value="${bookId}">
             <div>
                 <label class="block text-sm font-medium text-foreground mb-2">Rating</label>
-
-                <!-- Stars -->
                 <div id="rating-stars" class="flex items-center gap-1 cursor-pointer select-none">
-                    <svg data-value="1" class="w-7 h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
-                    <svg data-value="2" class="w-7 h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
-                    <svg data-value="3" class="w-7 h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
-                    <svg data-value="4" class="w-7 h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
-                    <svg data-value="5" class="w-7 h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
+                    <svg data-value="1" class="w-6 h-6 sm:w-7 sm:h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
+                    <svg data-value="2" class="w-6 h-6 sm:w-7 sm:h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
+                    <svg data-value="3" class="w-6 h-6 sm:w-7 sm:h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
+                    <svg data-value="4" class="w-6 h-6 sm:w-7 sm:h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
+                    <svg data-value="5" class="w-6 h-6 sm:w-7 sm:h-7 text-muted-foreground transition-all duration-150 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
                 </div>
-
-                <!-- Hidden input for form -->
                 <input type="hidden" id="review-rating" name="rating" value="0">
             </div>
             <div>
-                <label for="review-comment" class="block text-sm font-medium text-[#111111] mb-2">Comment</label>
-                <textarea id="review-comment" name="comment" rows="6" class="w-full rounded-[16px] border border-[#e6e0d7] bg-[#fcfbf9] px-4 py-3 text-[#111111] outline-none focus:border-[#7b3527] focus:ring-4 focus:ring-[#7b3527]/10" placeholder="Share what you liked about this book."></textarea>
+                <label for="review-comment" class="block text-sm font-medium text-foreground mb-2">Comment</label>
+                <textarea id="review-comment" name="comment" rows="5"
+                          class="w-full rounded-xl border border-border bg-muted/30 px-3.5 py-3 text-sm sm:text-base text-foreground outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 placeholder:text-muted-foreground"
+                          placeholder="Share what you liked about this book."></textarea>
             </div>
-            <button id="submit-review-btn" type="submit" class="inline-flex items-center justify-center whitespace-nowrap text-[1rem] font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed h-11 rounded-[16px] px-5 text-white bg-[#7b3527] hover:bg-[#6e2f23]">
+            <button id="submit-review-btn" type="submit"
+                    class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed h-9 rounded-[14px] px-3.5 text-primary-foreground bg-primary hover:bg-primary/90">
                 Submit Review
             </button>
         </form>`;
@@ -99,21 +98,22 @@ function renderReviewForm(bookId) {
 
 function renderUserReviewState(review) {
     return `
-        <div class="space-y-5">
-            <p class="text-[#68707d] leading-8">You already submitted a review for this book. Delete it if you want to submit a different one.</p>
-            <article class="rounded-[22px] border border-[#ece7de] bg-[#fcfbf9] p-5 space-y-3">
+        <div class="space-y-4 sm:space-y-5">
+            <p class="text-sm sm:text-[0.98rem] text-muted-foreground leading-7">You already submitted a review for this book. Delete it if you want to submit a different one.</p>
+            <article class="rounded-xl sm:rounded-[20px] border border-border bg-muted/40 p-3.5 sm:p-4 space-y-2.5 sm:space-y-3">
                 <div class="flex items-center justify-between gap-4">
                     <div>
-                        <h3 class="font-semibold text-[#111111]">${escapeHtml(review.userFullName)}</h3>
-                        <p class="text-sm text-[#68707d]">${escapeHtml((review.createdAt || "").replace("T", " "))}</p>
+                        <h3 class="text-sm sm:text-base font-semibold text-foreground">${escapeHtml(review.userFullName)}</h3>
+                        <p class="text-xs sm:text-sm text-muted-foreground">${escapeHtml((review.createdAt || "").replace("T", " "))}</p>
                     </div>
-                    <div class="flex items-center gap-1">
+                    <div class="flex items-center gap-0.5 sm:gap-1 shrink-0">
                         ${renderReviewStars(review.rating)}
                     </div>
                 </div>
-                <p class="text-[#68707d] leading-8">${escapeHtml(review.comment)}</p>
+                <p class="text-xs sm:text-[0.95rem] text-muted-foreground leading-6 sm:leading-7">${escapeHtml(review.comment)}</p>
             </article>
-            <button id="delete-review-btn" type="button" data-review-id="${escapeHtml(review.id)}" class="inline-flex items-center justify-center whitespace-nowrap text-[1rem] font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed h-11 rounded-[16px] px-5 text-white bg-[#7b3527] hover:bg-[#6e2f23]">
+            <button id="delete-review-btn" type="button" data-review-id="${escapeHtml(review.id)}"
+                    class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed h-9 rounded-[14px] px-3.5 text-primary-foreground bg-primary hover:bg-primary/90">
                 Delete Review
             </button>
         </div>`;
@@ -121,7 +121,7 @@ function renderUserReviewState(review) {
 
 function renderEmptyReviewsState() {
     return `
-        <div id="empty-reviews-state" class="rounded-[22px] border border-dashed border-[#e6e0d7] bg-[#fcfbf9] p-6 text-center text-[#68707d]">
+        <div id="empty-reviews-state" class="rounded-xl border border-dashed border-border bg-muted/30 p-5 text-center text-sm text-muted-foreground">
             No reviews yet. Be the first to share your thoughts.
         </div>`;
 }
@@ -138,8 +138,8 @@ function updateWishlistButton(button, inWishlist) {
 
     if (icon) {
         icon.setAttribute("fill", inWishlist ? "currentColor" : "none");
-        icon.classList.toggle("text-[#7b3527]", inWishlist);
-        icon.classList.toggle("text-[#111111]", !inWishlist);
+        icon.classList.toggle("text-primary", inWishlist);
+        icon.classList.toggle("text-foreground", !inWishlist);
     }
 }
 
@@ -182,6 +182,10 @@ function updateSelectedQuantity(nextQuantity) {
     quantityValue.textContent = `${Math.max(nextQuantity, 1)}`;
 }
 
+function resetCartState() {
+    updateSelectedQuantity(1);
+}
+
 async function handleWishlistToggle(button, bookId) {
     button.disabled = true;
 
@@ -222,11 +226,9 @@ function initStars() {
             const value = parseInt(star.dataset.value);
             currentRating = value;
             input.value = value;
-
             updateStars(value);
         });
 
-        // Optional: hover preview
         star.addEventListener('mouseenter', () => {
             updateStars(parseInt(star.dataset.value));
         });
@@ -239,7 +241,6 @@ function initStars() {
     function updateStars(rating) {
         stars.forEach(star => {
             const value = parseInt(star.dataset.value);
-
             if (value <= rating) {
                 star.classList.remove('text-muted-foreground');
                 star.classList.add('text-accent');
@@ -466,7 +467,7 @@ function initBookInfo() {
     if (addToCartButton) {
         addToCartButton.addEventListener("click", (event) => {
             event.preventDefault();
-            addToCart(bookId, getSelectedQuantity(), addToCartButton);
+            addToCart(bookId, getSelectedQuantity(), $(addToCartButton), resetCartState);
         });
     }
 

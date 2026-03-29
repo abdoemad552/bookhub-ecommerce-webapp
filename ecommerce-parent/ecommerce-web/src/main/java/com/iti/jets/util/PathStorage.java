@@ -13,15 +13,22 @@ public class PathStorage {
     public static final String AUTHOR_INFO_PAGE     = "/WEB-INF/views/authors/author-info.jsp";
     public static final String BOOK_NOT_FOUND_PAGE  = "/WEB-INF/views/error/book-not-found.jsp";
     public static final String NOT_FOUND_PAGE       = "/WEB-INF/views/error/page-not-found.jsp";
+    public static final String FORBIDDEN_PAGE       = "/WEB-INF/views/error/forbidden.jsp";
     public static final String CHECKOUT_PAGE        = "/WEB-INF/views/checkout/checkout.jsp";
+    public static final String ORDER_CONFIRMATION   = "/WEB-INF/views/confirmation/order-confirmation.jsp";
 
     // Inner Components
     public static final String BOOK_CARD    = "/WEB-INF/views/common/book-card.jsp";
+    public static final String BOOK_CARD_H  = "/WEB-INF/views/common/book-card-h.jsp";
     public static final String HEADER       = "/WEB-INF/views/common/header.jsp";
     public static final String FOOTER       = "/WEB-INF/views/common/footer.jsp";
+    public static final String EXPLORE_BOOKS_CONTAINER         = "/WEB-INF/views/explore/books-container.jsp";
 
     // Admin Pages
-    public static final String ADMIN_DASHBOARD_PAGE = "/WEB-INF/views/admin/dashboard/dashboard.jsp";
+    public static final String ADMIN_DASHBOARD_PAGE                  = "/WEB-INF/views/admin/dashboard/dashboard.jsp";
+    public static final String ADMIN_DASHBOARD_PAGE_OVERVIEW         = "/WEB-INF/views/admin/dashboard/overview.jsp";
+    public static final String ADMIN_DASHBOARD_PAGE_PRODUCTS         = "/WEB-INF/views/admin/dashboard/products.jsp";
+    public static final String ADMIN_DASHBOARD_PAGE_USER_MANAGEMENT  = "/WEB-INF/views/admin/dashboard/user-management.jsp";
 
     // Servlet Mapping
     public static final String HOME_SERVLET = "home";

@@ -1,5 +1,6 @@
 package com.iti.jets.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iti.jets.model.enums.AddressType;
 import com.iti.jets.model.enums.Government;
 import jakarta.persistence.*;
@@ -28,11 +29,13 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     @EqualsAndHashCode.Include
+    @JsonIgnore
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @Enumerated(EnumType.STRING)

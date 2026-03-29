@@ -1,5 +1,8 @@
 package com.iti.jets.service.implementation;
 
+import com.iti.jets.model.dto.response.AuthorDTO;
+import com.iti.jets.model.dto.response.BookCardDTO;
+import com.iti.jets.model.entity.Book;
 import com.iti.jets.model.entity.Wishlist;
 import com.iti.jets.model.entity.WishlistId;
 import com.iti.jets.repository.interfaces.BookRepository;
@@ -8,6 +11,8 @@ import com.iti.jets.repository.interfaces.WishlistRepository;
 import com.iti.jets.service.generic.ContextHandler;
 import com.iti.jets.service.interfaces.WishlistService;
 
+import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 
 public class WishlistServiceImpl extends ContextHandler implements WishlistService {
@@ -85,6 +90,20 @@ public class WishlistServiceImpl extends ContextHandler implements WishlistServi
         return executeInContext(() -> wishlistRepository.existsById(wishlistId));
     }
 
+    @Override
+    public List<BookCardDTO> findWishlistBooks(Long userId) {
+        if (userId == null) {
+            return List.of();
+        }
+
+        return executeInContext(() -> wishlistRepository.findAllByUserId(userId)
+                .stream()
+                .map(Wishlist::getBook)
+                .map(this::toBookCardDto)
+                .toList()
+        );
+    }
+
     private WishlistId buildWishlistId(Integer userId, Integer bookId) {
         if (userId == null || bookId == null) {
             return null;
@@ -93,6 +112,37 @@ public class WishlistServiceImpl extends ContextHandler implements WishlistServi
         return WishlistId.builder()
                 .userId(Long.valueOf(userId))
                 .bookId(Long.valueOf(bookId))
+                .build();
+    }
+
+    private BookCardDTO toBookCardDto(Book book) {
+        List<AuthorDTO> authorDtos = book.getBookAuthors() == null ? List.of()
+                : book.getBookAuthors().stream()
+                .map(bookAuthor -> bookAuthor.getAuthor())
+                .filter(author -> author != null && author.getName() != null && !author.getName().isBlank())
+                .collect(java.util.stream.Collectors.toMap(
+                        author -> author.getId(),
+                        author -> {
+                            AuthorDTO dto = new AuthorDTO();
+                            dto.setId(author.getId());
+                            dto.setName(author.getName());
+                            return dto;
+                        },
+                        (existing,newOne) -> existing
+                ))
+                .values().stream()
+                .sorted(Comparator.comparing(AuthorDTO::getName))
+                .toList();
+
+        return BookCardDTO.builder()
+                .id(book.getId())
+                .title(book.getTitle())
+                .authors(authorDtos)
+                .averageRating(book.getAverageRating() == null ? 0 : Math.round(book.getAverageRating()))
+                .description(book.getDescription())
+                .price(book.getPrice() == null ? BigDecimal.ZERO : book.getPrice())
+                .stockQuantity(book.getStockQuantity() == null ? 0 : book.getStockQuantity())
+                .coverPicUrl(book.getImageUrl())
                 .build();
     }
 }
