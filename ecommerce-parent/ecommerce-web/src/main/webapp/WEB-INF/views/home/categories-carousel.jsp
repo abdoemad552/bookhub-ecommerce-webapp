@@ -33,7 +33,7 @@
         </c:forEach>
 
         <!-- Cards -->
-        <c:forEach begin="1" end="15">
+        <c:forEach items="${requestScope.categories}" var="category">
             <div data-slot="card"
                  class="cat-real bg-card text-card-foreground flex flex-col gap-6 rounded-xl border shadow-sm flex-shrink-0 w-40 sm:w-48 md:w-56 p-6 text-center cat-card-hover cursor-pointer"
                  style="display:none">
@@ -45,7 +45,7 @@
                         <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
                     </svg>
                 </div>
-                <h3 class="text-base md:text-lg font-semibold text-foreground mb-3 truncate">Business</h3>
+                <h3 class="text-base md:text-lg font-semibold text-foreground mb-3 truncate">${category.name}</h3>
                 <div class="text-center animate-fade-in">
                     <a href="${pageContext.request.contextPath}/explore" class="link-modern text-sm font-bold">
                         Shop Now
