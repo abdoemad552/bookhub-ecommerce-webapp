@@ -153,193 +153,196 @@
             ════════════════════════ --%>
             <div class="lg:col-span-3">
 
-                <%-- ── Profile Info ── --%>
-                <div id="profile-info" class="profile-panel bg-card text-card-foreground rounded-2xl border shadow-sm p-6 lg:p-7">
-                    <div class="panel-header">
-                        <div>
-                            <h2 class="text-foreground">Profile Information</h2>
-                            <p class="text-muted-foreground">Update your personal details and account settings.</p>
+                <%-- ── Unified Form (wraps Profile Info + Interests panels) ── --%>
+                <form id="profile-update-form" action="${pageContext.request.contextPath}/profile" method="post" novalidate>
+                    <input type="hidden" id="formActionField" name="formAction" value="update-profile"/>
+
+                    <%-- ── Profile Info ── --%>
+                    <div id="profile-info" class="profile-panel bg-card text-card-foreground rounded-2xl border shadow-sm p-6 lg:p-7">
+                        <div class="panel-header">
+                            <div>
+                                <h2 class="text-foreground">Profile Information</h2>
+                                <p class="text-muted-foreground">Update your personal details and account settings.</p>
+                            </div>
+                        </div>
+
+                        <div class="profile-form-section">
+
+                            <div class="profile-form-row cols-2">
+                                <div class="profile-field stagger-1 animate-slide-up">
+                                    <label class="profile-label">First Name</label>
+                                    <input type="text" name="firstName" id="firstName" class="profile-input input-modern"
+                                           value="${requestScope.profileUser.firstName}"/>
+                                </div>
+                                <div class="profile-field stagger-2 animate-slide-up">
+                                    <label class="profile-label">Last Name</label>
+                                    <input type="text" name="lastName" id="lastName" class="profile-input input-modern"
+                                           value="${requestScope.profileUser.lastName}"/>
+                                </div>
+                            </div>
+
+                            <div class="profile-form-row cols-2">
+                                <div class="profile-field stagger-3 animate-slide-up">
+                                    <label class="profile-label">Username</label>
+                                    <input type="text" class="profile-input" value="${requestScope.profileUser.username}" readonly/>
+                                </div>
+                                <div class="profile-field stagger-4 animate-slide-up">
+                                    <label class="profile-label">Email Address</label>
+                                    <input type="email" class="profile-input" value="${requestScope.profileUser.email}" readonly/>
+                                </div>
+                            </div>
+
+                            <div class="profile-form-row cols-2">
+                                <div class="profile-field stagger-5 animate-slide-up">
+                                    <label class="profile-label">Job Title</label>
+                                    <input type="text" name="job" class="profile-input input-modern"
+                                           value="${requestScope.profileUser.job}" placeholder="e.g. Software Engineer"/>
+                                </div>
+                                <div class="profile-field stagger-6 animate-slide-up">
+                                    <label class="profile-label">Birth Date</label>
+                                    <input type="date" name="birthDate" class="profile-input input-modern"
+                                           value="${requestScope.profileUser.birthDate}"/>
+                                </div>
+                            </div>
+
+                            <%-- Email notifications toggle --%>
+                            <label class="profile-toggle-row animate-slide-up stagger-1">
+                                <div class="profile-toggle-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2"
+                                         stroke-linecap="round" stroke-linejoin="round" class="text-primary">
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                        <polyline points="22,6 12,13 2,6"/>
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-foreground">Email Notifications</p>
+                                    <p class="text-xs text-muted-foreground mt-0.5">Allow BookHub to send account and order emails.</p>
+                                </div>
+                                <div class="toggle-wrap shrink-0">
+                                    <input type="checkbox" name="emailNotifications"
+                                           <c:if test="${requestScope.profileUser.emailNotifications}">checked</c:if>/>
+                                    <span class="toggle-track"></span>
+                                </div>
+                            </label>
+
+                            <div class="profile-section-divider"><span>Security</span></div>
+
+                            <%-- Change password --%>
+                            <div class="profile-section-card animate-slide-up stagger-2">
+                                <div class="mb-4">
+                                    <h3 class="text-foreground">Change Password</h3>
+                                    <p class="text-xs text-muted-foreground mt-1">
+                                        Leave blank if you don't want to change. New passwords must be at least 8 characters.
+                                    </p>
+                                </div>
+                                <div class="profile-form-row cols-3">
+                                    <div class="profile-field">
+                                        <label class="profile-label">Current Password</label>
+                                        <input id="currentPassword" type="password" name="currentPassword"
+                                               autocomplete="current-password" class="profile-input input-modern"/>
+                                    </div>
+                                    <div class="profile-field">
+                                        <label class="profile-label">New Password</label>
+                                        <input id="newPassword" type="password" name="newPassword"
+                                               autocomplete="new-password" class="profile-input input-modern"/>
+                                    </div>
+                                    <div class="profile-field">
+                                        <label class="profile-label">Confirm New Password</label>
+                                        <input id="confirmNewPassword" type="password" name="confirmNewPassword"
+                                               autocomplete="new-password" class="profile-input input-modern"/>
+                                    </div>
+                                </div>
+                                <p id="password-validation-message" class="mt-3 text-muted-foreground text-sm"></p>
+                            </div>
+
+                            <div class="flex justify-end pt-1">
+                                <button type="submit" class="profile-save-btn" onclick="document.getElementById('formActionField').value='update-profile'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2.5"
+                                         stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                        <polyline points="17 21 17 13 7 13 7 21"/>
+                                        <polyline points="7 3 7 8 15 8"/>
+                                    </svg>
+                                    Save Changes
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <form id="profile-update-form" action="${pageContext.request.contextPath}/profile" method="post"
-                          class="profile-form-section">
+                    <%-- ── Interests ── --%>
+                    <div id="interests-info" class="profile-panel hidden bg-card text-card-foreground rounded-2xl border shadow-sm p-6 lg:p-7">
+                        <div>
 
-                        <div class="profile-form-row cols-2">
-                            <div class="profile-field stagger-1 animate-slide-up">
-                                <label class="profile-label">First Name</label>
-                                <input type="text" name="firstName" class="profile-input input-modern"
-                                       value="${requestScope.profileUser.firstName}" required/>
-                            </div>
-                            <div class="profile-field stagger-2 animate-slide-up">
-                                <label class="profile-label">Last Name</label>
-                                <input type="text" name="lastName" class="profile-input input-modern"
-                                       value="${requestScope.profileUser.lastName}" required/>
-                            </div>
-                        </div>
-
-                        <div class="profile-form-row cols-2">
-                            <div class="profile-field stagger-3 animate-slide-up">
-                                <label class="profile-label">Username</label>
-                                <input type="text" class="profile-input" value="${requestScope.profileUser.username}" readonly/>
-                            </div>
-                            <div class="profile-field stagger-4 animate-slide-up">
-                                <label class="profile-label">Email Address</label>
-                                <input type="email" class="profile-input" value="${requestScope.profileUser.email}" readonly/>
-                            </div>
-                        </div>
-
-                        <div class="profile-form-row cols-2">
-                            <div class="profile-field stagger-5 animate-slide-up">
-                                <label class="profile-label">Job Title</label>
-                                <input type="text" name="job" class="profile-input input-modern"
-                                       value="${requestScope.profileUser.job}" placeholder="e.g. Software Engineer"/>
-                            </div>
-                            <div class="profile-field stagger-6 animate-slide-up">
-                                <label class="profile-label">Birth Date</label>
-                                <input type="date" name="birthDate" class="profile-input input-modern"
-                                       value="${requestScope.profileUser.birthDate}"/>
-                            </div>
-                        </div>
-
-                        <%-- Email notifications toggle --%>
-                        <label class="profile-toggle-row animate-slide-up stagger-1">
-                            <div class="profile-toggle-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                     fill="none" stroke="currentColor" stroke-width="2"
-                                     stroke-linecap="round" stroke-linejoin="round" class="text-primary">
-                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                                    <polyline points="22,6 12,13 2,6"/>
-                                </svg>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-semibold text-foreground">Email Notifications</p>
-                                <p class="text-xs text-muted-foreground mt-0.5">Allow BookHub to send account and order emails.</p>
-                            </div>
-                            <div class="toggle-wrap shrink-0">
-                                <input type="checkbox" name="emailNotifications"
-                                       <c:if test="${requestScope.profileUser.emailNotifications}">checked</c:if>/>
-                                <span class="toggle-track"></span>
-                            </div>
-                        </label>
-
-                        <div class="profile-section-divider"><span>Security</span></div>
-
-                        <%-- Change password --%>
-                        <div class="profile-section-card animate-slide-up stagger-2">
-                            <div class="mb-4">
-                                <h3 class="text-foreground">Change Password</h3>
-                                <p class="text-xs text-muted-foreground mt-1">
-                                    Leave blank if you don't want to change. New passwords must be at least 8 characters.
-                                </p>
-                            </div>
-                            <div class="profile-form-row cols-3">
-                                <div class="profile-field">
-                                    <label class="profile-label">Current Password</label>
-                                    <input id="currentPassword" type="password" name="currentPassword"
-                                           autocomplete="current-password" class="profile-input input-modern"/>
+                            <div class="interests-panel-header-row">
+                                <div>
+                                    <h2 class="text-foreground" style="font-size:1.3rem;font-weight:700;letter-spacing:-0.025em;margin:0">My Interests</h2>
+                                    <p class="text-muted-foreground" style="margin-top:4px;font-size:0.8rem">
+                                        Choose categories BookHub remembers for your account.
+                                    </p>
                                 </div>
-                                <div class="profile-field">
-                                    <label class="profile-label">New Password</label>
-                                    <input id="newPassword" type="password" name="newPassword"
-                                           autocomplete="new-password" class="profile-input input-modern"/>
-                                </div>
-                                <div class="profile-field">
-                                    <label class="profile-label">Confirm New Password</label>
-                                    <input id="confirmNewPassword" type="password" name="confirmNewPassword"
-                                           autocomplete="new-password" class="profile-input input-modern"/>
+                                <div id="profile-selected-interests-count"
+                                     class="inline-flex items-center border border-primary/20 bg-primary/10 text-primary">
+                                    0 selected
                                 </div>
                             </div>
-                            <p id="password-validation-message" class="mt-3 text-muted-foreground text-sm"></p>
-                        </div>
 
-                        <div class="flex justify-end pt-1">
-                            <button type="submit" class="profile-save-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                     fill="none" stroke="currentColor" stroke-width="2.5"
-                                     stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                                    <polyline points="17 21 17 13 7 13 7 21"/>
-                                    <polyline points="7 3 7 8 15 8"/>
-                                </svg>
-                                Save Changes
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                            <div id="profile-selected-interests" class="interests-selected-banner"></div>
 
-                <%-- ── Interests ── --%>
-                <div id="interests-info" class="profile-panel hidden bg-card text-card-foreground rounded-2xl border shadow-sm p-6 lg:p-7">
-                    <form action="${pageContext.request.contextPath}/profile" method="post">
-                        <input type="hidden" name="formAction" value="update-interests"/>
-
-                        <div class="interests-panel-header-row">
-                            <div>
-                                <h2 class="text-foreground" style="font-size:1.3rem;font-weight:700;letter-spacing:-0.025em;margin:0">My Interests</h2>
-                                <p class="text-muted-foreground" style="margin-top:4px;font-size:0.8rem">
-                                    Choose categories BookHub remembers for your account.
-                                </p>
-                            </div>
-                            <div id="profile-selected-interests-count"
-                                 class="inline-flex items-center border border-primary/20 bg-primary/10 text-primary">
-                                0 selected
-                            </div>
-                        </div>
-
-                        <div id="profile-selected-interests" class="interests-selected-banner"></div>
-
-                        <c:choose>
-                            <c:when test="${empty requestScope.profileAvailableCategories}">
-                                <div class="profile-empty-state">
-                                    <div class="profile-empty-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                             fill="none" stroke="currentColor" stroke-width="1.8"
-                                             stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground">
-                                            <circle cx="12" cy="12" r="10"/>
-                                            <line x1="12" y1="8" x2="12" y2="12"/>
-                                            <line x1="12" y1="16" x2="12.01" y2="16"/>
-                                        </svg>
+                            <c:choose>
+                                <c:when test="${empty requestScope.profileAvailableCategories}">
+                                    <div class="profile-empty-state">
+                                        <div class="profile-empty-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                                 fill="none" stroke="currentColor" stroke-width="1.8"
+                                                 stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground">
+                                                <circle cx="12" cy="12" r="10"/>
+                                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                            </svg>
+                                        </div>
+                                        <p class="text-sm text-muted-foreground">No categories available right now.</p>
                                     </div>
-                                    <p class="text-sm text-muted-foreground">No categories available right now.</p>
-                                </div>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2.5">
-                                    <c:forEach items="${requestScope.profileAvailableCategories}" var="category">
-                                        <label data-interest-option
-                                               class="interest-option-card flex items-start gap-3 bg-card cursor-pointer">
-                                            <input type="checkbox"
-                                                   name="interestIds"
-                                                   value="${category.id}"
-                                                   data-interest-name="${category.name}"
-                                                   class="checkbox-modern profile-interest-checkbox mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-primary shrink-0"
-                                                   <c:if test="${requestScope.profileInterestSelections[category.id]}">checked</c:if>/>
-                                            <div class="min-w-0">
-                                                <p class="text-sm font-semibold text-foreground">${category.name}</p>
-                                                <c:if test="${not empty category.description}">
-                                                    <p class="mt-0.5 text-xs text-muted-foreground line-clamp-2">${category.description}</p>
-                                                </c:if>
-                                            </div>
-                                        </label>
-                                    </c:forEach>
-                                </div>
-                            </c:otherwise>
-                        </c:choose>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2.5">
+                                        <c:forEach items="${requestScope.profileAvailableCategories}" var="category">
+                                            <label data-interest-option
+                                                   class="interest-option-card flex items-start gap-3 bg-card cursor-pointer">
+                                                <input type="checkbox"
+                                                       name="interestIds"
+                                                       value="${category.id}"
+                                                       data-interest-name="${category.name}"
+                                                       class="checkbox-modern profile-interest-checkbox mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-primary shrink-0"
+                                                       <c:if test="${requestScope.profileInterestSelections[category.id]}">checked</c:if>/>
+                                                <div class="min-w-0">
+                                                    <p class="text-sm font-semibold text-foreground">${category.name}</p>
+                                                    <c:if test="${not empty category.description}">
+                                                        <p class="mt-0.5 text-xs text-muted-foreground line-clamp-2">${category.description}</p>
+                                                    </c:if>
+                                                </div>
+                                            </label>
+                                        </c:forEach>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
 
-                        <div class="flex justify-end mt-5">
-                            <button type="submit" class="profile-save-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                     fill="none" stroke="currentColor" stroke-width="2.5"
-                                     stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                                    <polyline points="17 21 17 13 7 13 7 21"/>
-                                    <polyline points="7 3 7 8 15 8"/>
-                                </svg>
-                                Save Interests
-                            </button>
+                            <div class="flex justify-end mt-5">
+                                <button type="submit" class="profile-save-btn" onclick="document.getElementById('formActionField').value='update-interests'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2.5"
+                                         stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                        <polyline points="17 21 17 13 7 13 7 21"/>
+                                        <polyline points="7 3 7 8 15 8"/>
+                                    </svg>
+                                    Save Interests
+                                </button>
+                            </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form><%-- end unified profile-update-form --%>
 
                 <%-- ── Orders ── --%>
                 <div id="orders-info" class="profile-panel hidden bg-card text-card-foreground rounded-2xl border shadow-sm p-6 lg:p-7">
@@ -812,11 +815,33 @@
     }
 
     [currentPasswordInput, newPasswordInput, confirmNewPasswordInput].forEach(i => i?.addEventListener("input", validatePasswordFields));
+    document.getElementById("firstName")?.addEventListener("input", function(){ this.setCustomValidity(""); });
+    document.getElementById("lastName")?.addEventListener("input",  function(){ this.setCustomValidity(""); });
     profileForm?.addEventListener("submit", e => {
-        if (!validatePasswordFields()) {
-            e.preventDefault();
-            [currentPasswordInput, newPasswordInput, confirmNewPasswordInput].find(i => i && !i.checkValidity())?.reportValidity();
+        const action = document.getElementById("formActionField")?.value;
+        if (action === "update-profile") {
+            const firstName = document.getElementById("firstName");
+            const lastName  = document.getElementById("lastName");
+            if (firstName && !firstName.value.trim()) {
+                e.preventDefault();
+                firstName.focus();
+                firstName.setCustomValidity("First name is required");
+                firstName.reportValidity();
+                return;
+            }
+            if (lastName && !lastName.value.trim()) {
+                e.preventDefault();
+                lastName.focus();
+                lastName.setCustomValidity("Last name is required");
+                lastName.reportValidity();
+                return;
+            }
+            if (!validatePasswordFields()) {
+                e.preventDefault();
+                [currentPasswordInput, newPasswordInput, confirmNewPasswordInput].find(i => i && !i.checkValidity())?.reportValidity();
+            }
         }
+        // For update-interests: no extra validation needed, submit as-is
     });
 </script>
 </body>
