@@ -44,23 +44,30 @@ public class BookCardDTO {
     }
 
     public static BookCardDTO from(Book book) {
+        double averageRating = book.getAverageRating() == null ? 0.0 : book.getAverageRating();
+        int exactAverageRating = Math.max(0, Math.min(5, (int) Math.floor(averageRating)));
+
         return new BookCardDTO(
             book.getId(),
             book.getTitle(),
-            book.getBookAuthors()
+            (book.getBookAuthors() == null ? List.<com.iti.jets.model.entity.BookAuthor>of() : book.getBookAuthors())
                 .stream()
-                .map(bo -> AuthorDTO.builder()
-                    .id(bo.getAuthor().getId())
-                    .name(bo.getAuthor().getName())
+                .filter(Objects::nonNull)
+                .map(com.iti.jets.model.entity.BookAuthor::getAuthor)
+                .filter(Objects::nonNull)
+                .filter(author -> author.getName() != null && !author.getName().isBlank())
+                .map(author -> AuthorDTO.builder()
+                    .id(author.getId())
+                    .name(author.getName())
                     .build()
                 )
                 .toList(),
             book.getDescription(),
-            book.getAverageRating(),
-            book.getAverageRating().intValue(),
-            book.getPrice(),
+            averageRating,
+            exactAverageRating,
+            book.getPrice() == null ? BigDecimal.ZERO : book.getPrice(),
             book.getImageUrl(),
-            book.getStockQuantity()
+            book.getStockQuantity() == null ? 0 : book.getStockQuantity()
         );
     }
 }
