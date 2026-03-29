@@ -10,6 +10,7 @@
     <meta name="keywords" content="books,bookstore,ebook,bestsellers,fiction,non-fiction"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/authentication.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/explore.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/dialog.css">
