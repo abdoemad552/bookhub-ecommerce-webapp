@@ -16,7 +16,6 @@ function init() {
 
     booksFilterDialog = new FilterBooksDialog({
         onSubmit: (page, filterOptions) => {
-            console.log(page, filterOptions);
             filterBooksContainer.filter(page, filterOptions);
         }
     });

@@ -117,7 +117,6 @@ export class FilterBooksDialog {
         this._bindSortButtons();
         this._loadAndBindCategories();
         this._bindDragHandle();
-        this._bindIncludeInterests();
 
         $(document).on('click.filterBooks', '#open-books-filter-modal-btn', () => this._dialog.open());
     }
@@ -144,21 +143,19 @@ export class FilterBooksDialog {
 
         $.getJSON(`${getContextPath()}/explore/categories?json=true`)
             .done(categories => {
-                setTimeout(() => {
-                    categories.forEach(({ id, name }) => {
-                        categoriesMapping[id] = name;
-                    });
+                categories.forEach(({ id, name }) => {
+                    categoriesMapping[id] = name;
+                });
 
-                    console.log(categories);
+                console.log(categories);
 
-                    $list.empty();
+                $list.empty();
 
-                    categories.forEach(({ id, name }) => {
-                        $list.append(makeCategoryButton(id, name, false));
-                    });
+                categories.forEach(({ id, name }) => {
+                    $list.append(makeCategoryButton(id, name, false));
+                });
 
-                    this._bindCategoryButtons($list);
-                }, 2000);
+                this._bindCategoryButtons($list);
             })
             .fail(error => {
                 console.error("Failed to load categories:", error);
@@ -287,29 +284,5 @@ export class FilterBooksDialog {
                 .on('mousemove.drag touchmove.drag', onDragMove)
                 .on('mouseup.drag touchend.drag',    onDragEnd);
         });
-    }
-
-    _bindIncludeInterests() {
-        const $btn = $("#include-interests-btn");
-        const $input = $("#include-interests");
-
-        const inactiveClasses = 'border-border hover:border-accent/50 hover:bg-accent/10';
-        const activeClasses   = 'border-accent bg-accent/10 hover:bg-accent/20';
-
-        setToggleState($input.val() === 'true');
-
-        $btn.on('click', function () {
-            setToggleState($input.val() !== 'true');
-        });
-
-        function setToggleState(active) {
-            $input.val(active);
-            $btn.toggleClass(activeClasses, active)
-                .toggleClass(inactiveClasses, !active);
-
-            $btn.children().last()
-                .toggleClass("scale-100", active)
-                .toggleClass("scale-0", !active);
-        }
     }
 }

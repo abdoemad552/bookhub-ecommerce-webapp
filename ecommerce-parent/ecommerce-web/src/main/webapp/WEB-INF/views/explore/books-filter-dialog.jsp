@@ -38,7 +38,7 @@
                         <path d="m21 21-4.34-4.34"></path>
                         <circle cx="11" cy="11" r="8"></circle>
                     </svg>
-                    <input id="category-search" type="text" placeholder="Search categories..." class="w-full pl-10 pr-4 py-2 rounded-full shadow-sm border border-border bg-white text-foreground placeholder-muted-foreground focus:outline-none" value="${requestScope.query}"/>
+                    <input id="category-search" type="text" placeholder="Search categories..." class="w-full pl-10 pr-4 py-2 rounded-full shadow-sm border border-border bg-white text-foreground placeholder-muted-foreground focus:outline-none"/>
                 </div>
                 <div class="custom-scrollbar mb-2 border-2 border-border rounded-2xl sm:rounded-3xl p-2 sm:p-4 bg-muted/30 max-h-40 sm:max-h-60 overflow-y-auto">
                     <div id="categories-list" class="flex flex-wrap justify-center gap-1 sm:gap-1.5">
@@ -54,8 +54,7 @@
                             <p>Show books matching your profile</p>
                         </div>
                         <label class="toggle-wrap">
-                            <input type="hidden" name="include-interests" value="false"/>
-                            <input type="checkbox"
+                            <input id="include-interests" type="checkbox"
                                    name="include-interests"
                                    value="true"
                                 ${requestScope.includeInterests == true ? 'checked' : ''}/>

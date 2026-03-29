@@ -57,7 +57,7 @@ public class ExploreServlet extends HttpServlet {
         int       page        = parsePositiveInteger(request.getParameter("page"), 1);
         int       size        = parsePositiveInteger(request.getParameter("size"), DEFAULT_PAGE_SIZE);
         String    query       = normalizeText(request.getParameter("query"));
-        Set<Long> categoryIds = parseCategoryIds(request.getParameterValues("category[]"));
+        Set<Long> categoryIds = parseCategoryIds(request.getParameterValues("category"));
         int       maxPrice    = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
         int       minPrice    = parsePositiveInteger(request.getParameter("minPrice"), DEFAULT_MIN_PRICE);
         String    sort        = normalizeSortCriteria(request.getParameter("sort"));
@@ -68,7 +68,7 @@ public class ExploreServlet extends HttpServlet {
         System.out.println(request.getParameter("page"));
         System.out.println(request.getParameter("size"));
         System.out.println(request.getParameter("query"));
-        System.out.println(Arrays.toString(request.getParameterValues("category[]")));
+        System.out.println(Arrays.toString(request.getParameterValues("category")));
         System.out.println(request.getParameter("minPrice"));
         System.out.println(request.getParameter("maxPrice"));
         System.out.println(request.getParameter("sort"));
@@ -105,7 +105,7 @@ public class ExploreServlet extends HttpServlet {
         int       page        = parsePositiveInteger(request.getParameter("page"), 1);
         int       size        = parsePositiveInteger(request.getParameter("size"), DEFAULT_PAGE_SIZE);
         String    query       = normalizeText(request.getParameter("query"));
-        Set<Long> categoryIds = parseCategoryIds(request.getParameterValues("category[]"));
+        Set<Long> categoryIds = parseCategoryIds(request.getParameterValues("category"));
         int       maxPrice    = parsePositiveInteger(request.getParameter("maxPrice"), DEFAULT_MAX_PRICE);
         int       minPrice    = parsePositiveInteger(request.getParameter("minPrice"), DEFAULT_MIN_PRICE);
         String    sort        = normalizeSortCriteria(request.getParameter("sort"));
@@ -116,7 +116,7 @@ public class ExploreServlet extends HttpServlet {
         System.out.println(request.getParameter("page"));
         System.out.println(request.getParameter("size"));
         System.out.println(request.getParameter("query"));
-        System.out.println(Arrays.toString(request.getParameterValues("category[]")));
+        System.out.println(Arrays.toString(request.getParameterValues("category")));
         System.out.println(request.getParameter("minPrice"));
         System.out.println(request.getParameter("maxPrice"));
         System.out.println(request.getParameter("sort"));

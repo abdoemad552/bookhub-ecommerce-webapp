@@ -192,7 +192,8 @@ export class FilterBooksContainer {
             url: `${getContextPath()}/explore`,
             method: "POST",
             data: { ...filterOptions, page, size: this._pageSize },
-            dataType: "html"
+            dataType: "html",
+            traditional: true
         })
         .done((content) => {
             setTimeout(() => {

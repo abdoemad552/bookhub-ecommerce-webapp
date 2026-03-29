@@ -47,7 +47,7 @@
                 </div>
                 <h3 class="text-base md:text-lg font-semibold text-foreground mb-3 truncate">${category.name}</h3>
                 <div class="text-center animate-fade-in">
-                    <a href="${pageContext.request.contextPath}/explore" class="link-modern text-sm font-bold">
+                    <a href="${pageContext.request.contextPath}/explore?category=${category.id}" class="link-modern text-sm font-bold">
                         Shop Now
                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
