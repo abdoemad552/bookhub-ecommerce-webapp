@@ -19,4 +19,5 @@ public class BookFilterDTO {
     private double maxPrice;
     private String searchQuery;
     private String sortCriteria;
+    private boolean includeInterests;
 }

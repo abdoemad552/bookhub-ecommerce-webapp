@@ -2,7 +2,6 @@ import {initBookCard} from "../common/book-card-jq.js";
 import {initHeader} from "../common/header.js";
 import {FilterBooksContainer} from "./books-container.js";
 import {FilterBooksDialog} from "./filter-books-dialog.js";
-import {debounce} from "../util.js";
 
 let filterBooksContainer = null;
 let booksFilterDialog = null;

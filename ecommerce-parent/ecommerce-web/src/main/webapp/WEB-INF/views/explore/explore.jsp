@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/explore.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/dialog.css">
-    <script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body class="font-google-sans antialiased">
 <div class="min-h-screen bg-background flex flex-col">
@@ -84,6 +83,7 @@
     </div>
     <jsp:include page="../common/footer.jsp"/>
 </div>
+<script src="${pageContext.request.contextPath}/assets/js/jquery/jquery.js"></script>
 <script type="module" src="${pageContext.request.contextPath}/assets/js/explore/explore.js"></script>
 </body>
 </html>

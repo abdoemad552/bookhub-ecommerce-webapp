@@ -4,6 +4,9 @@ import {getContextPath} from "../util.js";
 const CLOSE_DELAY   = 1800;  // ms to wait after success before closing
 const MESSAGE_DELAY = 3500;  // ms before error message fades out
 
+const DEFAULT_MIN_PRICE = 0;
+const DEFAULT_MAX_PRICE = 999999;
+
 const categoriesMapping = {
     all: "All Books",
 };
@@ -37,6 +40,7 @@ function validate() {
             $error.addClass("opacity-0 scale-95");
         });
     }
+
     $minInput
         .toggleClass("border-destructive ring-destructive focus:ring-destructive", !isValid)
         .toggleClass("border-border", isValid);
@@ -48,18 +52,20 @@ function validate() {
 }
 
 export function getCurrentState() {
-    const query      = $("#search-input").val().trim() || "";
-    const category   = $("#categories-list")
+    const query    = $("#search-input").val().trim() || "";
+    const category = $("#categories-list")
         .find(".selected-category")
         .map(function () { return $(this).data("category") })
-        .get();
-    const minPrice   = $("#min-price-input").val() || 0;
-    const maxPrice   = $("#max-price-input").val() || 999999;
-    const sort       = $("#sort-container").data("selectedSortCriteria") || "featured";
+        .get() || [];
+    const includeInterests  = $("#include-interests").val() === "true";
+    const minPrice          = $("#min-price-input").val() || 0;
+    const maxPrice          = $("#max-price-input").val() || 999999;
+    const sort              = $("#sort-container").data("selectedSortCriteria") || "featured";
 
     return {
         query,
         category,
+        includeInterests,
         minPrice,
         maxPrice,
         sort
@@ -96,11 +102,6 @@ export class FilterBooksDialog {
     constructor(options = {}) {
         this.options        = options;
         this._dialog        = null;
-
-        this._bindPriceRange();
-        this._bindSortButtons();
-        this._loadAndBindCategories();
-        this._bindDragHandle();
     }
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -111,6 +112,13 @@ export class FilterBooksDialog {
         const $dialog = $('#books-filter-dialog');
 
         $dialog.on('click.filterBooks', '#submit-btn', () => this._submit());
+
+        this._bindPriceRange();
+        this._bindSortButtons();
+        this._loadAndBindCategories();
+        this._bindDragHandle();
+        this._bindIncludeInterests();
+
         $(document).on('click.filterBooks', '#open-books-filter-modal-btn', () => this._dialog.open());
     }
 
@@ -124,6 +132,7 @@ export class FilterBooksDialog {
     // ── Submit ────────────────────────────────────────────────────────────────
 
     _submit() {
+        console.log(getCurrentState());
         const page = 1;
         const filterOptions = getCurrentState();
         this.options.onSubmit?.(page, filterOptions);
@@ -278,5 +287,29 @@ export class FilterBooksDialog {
                 .on('mousemove.drag touchmove.drag', onDragMove)
                 .on('mouseup.drag touchend.drag',    onDragEnd);
         });
+    }
+
+    _bindIncludeInterests() {
+        const $btn = $("#include-interests-btn");
+        const $input = $("#include-interests");
+
+        const inactiveClasses = 'border-border hover:border-accent/50 hover:bg-accent/10';
+        const activeClasses   = 'border-accent bg-accent/10 hover:bg-accent/20';
+
+        setToggleState($input.val() === 'true');
+
+        $btn.on('click', function () {
+            setToggleState($input.val() !== 'true');
+        });
+
+        function setToggleState(active) {
+            $input.val(active);
+            $btn.toggleClass(activeClasses, active)
+                .toggleClass(inactiveClasses, !active);
+
+            $btn.children().last()
+                .toggleClass("scale-100", active)
+                .toggleClass("scale-0", !active);
+        }
     }
 }

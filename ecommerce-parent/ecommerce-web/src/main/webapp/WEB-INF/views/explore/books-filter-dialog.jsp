@@ -40,11 +40,24 @@
                     </svg>
                     <input id="category-search" type="text" placeholder="Search categories..." class="w-full pl-10 pr-4 py-2 rounded-full shadow-sm border border-border bg-white text-foreground placeholder-muted-foreground focus:outline-none" value="${requestScope.query}"/>
                 </div>
-                <div class="custom-scrollbar border-2 border-border rounded-2xl sm:rounded-3xl p-2 sm:p-4 bg-muted/30 max-h-40 sm:max-h-60 overflow-y-auto">
+                <div class="custom-scrollbar mb-2 border-2 border-border rounded-2xl sm:rounded-3xl p-2 sm:p-4 bg-muted/30 max-h-40 sm:max-h-60 overflow-y-auto">
                     <div id="categories-list" class="flex flex-wrap justify-center gap-1 sm:gap-1.5">
                         <span>Loading categories...</span>
                     </div>
                 </div>
+
+                <%-- Include interests toggle (logged-in users only) --%>
+                <c:if test="${not empty sessionScope.user}">
+                    <input id="include-interests" type="hidden" name="include-interests" value="${requestScope.includeInterests}">
+                    <div id="include-interests-btn" class="flex py-3 px-4 rounded-2xl border-2 items-center justify-between text-foreground transition-all duration-200 cursor-pointer select-none ${requestScope.includeInterests == true ? 'border-accent bg-accent/10 hover:bg-accent/20' : 'border-border hover:border-accent/50 hover:bg-accent/10'}">
+                        <div class="flex flex-col gap-1">
+                            <p class="text-sm font-medium text-foreground leading-none mb-0.5">Include my interests</p>
+                            <p class="text-xs text-muted-foreground leading-none">Show books matching your profile</p>
+                        </div>
+                        <div class="flex items-center justify-center p-2 bg-accent/50 rounded-full transition-transform duration-200 ease-in border-2 border-accent ${requestScope.includeInterests == true ? 'scale-100' : 'scale-0'}">
+                        </div>
+                    </div>
+                </c:if>
             </div>
 
             <div class="mb-3">
@@ -89,26 +102,26 @@
                     </svg>
                     Sort By
                 </span>
-                <div id="sort-container" class="overflow-hidden transition-all duration-300 ease-in-out opacity-100">
+                <div id="sort-container" data-selected-sort-criteria="${requestScope.sort}" class="overflow-hidden transition-all duration-300 ease-in-out opacity-100">
                     <div class="flex flex-wrap gap-1">
 
                         <button data-criteria="featured"
-                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium border text-foreground transition cursor-pointer select-none ${requestScope.sort eq 'featured' or empty requestScope.sort ? 'border-accent bg-accent/10' : 'border-border bg-card hover:border-accent/50'}">
+                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium transition-colors duration-200 border-2 text-foreground cursor-pointer select-none ${requestScope.sort eq 'featured' or empty requestScope.sort ? 'border-accent bg-accent/10' : 'border-border bg-card hover:border-accent/50'}">
                             Featured
                         </button>
 
                         <button data-criteria="price-low-to-high"
-                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium border text-foreground transition cursor-pointer select-none ${requestScope.sort eq 'price-low-to-high' ? 'border-accent bg-accent/10' : 'border-border bg-card hover:border-accent/50'}">
+                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium transition-colors duration-200 border-2 text-foreground cursor-pointer select-none ${requestScope.sort eq 'price-low-to-high' ? 'border-accent bg-accent/10' : 'border-border bg-card hover:border-accent/50'}">
                             Price: Low to High
                         </button>
 
                         <button data-criteria="price-high-to-low"
-                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium border text-foreground transition cursor-pointer select-none ${requestScope.sort eq 'price-high-to-low' ? 'border-accent bg-accent/10' : 'border-border bg-card hover:border-accent/50'}">
+                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium transition-colors duration-200 border-2 text-foreground cursor-pointer select-none ${requestScope.sort eq 'price-high-to-low' ? 'border-accent bg-accent/10' : 'border-border bg-card hover:border-accent/50'}">
                             Price: High to Low
                         </button>
 
                         <button data-criteria="rating"
-                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium border text-foreground transition cursor-pointer select-none ${requestScope.sort eq 'rating'            ? 'border-accent bg-accent/10' : 'border-border bg-card hover:border-accent/50'}">
+                                class="sort-btn px-2.5 py-1 rounded-full text-[13px] sm:text-xs font-medium transition-colors duration-200 border-2 text-foreground cursor-pointer select-none ${requestScope.sort eq 'rating'            ? 'border-accent bg-accent/10' : 'border-border bg-card hover:border-accent/50'}">
                             Top Rated
                         </button>
                     </div>
