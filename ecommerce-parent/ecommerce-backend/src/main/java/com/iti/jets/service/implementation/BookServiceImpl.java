@@ -5,7 +5,6 @@ import com.iti.jets.model.dto.request.BookFilterDTO;
 import com.iti.jets.model.dto.response.AuthorDTO;
 import com.iti.jets.model.dto.response.BookCardDTO;
 import com.iti.jets.model.dto.response.BookAddResponseDTO;
-import com.iti.jets.model.dto.response.BookCardDTO;
 import com.iti.jets.model.dto.response.BookSummaryDTO;
 import com.iti.jets.model.dto.response.PageResponseDTO;
 import com.iti.jets.model.entity.Author;
@@ -93,18 +92,19 @@ public class BookServiceImpl extends ContextHandler implements BookService {
 
     @Override
     public Optional<BookAddResponseDTO> addBook(BookAddRequestDTO addRequest) {
+        return executeInContext(() -> {
+            if (bookRepository.findByIsbn(addRequest.getIsbn()).isPresent()) {
+                return Optional.empty();
+            }
 
-        if (bookRepository.findByIsbn(addRequest.getIsbn()).isPresent()) {
-            return Optional.empty();
-        }
+            Category category = findOrCreateCategory(addRequest.getCategory());
 
-        Category category = findOrCreateCategory(addRequest.getCategory());
+            Book book = toEntity(addRequest, category);
 
-        Book book = toEntity(addRequest, category);
+            Book saved = bookRepository.save(book);
 
-        Book saved = bookRepository.save(book);
-
-        return Optional.of(new BookAddResponseDTO(saved.getId(), null));
+            return Optional.of(new BookAddResponseDTO(saved.getId(), null));
+        });
     }
 
     @Override

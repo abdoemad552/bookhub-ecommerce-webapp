@@ -16,11 +16,13 @@ public class BookSummaryDTO {
     private final long              id;
     private final String            isbn;
     private final String            title;
+    private final String            description;
     private final List<AuthorDTO>   authors;
     private final BigDecimal        price;
     private final int               stockQuantity;
     private final String            category;
     private final BookType          bookType;
+    private final int               pages;
     private final LocalDate         publishDate;
     private final String            coverUrl;
 
@@ -29,6 +31,7 @@ public class BookSummaryDTO {
             .id(book.getId())
             .isbn(book.getIsbn())
             .title(book.getTitle())
+            .description(book.getDescription())
             .authors(book.getBookAuthors()
                 .stream()
                 .map(bo -> AuthorDTO.builder()
@@ -42,6 +45,7 @@ public class BookSummaryDTO {
             .stockQuantity(book.getStockQuantity())
             .category(book.getCategory().getName())
             .bookType(book.getBookType())
+            .pages(book.getPages())
             .publishDate(book.getPublishDate())
             .coverUrl(book.getImageUrl())
             .build();

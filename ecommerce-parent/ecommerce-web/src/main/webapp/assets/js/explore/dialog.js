@@ -58,7 +58,7 @@ export class Dialog {
 
     _bindShared() {
         // Backdrop click
-        this.$dialog.on('click.booksFilter', (e) => {
+        this.$dialog.on('click.filterBooks', (e) => {
             const rect = this.$panel[0].getBoundingClientRect();
             const outside =
                 e.clientX < rect.left  || e.clientX > rect.right ||
@@ -67,7 +67,7 @@ export class Dialog {
         });
 
         // Escape key — intercept native instant-close
-        this.$dialog.on('cancel.booksFilter', (e) => {
+        this.$dialog.on('cancel.filterBooks', (e) => {
             e.preventDefault();
             this.close();
         });

@@ -55,6 +55,7 @@ public class Book {
     private String imageUrl;
 
     @Column(name = "isbn", nullable = false, unique = true, length = 20)
+    @EqualsAndHashCode.Include
     private String isbn;
 
     @ManyToOne(fetch = FetchType.LAZY)
