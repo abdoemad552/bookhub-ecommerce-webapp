@@ -48,14 +48,19 @@
 
                 <%-- Include interests toggle (logged-in users only) --%>
                 <c:if test="${not empty sessionScope.user}">
-                    <input id="include-interests" type="hidden" name="include-interests" value="${requestScope.includeInterests}">
-                    <div id="include-interests-btn" class="flex py-3 px-4 rounded-2xl border-2 items-center justify-between text-foreground transition-all duration-200 cursor-pointer select-none ${requestScope.includeInterests == true ? 'border-accent bg-accent/10 hover:bg-accent/20' : 'border-border hover:border-accent/50 hover:bg-accent/10'}">
-                        <div class="flex flex-col gap-1">
-                            <p class="text-sm font-medium text-foreground leading-none mb-0.5">Include my interests</p>
-                            <p class="text-xs text-muted-foreground leading-none">Show books matching your profile</p>
+                    <div class="notif-card">
+                        <div class="notif-text">
+                            <h4>Include my interests</h4>
+                            <p>Show books matching your profile</p>
                         </div>
-                        <div class="flex items-center justify-center p-2 bg-accent/50 rounded-full transition-transform duration-200 ease-in border-2 border-accent ${requestScope.includeInterests == true ? 'scale-100' : 'scale-0'}">
-                        </div>
+                        <label class="toggle-wrap">
+                            <input type="hidden" name="include-interests" value="false"/>
+                            <input type="checkbox"
+                                   name="include-interests"
+                                   value="true"
+                                ${requestScope.includeInterests == true ? 'checked' : ''}/>
+                            <span class="toggle-track"></span>
+                        </label>
                     </div>
                 </c:if>
             </div>
