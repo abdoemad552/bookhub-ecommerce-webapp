@@ -488,3 +488,52 @@ select:-webkit-autofill:focus {
     flex-shrink: 0;
     margin-top: 2px;
 }
+
+
+/* Out of stock badge */
+.oos-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 9px 3px 7px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #fff1f1 0%, #ffe4e4 100%);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #c0392b;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    box-shadow:
+            0 1px 3px rgba(239, 68, 68, 0.10),
+            inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+@media (min-width: 640px) {
+    .oos-badge {
+        font-size: 0.72rem;
+        padding: 4px 11px 4px 8px;
+    }
+}
+
+/* Icon inherits color from badge, pulses gently */
+.oos-icon {
+    flex-shrink: 0;
+    animation: oos-pulse 2s ease-in-out infinite;
+}
+
+@keyframes oos-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+}
+
+/* Hide text on very small screens, show icon only */
+.oos-text {
+    display: none;
+}
+
+@media (min-width: 380px) {
+    .oos-text { display: inline; }
+}
