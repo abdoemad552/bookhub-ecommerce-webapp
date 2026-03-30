@@ -42,12 +42,62 @@ async function loadCartItemsCount() {
     }
 }
 
+// Inject the pill animation keyframe once into <head>
+function injectCatNavStyle() {
+    if (document.getElementById("cat-nav-style")) return;
+    const style = document.createElement("style");
+    style.id = "cat-nav-style";
+    style.textContent = `
+        @keyframes catPillIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to   { opacity: 1; transform: translateY(0);   }
+        }
+        #category-nav-id a {
+            opacity: 0;
+            animation: catPillIn 0.05s ease forwards;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+async function loadCategoriesForNav() {
+    const categoryNavElem = document.getElementById("category-nav-id");
+    if (!categoryNavElem) return;
+
+    try {
+        const response = await fetch(`${getContextPath()}/categories/all`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        if (!response.ok) return;
+
+        const categories = await response.json();
+
+        const allItems = [
+            { href: `${getContextPath()}/explore`, name: "All" },
+            ...categories.map(cat => ({ href: `${getContextPath()}/explore?category=${cat.id}`, name: cat.name }))
+        ];
+
+        categoryNavElem.innerHTML = allItems.map((item, i) => `
+            <a href="${item.href}" class="shrink-0" style="animation-delay:${i * 35}ms">
+                <button class="cat-pill cursor-pointer hover:text-accent-foreground inline-flex items-center justify-center whitespace-nowrap text-xs sm:text-sm font-medium text-muted-foreground px-3 sm:px-4 py-1 sm:py-1.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 transition-colors">
+                    ${item.name}
+                </button>
+            </a>`).join('');
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export function initHeader() {
     if (isHeaderInitialized) {
         return;
     }
 
     isHeaderInitialized = true;
+
+    injectCatNavStyle();
 
     const avatarDropdownContainer = document.getElementById('avatar-dropdown-container');
     if (avatarDropdownContainer) {
@@ -86,4 +136,5 @@ export function initHeader() {
     }
 
     loadCartItemsCount();
+    loadCategoriesForNav();
 }
