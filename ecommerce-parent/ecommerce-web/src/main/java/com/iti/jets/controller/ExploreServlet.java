@@ -5,8 +5,6 @@ import com.iti.jets.model.dto.response.BookCardDTO;
 import com.iti.jets.model.dto.response.PageResponseDTO;
 import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.model.dto.response.UserInterestsDTO;
-import com.iti.jets.model.entity.Book;
-import com.iti.jets.mock.dto.BookCardDto;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.BookService;
 import com.iti.jets.service.interfaces.CategoryService;
@@ -206,23 +204,5 @@ public class ExploreServlet extends HttpServlet {
                 );
             }
         }
-    }
-
-    private BookCardDto toBookCardDto(Book book) {
-        String authorNames = book.getBookAuthors()
-                .stream()
-                .map(bookAuthor -> bookAuthor.getAuthor().getName())
-                .collect(Collectors.joining(", "));
-
-        return new BookCardDto(
-                Math.toIntExact(book.getId()),
-                book.getTitle(),
-                authorNames,
-                book.getDescription(),
-                book.getAverageRating() == null ? 0 : Math.round(book.getAverageRating()),
-                book.getPrice() == null ? 0 : book.getPrice().doubleValue(),
-                book.getImageUrl(),
-                book.getStockQuantity() == null ? 0 : book.getStockQuantity()
-        );
     }
 }

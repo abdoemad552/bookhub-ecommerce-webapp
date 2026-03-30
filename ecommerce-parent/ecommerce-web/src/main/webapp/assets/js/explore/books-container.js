@@ -180,7 +180,7 @@ export class FilterBooksContainer {
 
     // ── Fetch ─────────────────────────────────────────────────────────────────
 
-    _fetch(page, filterOptions = {}, debounceTime) {
+    _fetch(page, filterOptions = getCurrentState(), debounceTime) {
         if (debounceTime) {
             clearTimeout(this._debounceTimerId);
         }
