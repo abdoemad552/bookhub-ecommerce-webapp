@@ -7,6 +7,7 @@ import com.iti.jets.service.extra.EmailService;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.AuthService;
 import com.iti.jets.service.interfaces.CartService;
+import com.iti.jets.util.ActiveUserStore;
 import com.iti.jets.util.CookieHandler;
 import com.iti.jets.util.PathStorage;
 import jakarta.json.Json;
@@ -128,6 +129,9 @@ public class LoginServlet extends HttpServlet {
             if (loggedInUser.getEmailNotifications()) {
                 emailService.sendLoginNotification(loggedInUser);
             }
+
+            // Add current user to active users
+            ActiveUserStore.addUser(loggedInUser.getId());
 
             mergeSessionCart(request, Math.toIntExact(loggedInUser.getId()));
         }

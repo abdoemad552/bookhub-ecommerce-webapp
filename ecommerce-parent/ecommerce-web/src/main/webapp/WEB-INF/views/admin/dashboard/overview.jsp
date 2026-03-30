@@ -12,13 +12,6 @@
                             <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                         </svg>
                     </div>
-                    <div class="flex items-center gap-0.5 text-xs font-medium text-emerald-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right w-3 h-3" aria-hidden="true">
-                            <path d="M7 7h10v10"></path>
-                            <path d="M7 17 17 7"></path>
-                        </svg>
-                        +12.5%
-                    </div>
                 </div>
                 <p id="total-revenue-stat" class="text-xl sm:text-3xl font-bold text-foreground mb-0.5">${requestScope.dashboardStats.totalRevenue}</p>
                 <p class="text-xs sm:text-sm text-muted-foreground">Total Revenue</p>
@@ -34,13 +27,6 @@
                             <path d="M3.103 6.034h17.794"></path>
                             <path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"></path>
                         </svg>
-                    </div>
-                    <div class="flex items-center gap-0.5 text-xs font-medium text-emerald-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right w-3 h-3" aria-hidden="true">
-                            <path d="M7 7h10v10"></path>
-                            <path d="M7 17 17 7"></path>
-                        </svg>
-                        +8.2%
                     </div>
                 </div>
                 <p id="orders-count-stat" class="text-xl sm:text-3xl font-bold text-foreground mb-0.5">${requestScope.dashboardStats.ordersCount}</p>
@@ -59,15 +45,8 @@
                             <circle cx="9" cy="7" r="4"></circle>
                         </svg>
                     </div>
-                    <div class="flex items-center gap-0.5 text-xs font-medium text-emerald-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right w-3 h-3" aria-hidden="true">
-                            <path d="M7 7h10v10"></path>
-                            <path d="M7 17 17 7"></path>
-                        </svg>
-                        +5.1%
-                    </div>
                 </div>
-                <p class="text-xl sm:text-3xl font-bold text-foreground mb-0.5">4</p>
+                <p class="text-xl sm:text-3xl font-bold text-foreground mb-0.5">${requestScope.activeUsersCount}</p>
                 <p class="text-xs sm:text-sm text-muted-foreground">Active Users</p>
             </div>
         </div>
@@ -82,13 +61,6 @@
                             <polyline points="3.29 7 12 12 20.71 7"></polyline>
                             <path d="m7.5 4.27 9 5.15"></path>
                         </svg>
-                    </div>
-                    <div class="flex items-center gap-0.5 text-xs font-medium text-red-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-right w-3 h-3" aria-hidden="true">
-                            <path d="m7 7 10 10"></path>
-                            <path d="M17 7v10H7"></path>
-                        </svg>
-                        -2.3%
                     </div>
                 </div>
                 <p id="products-count-stat" class="text-xl sm:text-3xl font-bold text-foreground mb-0.5">${requestScope.dashboardStats.booksCount}</p>

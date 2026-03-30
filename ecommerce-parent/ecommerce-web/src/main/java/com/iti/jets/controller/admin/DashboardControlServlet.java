@@ -4,6 +4,7 @@ import com.iti.jets.model.dto.response.DashboardStatsDTO;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.BookService;
 import com.iti.jets.service.interfaces.StatsService;
+import com.iti.jets.util.ActiveUserStore;
 import com.iti.jets.util.PathStorage;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
@@ -38,6 +39,9 @@ public class DashboardControlServlet extends HttpServlet {
 
         if (tab == null || tab.equalsIgnoreCase("overview")) {
             DashboardStatsDTO dashboardStats = statsService.getDashboardStats();
+
+            // Get current active users count
+            request.setAttribute("activeUsersCount", ActiveUserStore.count());
 
             if (request.getParameter("json") != null) {
                 response.setContentType("application/json");
