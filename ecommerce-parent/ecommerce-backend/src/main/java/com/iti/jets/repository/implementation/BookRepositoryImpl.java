@@ -221,6 +221,21 @@ public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implement
         );
     }
 
+    @Override
+    public int deductStock(Long bookId, int quantity) {
+        return executeInTransaction(em -> {
+            return em.createQuery(
+                            "UPDATE Book b " +
+                                    "SET b.stockQuantity = b.stockQuantity - :qty, " +
+                                    "    b.soldQuantity  = b.soldQuantity  + :qty  " +
+                                    "WHERE b.id = :id " +
+                                    "AND b.stockQuantity >= :qty") // Check AND deduct in ONE query!
+                    .setParameter("qty", quantity)
+                    .setParameter("id", bookId)
+                    .executeUpdate();
+        });
+    }
+
     private List<Order> buildOrderBy(CriteriaBuilder criteriaBuilder, Root<Book> bookRoot, BookFilterDTO filter) {
         String sortCriteria = filter == null || filter.getSortCriteria() == null
                 ? "featured"
