@@ -1,4 +1,6 @@
 import {initHeader} from "../common/header.js";
+import {getContextPath} from "../util.js";
+import {showFeedbackMessage} from "../common/book-card.js";
 
 initHeader();
 
@@ -141,3 +143,80 @@ profileForm?.addEventListener("submit", e => {
     }
     // For update-interests: no extra validation needed, submit as-is
 });
+
+function bindProfilePicUpload() {
+    let $fileInput = $('<input>', {
+        type: 'file',
+        accept: 'image/jpeg,image/png,image/webp',
+        class: 'sr-only',
+        attr: {'aria-hidden': 'true', tabindex: '-1'},
+    }).appendTo(document.body);
+
+    function uploadProfile(userId, file) {
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('userId', String(userId));
+
+        const $btns = $(document).find(`[data-upload-profile][data-user-id="${userId}"]`);
+        $btns.prop('disabled', true).addClass('opacity-50 pointer-events-none');
+
+        $.ajax({
+            url:         `${getContextPath()}/profile`,
+            method:      'PUT',
+            data:        formData,
+            contentType: false,
+            processData: false,
+            dataType:    'json',
+        })
+        .done((response) => {
+            const newUrl = response?.profilePicUrl;
+
+            console.log(response);
+
+            // Swap every matching thumbnail (desktop + mobile) in-place
+            $btns.each(function () {
+                const $btn = $(this);
+                // Remove existing image or placeholder SVG (everything that isn't the overlay span)
+                $btn.find('> img, > svg').remove();
+                const $img = $('<img>', {
+                    src:    `${getContextPath()}/${newUrl}`,
+                    alt:    $btn.attr('aria-label')?.replace('Change profile image for ', '') ?? '',
+                    loading: 'lazy',
+                    class:  'w-full h-full object-cover rounded-full',
+                });
+                // Prepend before the overlay span
+                $btn.prepend($img);
+            });
+
+            $("#header-profile-pic-url").attr("src", newUrl);
+
+            showFeedbackMessage('Profile picture updated successfully.', true);
+        })
+        .fail((jqXHR) => {
+            let msg = 'Failed to update profile. Please try again.';
+            try {
+                const body = JSON.parse(jqXHR.responseText);
+                if (body?.error) msg = body.error;
+            } catch (_) { /* not JSON */ }
+            showFeedbackMessage(msg, false);
+        })
+        .always(() => {
+            $btns.prop('disabled', false).removeClass('opacity-50 pointer-events-none');
+        });
+    }
+
+    $(document).on('click.profile', '[data-upload-profile]', (e) => {
+        const userId = $(e.currentTarget).data('user-id');
+        // Re-wire the file input for this specific book before opening
+        $fileInput
+            .off('change.profileUpload')
+            .val('')   // reset so choosing the same file still fires 'change'
+            .on('change.coverUpload', () => {
+                const file = $fileInput[0].files?.[0];
+                if (file) uploadProfile(userId, file);
+            })
+            .trigger('click');
+    })
+}
+
+bindProfilePicUpload();

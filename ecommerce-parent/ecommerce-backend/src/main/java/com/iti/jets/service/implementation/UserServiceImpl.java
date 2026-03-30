@@ -308,6 +308,11 @@ public class UserServiceImpl extends ContextHandler implements UserService {
         });
     }
 
+    @Override
+    public void updateProfilePicUrl(Long userId, String profilePicUrl) {
+        executeInContext(() -> userRepository.updateProfilePicture(userId, profilePicUrl));
+    }
+
     private String normalize(String value) {
         return value == null ? "" : value.trim();
     }

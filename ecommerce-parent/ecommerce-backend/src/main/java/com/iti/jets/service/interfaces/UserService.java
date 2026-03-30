@@ -34,4 +34,5 @@ public interface UserService extends BaseService<UserDTO, Long> {
 
     BaseResponse<Void> deleteUserAddress(Long userId, Long addressId);
 
+    void updateProfilePicUrl(Long userId, String profilePicUrl);
 }

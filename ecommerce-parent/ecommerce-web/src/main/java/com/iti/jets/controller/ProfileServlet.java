@@ -1,6 +1,8 @@
 package com.iti.jets.controller;
 
+import com.iti.jets.controller.admin.AdminBooksServlet;
 import com.iti.jets.model.dto.request.AddressRequestDTO;
+import com.iti.jets.model.dto.request.ImageUploadRequest;
 import com.iti.jets.model.dto.request.UpdatePersonalInfoRequestDTO;
 import com.iti.jets.model.dto.response.CategoryDTO;
 import com.iti.jets.model.dto.response.UserAddressesDTO;
@@ -9,17 +11,22 @@ import com.iti.jets.model.dto.response.UserInterestsDTO;
 import com.iti.jets.model.dto.response.factory.BaseResponse;
 import com.iti.jets.model.enums.AddressType;
 import com.iti.jets.model.enums.Government;
+import com.iti.jets.model.enums.ImageCategory;
+import com.iti.jets.service.extra.ImageService;
 import com.iti.jets.service.interfaces.CategoryService;
 import com.iti.jets.service.factory.ServiceFactory;
 import com.iti.jets.service.interfaces.OrderService;
 import com.iti.jets.service.interfaces.UserService;
 import com.iti.jets.service.interfaces.WishlistService;
 import com.iti.jets.util.PathStorage;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,12 +37,23 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+@MultipartConfig(
+    fileSizeThreshold = 1024 * 1024,       // 1 MB — spool to disk above this
+    maxFileSize       = 5 * 1024 * 1024,   // 5 MB max per file
+    maxRequestSize    = 6 * 1024 * 1024    // 6 MB max total request
+)
 public class ProfileServlet extends HttpServlet {
 
     private UserService userService;
     private OrderService orderService;
     private WishlistService wishlistService;
     private CategoryService categoryService;
+    private ImageService imageService;
+    private Jsonb jsonb;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileServlet.class);
+
 
     @Override
     public void init() {
@@ -43,6 +61,14 @@ public class ProfileServlet extends HttpServlet {
         orderService = ServiceFactory.getInstance().getOrderService();
         wishlistService = ServiceFactory.getInstance().getWishlistService();
         categoryService = ServiceFactory.getInstance().getCategoryService();
+        imageService = ServiceFactory.getInstance().getImageService();
+        jsonb = JsonbBuilder.create();
+    }
+
+    @Override
+    public void destroy() {
+        try { if (jsonb != null) jsonb.close(); }
+        catch (Exception ignored) {}
     }
 
     @Override
@@ -117,6 +143,99 @@ public class ProfileServlet extends HttpServlet {
         }
 
         resp.sendRedirect(PathStorage.PROFILE_SERVLET);
+    }
+
+    @Override
+    protected void doPut(
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws ServletException, IOException {
+
+        Part imagePart = request.getPart("image");
+
+        long userId;
+        try {
+            userId = parseLongParam(request, "userId", "User ID");
+        } catch (NumberFormatException e) {
+            writeError(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+            return;
+        }
+
+        System.out.println(userId + " " + imagePart.getSubmittedFileName());
+
+        HttpSession session = request.getSession(false);
+
+        UserDTO user;
+        if (session != null) {
+            user = (UserDTO) session.getAttribute("user");
+            if (user == null || !user.getId().equals(userId)) {
+                writeError(response, HttpServletResponse.SC_UNAUTHORIZED,
+                    "You are unauthorized to do this action");
+                return;
+            }
+        } else {
+            writeError(response, HttpServletResponse.SC_UNAUTHORIZED,
+                "You are unauthorized to do this action");
+            return;
+        }
+
+        String newProfilePicUrl;
+        String oldProfilePicUrl = user.getProfilePicUrl();
+        if (imagePart != null && imagePart.getSize() > 0) {
+            try {
+                ImageUploadRequest uploadRequest = new ImageUploadRequest(
+                    imagePart.getInputStream(),
+                    imagePart.getContentType(),
+                    imagePart.getSize(),
+                    ImageCategory.PROFILE
+                );
+
+                newProfilePicUrl = imageService.uploadImage(uploadRequest);
+                userService.updateProfilePicUrl(userId, newProfilePicUrl);
+                user.setProfilePicUrl(newProfilePicUrl);
+                session.setAttribute("user", user);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                LOGGER.warn("Profile picture upload failed for user {}, saved without cover", userId);
+                writeError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to update the image");
+                return;
+            }
+        } else {
+            writeError(response, HttpServletResponse.SC_BAD_REQUEST, "Image must be provided");
+            return;
+        }
+
+        try {
+            System.out.println("Deleting: " + oldProfilePicUrl);
+            imageService.removeImage(oldProfilePicUrl.replace("images/", "/"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Couldn't delete the old user profile picture");
+        }
+
+        writeJson(response, HttpServletResponse.SC_OK, Map.of("profilePicUrl", newProfilePicUrl));
+    }
+
+    private void writeJson(HttpServletResponse response, int status, Object body)
+        throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json;charset=UTF-8");
+        jsonb.toJson(body, response.getWriter());
+    }
+
+    private void writeError(HttpServletResponse resp, int status, String message)
+        throws IOException {
+        writeJson(resp, status, new AdminBooksServlet.ErrorResponse(message));
+    }
+
+    private long parseLongParam(HttpServletRequest request, String name, String label) {
+        String val = request.getParameter(name);
+        if (val == null || val.isBlank())
+            throw new IllegalArgumentException(label + " is required");
+        try { return Long.parseLong(val.trim()); }
+        catch (NumberFormatException e) {
+            throw new IllegalArgumentException(label + " must be a whole number");
+        }
     }
 
     private void populateProfileData(HttpServletRequest req, UserDTO currentUser) {

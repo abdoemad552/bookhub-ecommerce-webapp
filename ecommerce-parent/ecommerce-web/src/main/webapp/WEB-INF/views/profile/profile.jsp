@@ -15,7 +15,8 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/order-payment-review.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/profile.css">
 
-  <script type="module" src="${pageContext.request.contextPath}/assets/js/profile/profile.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/js/jquery/jquery.js"></script>
+    <script type="module" src="${pageContext.request.contextPath}/assets/js/profile/profile.js"></script>
 </head>
 <body class="font-google-sans antialiased">
 <div class="min-h-screen bg-background">
@@ -57,31 +58,53 @@
 
           <%-- User identity --%>
           <div class="flex items-center gap-3 pb-4 border-b border-border">
-            <div class="profile-avatar-wrap">
-              <div class="profile-avatar">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                     fill="none" stroke="currentColor" stroke-width="1.6"
-                     stroke-linecap="round" stroke-linejoin="round" class="text-primary">
-                  <circle cx="12" cy="8" r="4"/>
-                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                </svg>
+              <div class="flex flex-col items-center justify-center w-full gap-3">
+                  <div class="profile-avatar-wrap">
+                      <div class="profile-avatar">
+                          <button type="button"
+                                  data-upload-profile
+                                  data-user-id="${sessionScope.user.id}"
+                                  aria-label="Change profile image for ${sessionScope.user.username}"
+                                  class="group relative w-full h-full rounded overflow-hidden shrink-0 flex items-center justify-center text-muted-foreground cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                              <c:choose>
+                                  <c:when test="${sessionScope.user.profilePicUrl != null}">
+                                      <img src="${pageContext.request.contextPath}/${sessionScope.user.profilePicUrl}" alt="Cover of ${sessionScope.user.username}" loading="lazy" class="w-full h-full object-cover rounded-full">
+                                  </c:when>
+                                  <c:otherwise>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                           fill="none" stroke="currentColor" stroke-width="1.6"
+                                           stroke-linecap="round" stroke-linejoin="round" class="text-primary">
+                                          <circle cx="12" cy="8" r="4"/>
+                                          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                                      </svg>
+                                  </c:otherwise>
+                              </c:choose>
+                              <!-- hover overlay -->
+                              <span class="absolute inset-0 bg-black/50 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none rounded-full"  aria-hidden="true">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"  fill="none" stroke="currentColor" stroke-width="2"  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                      <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/>
+                                      <circle cx="12" cy="13" r="3"/>
+                                  </svg>
+                              </span>
+                          </button>
+                      </div>
+                  </div>
+                  <div class="min-w-0 flex-1 ">
+                      <c:choose>
+                          <c:when test="${not empty requestScope.profileUser.firstName or not empty requestScope.profileUser.lastName}">
+                              <p class="profile-user-name text-foreground truncate">
+                                  ${requestScope.profileUser.firstName} ${requestScope.profileUser.lastName}
+                              </p>
+                          </c:when>
+                          <c:otherwise>
+                              <p class="profile-user-name text-foreground truncate">
+                                  ${requestScope.profileUser.username}
+                              </p>
+                          </c:otherwise>
+                      </c:choose>
+                      <p class="profile-user-email text-muted-foreground truncate text-center">${requestScope.profileUser.username}</p>
+                  </div>
               </div>
-            </div>
-            <div class="min-w-0 flex-1">
-              <c:choose>
-                <c:when test="${not empty requestScope.profileUser.firstName or not empty requestScope.profileUser.lastName}">
-                  <p class="profile-user-name text-foreground truncate">
-                      ${requestScope.profileUser.firstName} ${requestScope.profileUser.lastName}
-                  </p>
-                </c:when>
-                <c:otherwise>
-                  <p class="profile-user-name text-foreground truncate">
-                      ${requestScope.profileUser.username}
-                  </p>
-                </c:otherwise>
-              </c:choose>
-              <p class="profile-user-email text-muted-foreground truncate">${requestScope.profileUser.email}</p>
-            </div>
           </div>
 
           <%-- Quick stats --%>

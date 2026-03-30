@@ -79,6 +79,8 @@ public class ImageService {
     public boolean removeImage(String imagePath) throws IOException {
         File file = new File(uploadDir, imagePath);
 
+        System.out.println(file.getAbsolutePath());
+
         if (!file.exists() || file.isDirectory()) {
             throw new FileNotFoundException("Image not found");
         }

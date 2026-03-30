@@ -76,13 +76,20 @@
                         <div id="avatar-dropdown-container" class="relative">
                             <button id="avatar-btn" class="flex items-center gap-2 px-2 py-1 rounded-2xl hover:bg-primary/15 active:bg-primary/20 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer" aria-expanded="true" aria-haspopup="true">
                                 <div class="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center border-2 border-primary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                         stroke-linejoin="round" class="lucide lucide-user w-5 h-5 text-primary"
-                                         aria-hidden="true">
-                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                        <circle cx="12" cy="7" r="4"></circle>
-                                    </svg>
+                                    <c:choose>
+                                        <c:when test="${sessionScope.user.profilePicUrl != null}">
+                                            <img id="header-profile-pic-url" src="${pageContext.request.contextPath}/${sessionScope.user.profilePicUrl}" alt="Cover of ${sessionScope.user.username}" loading="lazy" class="w-full h-full object-cover rounded-full">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                 stroke-linejoin="round" class="lucide lucide-user w-5 h-5 text-primary"
+                                                 aria-hidden="true">
+                                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                                <circle cx="12" cy="7" r="4"></circle>
+                                            </svg>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                                 <svg id="chevron" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
