@@ -174,7 +174,7 @@
         <!-- About This Book -->
         <section class="rounded-2xl sm:rounded-3xl border border-border bg-card shadow-sm px-5 py-6 sm:px-7 sm:py-8 md:px-8 md:py-9">
             <h2 class="text-2xl sm:text-[1.75rem] md:text-[1.95rem] leading-tight font-semibold tracking-[-0.03em] text-foreground">About This Book</h2>
-            <p class="mt-5 sm:mt-7 text-sm sm:text-[1.02rem] leading-7 sm:leading-8 text-muted-foreground">${book.description}</p>
+            <p class="mt-5 sm:mt-7 text-sm sm:text-[1.02rem] leading-7 sm:leading-8 text-muted-foreground whitespace-pre-wrap">${book.description}</p>
         </section>
 
         <!-- Readers Also Liked -->
