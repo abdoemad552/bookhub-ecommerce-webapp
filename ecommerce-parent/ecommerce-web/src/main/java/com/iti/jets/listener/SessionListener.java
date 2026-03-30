@@ -12,7 +12,7 @@ public class SessionListener implements HttpSessionListener {
         UserDTO user = (UserDTO) se.getSession().getAttribute("user");
 
         if (user != null) {
-            ActiveUserStore.removeUser(user.getId());
+            ActiveUserStore.removeSession(user.getId(), se.getSession().getId());
         }
     }
 }

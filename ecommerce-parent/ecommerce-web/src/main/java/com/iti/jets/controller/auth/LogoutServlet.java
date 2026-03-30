@@ -24,7 +24,7 @@ public class LogoutServlet extends HttpServlet {
             session.invalidate();
 
             // Remove this user from active users
-            ActiveUserStore.removeUser(user.getId());
+            ActiveUserStore.removeSession(user.getId(), session.getId());
         }
 
         CookieHandler.clearCookie(response, CookieHandler.COOKIE_NAME, request.getContextPath());

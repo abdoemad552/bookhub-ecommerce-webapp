@@ -131,7 +131,10 @@ public class LoginServlet extends HttpServlet {
             }
 
             // Add current user to active users
-            ActiveUserStore.addUser(loggedInUser.getId());
+            ActiveUserStore.addSession(
+                    loggedInUser.getId(),
+                    session.getId()
+            );
 
             mergeSessionCart(request, Math.toIntExact(loggedInUser.getId()));
         }
