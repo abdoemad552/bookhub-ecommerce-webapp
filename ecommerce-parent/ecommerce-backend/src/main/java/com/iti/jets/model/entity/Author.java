@@ -26,6 +26,6 @@ public class Author {
     private String name;
 
     @Lob
-    @Column(name = "about")
+    @Column(name = "about", columnDefinition = "TEXT")
     private String about;
 }
