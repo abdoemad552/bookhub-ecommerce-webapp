@@ -50,36 +50,40 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
 
     @Override
     public BaseResponse<String> placeOrder(PlaceOrderRequestDTO request) {
-        return executeInContext(() -> {
+        try {
+            return executeInContext(() -> {
 
-            if (request == null) {
-                return ResponseFactory.failure("Your cart is empty or already checked out.");
-            }
+                if (request == null) {
+                    return ResponseFactory.failure("Your cart is empty or already checked out.");
+                }
 
-            Optional<User> userOpt = userRepository.findById(request.getUserId());
-            if (userOpt.isEmpty()) {
-                return ResponseFactory.failure("Invalid User");
-            }
+                Optional<User> userOpt = userRepository.findById(request.getUserId());
+                if (userOpt.isEmpty()) {
+                    return ResponseFactory.failure("Invalid User");
+                }
 
-            BaseResponse<Order> res = buildOrderEntity(request, userOpt.get());
-            if (res.isFailure()) {
-                return ResponseFactory.failure(res.getMessage());
-            }
-            Order orderEntity = res.getData();
-            orderRepository.update(orderEntity);
+                BaseResponse<Order> res = buildOrderEntity(request, userOpt.get());
+                if (res.isFailure()) {
+                    throw new RuntimeException(res.getMessage()); // trigger rollback
+                }
 
-            // Update the current user
-            if (!updateCurrentUserData(userOpt.get(), orderEntity, request.getTotalPrice())) {
-                return ResponseFactory.failure("Insufficient Credit Limit");
-            }
+                Order orderEntity = res.getData();
+                orderRepository.update(orderEntity);
 
-            // Delete the current active cart for this user
-            cartRepository.deleteByUserId(userOpt.get().getId());
+                if (!updateCurrentUserData(userOpt.get(), orderEntity, request.getTotalPrice())) {
+                    throw new RuntimeException("Insufficient Credit Limit"); // trigger rollback
+                }
 
-            // Form the order code from ID
-            String orderCode = "ORD-" + orderEntity.getCreatedAt().getYear() + "-" + orderEntity.getId();
-            return ResponseFactory.success("Order Saved Successfully", orderCode);
-        });
+                cartRepository.deleteByUserId(userOpt.get().getId());
+
+                String orderCode = "ORD-" + orderEntity.getCreatedAt().getYear() + "-" + orderEntity.getId();
+                return ResponseFactory.success("Order Saved Successfully", orderCode);
+            });
+
+        } catch (RuntimeException e) {
+            // Catches all failures (stock, credit limit, book not found, etc.)
+            return ResponseFactory.failure(e.getMessage());
+        }
     }
 
     @Override
@@ -94,8 +98,7 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
 
             OrderDTO orderDto = buildOrderDTO(order);
 
-            return ResponseFactory.success("Order Details Loaded",
-                    orderDto);
+            return ResponseFactory.success("Order Details Loaded", orderDto);
         });
     }
 
@@ -304,14 +307,33 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
                 .shippingAddress(shippingAddress)
                 .build();
 
-        // Persist the order first to generate its ID
-        orderRepository.save(orderEntity);
-
         // Add the order items to the order entity
         for (var item : request.getItems()) {
-            Book book = bookRepository.findById(item.getBookId())
-                    .orElseThrow(() -> new RuntimeException("Book not found"));
 
+            Book book = bookRepository.findById(item.getBookId())
+                    .orElseThrow(() -> new RuntimeException("Book not found: " + item.getBookId()));
+
+            // Atomic check + deduct in ONE query — no race condition!
+            int rowsUpdated = bookRepository.deductStock(
+                    item.getBookId(),
+                    item.getQuantity()
+            );
+
+            if (rowsUpdated == 0) {
+                if(book.getStockQuantity() <= 0){
+                    throw new RuntimeException(
+                            "This Book: " + book.getTitle() +
+                                    " is out of stock"
+                    );
+                }
+                // Stock not enough OR someone else just took the last copy
+                throw new RuntimeException(
+                        "Only " + book.getStockQuantity() +
+                                " items available from: " + book.getTitle()
+                );
+            }
+
+            // Stock deducted safely — add item to order
             orderEntity.addItem(OrderItem.builder()
                     .order(orderEntity)
                     .book(book)
@@ -319,18 +341,10 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
                     .quantity(item.getQuantity())
                     .build()
             );
-
-            // Update book data
-            if (book.getStockQuantity() - item.getQuantity() < 0) {
-                return ResponseFactory.failure("Only  " + book.getStockQuantity() + " items available in stock from " + book.getTitle());
-            }
-            if (book.getStockQuantity() == 0) {
-                return ResponseFactory.failure("This book: " + book.getTitle() + " is out of stock");
-            }
-            book.setStockQuantity(book.getStockQuantity() - item.getQuantity());
-            book.setSoldQuantity(book.getSoldQuantity() + item.getQuantity());
-            bookRepository.update(book);
         }
+
+        // Final step to avoid tx issue
+        orderRepository.save(orderEntity);
 
         return ResponseFactory.success("Order entity formed", orderEntity);
     }

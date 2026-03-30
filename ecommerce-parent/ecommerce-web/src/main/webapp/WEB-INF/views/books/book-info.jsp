@@ -174,7 +174,7 @@
         <!-- About This Book -->
         <section class="rounded-2xl sm:rounded-3xl border border-border bg-card shadow-sm px-5 py-6 sm:px-7 sm:py-8 md:px-8 md:py-9">
             <h2 class="text-2xl sm:text-[1.75rem] md:text-[1.95rem] leading-tight font-semibold tracking-[-0.03em] text-foreground">About This Book</h2>
-            <p class="mt-5 sm:mt-7 text-sm sm:text-[1.02rem] leading-7 sm:leading-8 text-muted-foreground">${book.description}</p>
+            <p class="mt-5 sm:mt-7 text-sm sm:text-[1.02rem] leading-7 sm:leading-8 text-muted-foreground whitespace-pre-wrap">${book.description}</p>
         </section>
 
         <!-- Readers Also Liked -->
@@ -184,7 +184,7 @@
                 <c:when test="${not empty relatedBooks}">
                     <c:set var="books" value="${relatedBooks}" scope="request"/>
                     <c:set var="bookCardVariant" value="carousel" scope="request"/>
-                    <div class="flex gap-3 sm:gap-4 md:gap-6 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth py-2" style="scrollbar-width:none;-ms-overflow-style:none">
+                    <div class="book-carousel flex gap-3 sm:gap-4 md:gap-6 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth py-2" style="scrollbar-width:none;-ms-overflow-style:none">
                         <jsp:include page="../common/book-card.jsp"/>
                     </div>
                 </c:when>

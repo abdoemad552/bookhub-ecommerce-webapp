@@ -28,8 +28,8 @@
                 <span class="text-xl font-bold text-foreground tracking-tight">Book<span class="text-primary">Hub</span></span>
             </a>
 
-      <!-- Right actions -->
-      <div class="flex items-center gap-3 shrink-0">
+            <!-- Right actions -->
+            <div class="flex items-center gap-3 shrink-0">
 
                 <!-- Cart -->
                 <a class="relative shrink-0" href="${pageContext.request.contextPath}/cart">
@@ -62,7 +62,7 @@
                     <c:otherwise>
                         <c:if test="${sessionScope.user.role eq 'ADMIN' or sessionScope.user.role eq 'MAIN_ADMIN'}">
                             <a href="${pageContext.request.contextPath}/admin/dashboard" class="shrink-0">
-                                <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground h-10 rounded-xl px-6">
+                                <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground h-10 rounded-xl px-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-column w-4 h-4 text-current" aria-hidden="true">
                                         <path d="M3 3v16a2 2 0 0 0 2 2h16"></path>
                                         <path d="M18 17V9"></path>
@@ -182,16 +182,9 @@
 <c:if test="${showCategoryNavFlag == 'true'}">
     <nav class="font-google-sans sticky top-14 sm:top-16 z-40 bg-card border-b border-border/60 backdrop-blur-md">
         <div class="w-full px-2 sm:px-4 lg:px-8 sm:max-w-7xl sm:mx-auto">
-            <div class="flex items-center gap-0.5 sm:gap-1 overflow-x-auto py-2 sm:py-2.5"
-                 style="scrollbar-width:none;-ms-overflow-style:none;padding-left:max(1rem, calc((100% - 40rem) / 2));padding-right:max(1rem, calc((100% - 40rem) / 2));">
-                <c:forEach var="cat" items="${['All','Fiction','Fantasy','Self-Help','Non-Fiction','Romance','Mystery']}">
-                    <a href="${pageContext.request.contextPath}/explore?category=${cat}" class="shrink-0">
-                        <button data-slot="button"
-                                class="cat-pill cursor-pointer hover:text-accent-foreground inline-flex items-center justify-center whitespace-nowrap text-xs sm:text-sm font-medium text-muted-foreground px-3 sm:px-4 py-1 sm:py-1.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 transition-colors">
-                                ${cat}
-                        </button>
-                    </a>
-                </c:forEach>
+            <div id="category-nav-id" class="flex items-center gap-0.5 sm:gap-1 overflow-x-auto py-2 sm:py-2.5"
+                 style="scrollbar-width:none;-ms-overflow-style:none;min-height:2.75rem;">
+                <!-- Injected by JS-->
             </div>
         </div>
     </nav>

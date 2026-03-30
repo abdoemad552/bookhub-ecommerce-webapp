@@ -36,7 +36,7 @@ public abstract class ContextHandler {
         } catch (Exception e) {
             if (weStartedIt && tx.isActive()) tx.rollback();
             LOGGER.error("Unexpected service error", e);
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         } finally {
             if (weStartedIt) JPAConfig.closeEntityManager();
         }
@@ -61,7 +61,7 @@ public abstract class ContextHandler {
         } catch (Exception e) {
             if (weStartedIt && tx.isActive()) tx.rollback();
             LOGGER.error("Unexpected service error", e);
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         } finally {
             if (weStartedIt) JPAConfig.closeEntityManager();
         }
