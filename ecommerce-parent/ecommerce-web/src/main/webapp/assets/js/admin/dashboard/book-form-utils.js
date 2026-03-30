@@ -21,7 +21,7 @@ const PUBLISH_DATE_MAX_OFFSET_YEARS = 2;
 const TITLE_MAX_LENGTH = 500;
 
 /** Description length ceiling. */
-const DESCRIPTION_MAX_LENGTH = 2000;
+const DESCRIPTION_MAX_LENGTH = 65535;
 
 /** Maximum number of authors per book. */
 const AUTHORS_MAX = 20;
@@ -231,6 +231,8 @@ export function fieldError($dialog, inputId, msg) {
  * }
  */
 export function validateAddBookForm($dialog) {
+    console.log("Validating...");
+
     clearErrors($dialog);
     let ok = true;
 
@@ -480,6 +482,9 @@ export function validateAddBookForm($dialog) {
         if ($first) $first.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return { ok: false, payload: null };
     }
+
+    console.log("Validated...");
+    console.log(ok);
 
     return {
         ok: true,
