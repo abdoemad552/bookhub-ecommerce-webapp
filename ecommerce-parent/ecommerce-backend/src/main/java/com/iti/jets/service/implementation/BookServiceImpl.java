@@ -112,6 +112,25 @@ public class BookServiceImpl extends ContextHandler implements BookService {
         executeInContext(() -> bookRepository.updateCoverUrl(bookId, coverUrl));
     }
 
+    @Override
+    public PageResponseDTO<BookCardDTO> findAuthoredBooks(Long authorId, int page, int size) {
+        return executeInContext(() -> {
+            List<BookCardDTO> authoredBooks = bookRepository.findAuthoredBooks(authorId, page, size)
+                .stream()
+                .map(BookCardDTO::from)
+                .toList();
+
+            long count = countAuthoredBooks(authorId);
+
+            return new PageResponseDTO<>(authoredBooks, page, size, count);
+        });
+    }
+
+    @Override
+    public Long countAuthoredBooks(Long authorId) {
+        return executeInContext(() -> bookRepository.countAuthoredBooks(authorId));
+    }
+
     private Category findOrCreateCategory(String category) {
         return categoryRepository.findByName(category.trim())
             .orElseGet(() -> {

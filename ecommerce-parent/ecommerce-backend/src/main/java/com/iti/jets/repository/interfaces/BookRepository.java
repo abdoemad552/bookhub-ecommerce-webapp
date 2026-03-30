@@ -20,4 +20,8 @@ public interface BookRepository extends BaseRepository<Book, Long> {
     Optional<Book> findByIsbn(String isbn);
 
     void updateCoverUrl(Long bookId, String coverUrl);
+
+    List<Book> findAuthoredBooks(Long authorId, int page, int size);
+
+    Long countAuthoredBooks(Long authorId);
 }

@@ -28,4 +28,8 @@ public interface BookService extends BaseService<Book, Long> {
     Optional<BookAddResponseDTO> addBook(BookAddRequestDTO addRequest);
 
     void updateCoverUrl(Long bookId, String coverUrl);
+
+    PageResponseDTO<BookCardDTO> findAuthoredBooks(Long authorId, int page, int size);
+
+    Long countAuthoredBooks(Long authorId);
 }

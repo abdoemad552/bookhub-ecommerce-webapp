@@ -1,6 +1,9 @@
 package com.iti.jets.controller;
 
+import com.iti.jets.model.dto.response.AuthorDTO;
+import com.iti.jets.model.dto.response.AuthorStatsDTO;
 import com.iti.jets.service.factory.ServiceFactory;
+import com.iti.jets.service.interfaces.AuthorService;
 import com.iti.jets.util.PathStorage;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,11 +16,11 @@ import java.io.IOException;
 @WebServlet("/authors/*")
 public class AuthorInfoServlet extends HttpServlet {
 
-    private ServiceFactory serviceFactory;
+    private AuthorService authorService;
 
     @Override
     public void init() throws ServletException {
-        serviceFactory = ServiceFactory.getInstance();
+        authorService = ServiceFactory.getInstance().getAuthorService();
     }
 
     @Override
@@ -29,17 +32,28 @@ public class AuthorInfoServlet extends HttpServlet {
 
         String strAuthorId = pathInfo.split("/")[1];
 
-        Long authorId;
+        long authorId;
         try {
             authorId = Long.parseLong(strAuthorId);
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND,
-                pathInfo + " doesn't map to actual author");
+                pathInfo + " is malformed path");
             return;
         }
 
-        System.out.println(authorId);
-        request.setAttribute("authorId", authorId);
+        AuthorDTO author = authorService.findById(authorId);
+
+        if (author == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,
+                pathInfo + " does not map to a actual author");
+            return;
+        }
+
+        AuthorStatsDTO authorStats = authorService.getAuthorStats(authorId);
+
+        System.out.println(author);
+        request.setAttribute("author", author);
+        request.setAttribute("authorStats", authorStats);
 
         request.getRequestDispatcher(PathStorage.AUTHOR_INFO_PAGE).forward(request, response);
     }
