@@ -5,6 +5,7 @@
   <meta charSet="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes"/>
   <title>Admin Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/assets/images/bookhub-favicon.svg">
   <meta name="description"
         content="Discover thousands of books across every genre. Shop for bestsellers, classics, and hidden gems with BookHub."/>
   <meta name="generator" content="BookHub"/>

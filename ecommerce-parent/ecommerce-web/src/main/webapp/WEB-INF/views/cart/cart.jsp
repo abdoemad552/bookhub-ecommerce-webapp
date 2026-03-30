@@ -5,6 +5,7 @@
   <meta charSet="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes"/>
   <title>BookHub - Cart</title>
+  <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/assets/images/bookhub-favicon.svg">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">

@@ -7,6 +7,7 @@
   <meta name="next-size-adjust" content=""/>
   <meta name="theme-color" content="#573d3a"/>
   <title>BookHub - Your Gateway to Endless Stories</title>
+  <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/assets/images/bookhub-favicon.svg">
   <meta name="description"
         content="Discover thousands of books across every genre. Shop for bestsellers, classics, and hidden gems with BookHub."/>
   <meta name="generator" content="BookHub"/>

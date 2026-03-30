@@ -8,6 +8,7 @@
   <meta name="description" content="Manage your BookHub profile, orders, addresses, credit, and account security."/>
   <meta name="generator" content="BookHub"/>
   <title>BookHub - My Profile</title>
+  <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/assets/images/bookhub-favicon.svg">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">

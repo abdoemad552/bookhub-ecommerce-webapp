@@ -9,6 +9,7 @@
   <meta name="generator" content="BookHub"/>
   <meta name="keywords" content="books,bookstore,ebook,bestsellers,fiction,non-fiction"/>
   <title>BookHub - Your Gateway to Endless Stories</title>
+  <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/assets/images/bookhub-favicon.svg">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/authentication.css">

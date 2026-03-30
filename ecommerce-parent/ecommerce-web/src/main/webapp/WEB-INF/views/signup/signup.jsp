@@ -7,6 +7,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"/>
     <title>BookHub — Create Account</title>
+    <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/assets/images/bookhub-favicon.svg">
     <meta name="ctx" content="${pageContext.request.contextPath}">
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
