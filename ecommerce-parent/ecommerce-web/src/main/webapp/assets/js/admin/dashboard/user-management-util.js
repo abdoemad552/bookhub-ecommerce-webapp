@@ -13,10 +13,11 @@ export const $ = (sel, ctx = document) => {
 // Avatar
 export function buildAvatar(user, size = 36) {
     if (user.avatarUrl && user.avatarUrl !== "null") {
-        return `<img src="${getContextPath()}/${user.avatarUrl}" 
+        return `<div style="width:${size}px; height:${size}px;" class="rounded-full border-2 border-primary overflow-hidden flex-shrink-0">
+                <img src="${getContextPath()}/${user.avatarUrl}"
                      alt="${escHtml(user.username)}"
-                     class="um-avatar"
-                     width="${size}" height="${size}">`;
+                     style="width:100%; height:100%; object-fit:cover; display:block;"/>
+            </div>`;
     }
 
     return `<div 
@@ -190,7 +191,7 @@ export function renderRows(users) {
             <td class="text-muted-foreground">${escHtml(user.email)}</td>
             <td>${roleBadge(user.role)}</td>
             <td>
-                <button class="um-action-btn" data-user-id="${user.id}" aria-label="View ${escHtml(user.username)}">
+                <button class="um-action-btn" data-user-id="${user.id}" data-avatar-url="${escHtml(user.avatarUrl ?? 'null')}" aria-label="View ${escHtml(user.username)}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>

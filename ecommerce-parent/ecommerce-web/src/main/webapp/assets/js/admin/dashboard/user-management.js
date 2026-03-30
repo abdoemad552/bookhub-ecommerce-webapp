@@ -90,20 +90,16 @@ function bindEvents() {
 // Extract a minimal user object from a rendered table row
 function extractUserFromRow(row, userId) {
     if (!row) return {id: userId, username: "", email: "", role: null, avatarUrl: "null"};
-    const nameEl = row.querySelector(".font-medium.text-foreground");
-    const emailEl = row.querySelector(".text-muted-foreground");
-    const dateEl = row.querySelector(".text-muted-foreground.text-xs");
-    const avatarImg = row.querySelector(".um-avatar");
-    const avatarFallback = row.querySelector(".um-avatar-fallback");
+    const nameEl    = row.querySelector(".font-medium.text-foreground");
+    const emailEl   = row.querySelector(".text-muted-foreground");
+    const actionBtn = row.querySelector(".um-action-btn");
 
     return {
-        id: userId,
-        username: nameEl?.textContent?.trim() ?? "",
-        email: emailEl?.textContent?.trim() ?? "",
-        role: row.querySelector(".um-role-badge")?.textContent?.trim() ?? null,
-        avatarUrl: avatarImg ? avatarImg.src.replace(getContextPath() + "/", "") : "null",
-        _fallbackColor: avatarFallback?.dataset?.color ?? null,
-        _fallbackLetter: avatarFallback?.textContent?.trim() ?? null,
+        id:        userId,
+        username:  nameEl?.textContent?.trim()          ?? "",
+        email:     emailEl?.textContent?.trim()         ?? "",
+        role:      row.querySelector(".um-role-badge")?.textContent?.trim() ?? null,
+        avatarUrl: actionBtn?.dataset.avatarUrl         ?? "null",
     };
 }
 
