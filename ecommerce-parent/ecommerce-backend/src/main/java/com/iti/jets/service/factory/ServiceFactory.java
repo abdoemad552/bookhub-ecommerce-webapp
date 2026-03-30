@@ -24,6 +24,7 @@ public class ServiceFactory {
     private final CartRepository cartRepository;
     private final StatsRepository statsRepository;
     private final OrderRepository orderRepository;
+    private final AuthorRepository authorRepository;
 
     // Service
     private final AuthService authService;
@@ -35,6 +36,7 @@ public class ServiceFactory {
     private final CartService cartService;
     private final StatsService statsService;
     private final OrderService orderService;
+    private final AuthorService authorService;
 
     // Extra Services
     private final EmailService emailService;
@@ -50,6 +52,7 @@ public class ServiceFactory {
         this.cartRepository = new CartRepositoryImpl();
         this.statsRepository = new StatsRepositoryImpl();
         this.orderRepository = new OrderRepositoryImpl();
+        this.authorRepository = new AuthorRepositoryImpl();
 
         // Service
         this.authService = new AuthServiceImpl(userRepository, categoryRepository, UserMapper.getInstance());
@@ -61,6 +64,7 @@ public class ServiceFactory {
         this.cartService = new CartServiceImpl(cartRepository, bookRepository, CartMapper.getInstance());
         this.orderService = new OrderServiceImpl(orderRepository, userRepository, bookRepository, cartRepository, UserMapper.getInstance());
         this.statsService = new StatsServiceImpl(statsRepository);
+        this.authorService = new AuthorServiceImpl(authorRepository);
 
         // Extra Services
         this.emailService = new EmailService();
@@ -120,5 +124,9 @@ public class ServiceFactory {
 
     public ImageService getImageService() {
         return imageService;
+    }
+
+    public AuthorService getAuthorService() {
+        return authorService;
     }
 }

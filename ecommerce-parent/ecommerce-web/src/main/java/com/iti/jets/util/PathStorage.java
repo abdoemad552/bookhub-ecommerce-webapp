@@ -10,6 +10,7 @@ public class PathStorage {
     public static final String EXPLORE_PAGE         = "/WEB-INF/views/explore/explore.jsp";
     public static final String CART_PAGE            = "/WEB-INF/views/cart/cart.jsp";
     public static final String BOOK_INFO_PAGE       = "/WEB-INF/views/books/book-info.jsp";
+    public static final String AUTHOR_INFO_PAGE     = "/WEB-INF/views/authors/author-info.jsp";
     public static final String BOOK_NOT_FOUND_PAGE  = "/WEB-INF/views/error/book-not-found.jsp";
     public static final String NOT_FOUND_PAGE       = "/WEB-INF/views/error/page-not-found.jsp";
     public static final String FORBIDDEN_PAGE       = "/WEB-INF/views/error/forbidden.jsp";
@@ -21,7 +22,8 @@ public class PathStorage {
     public static final String BOOK_CARD_H  = "/WEB-INF/views/common/book-card-h.jsp";
     public static final String HEADER       = "/WEB-INF/views/common/header.jsp";
     public static final String FOOTER       = "/WEB-INF/views/common/footer.jsp";
-    public static final String EXPLORE_BOOKS_CONTAINER         = "/WEB-INF/views/explore/books-container.jsp";
+    public static final String EXPLORE_BOOKS_CONTAINER = "/WEB-INF/views/explore/books-container.jsp";
+    public static final String AUTHORS_BOOKS_CONTAINER = "/WEB-INF/views/authors/books-container.jsp";
 
     // Admin Pages
     public static final String ADMIN_DASHBOARD_PAGE                  = "/WEB-INF/views/admin/dashboard/dashboard.jsp";

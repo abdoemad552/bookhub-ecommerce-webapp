@@ -184,7 +184,7 @@
                 <c:when test="${not empty relatedBooks}">
                     <c:set var="books" value="${relatedBooks}" scope="request"/>
                     <c:set var="bookCardVariant" value="carousel" scope="request"/>
-                    <div class="flex gap-3 sm:gap-4 md:gap-6 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth py-2" style="scrollbar-width:none;-ms-overflow-style:none">
+                    <div class="book-carousel flex gap-3 sm:gap-4 md:gap-6 overflow-x-auto overflow-y-visible scrollbar-hide scroll-smooth py-2" style="scrollbar-width:none;-ms-overflow-style:none">
                         <jsp:include page="../common/book-card.jsp"/>
                     </div>
                 </c:when>
