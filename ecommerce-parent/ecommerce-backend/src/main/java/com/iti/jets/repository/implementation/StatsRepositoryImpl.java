@@ -102,7 +102,7 @@ public class StatsRepositoryImpl implements StatsRepository {
         return em.createQuery("""
             SELECT new com.iti.jets.model.dto.response.InventoryStatusDTO(
                 SUM(CASE WHEN b.stockQuantity > 10 THEN 1 ELSE 0 END),
-                SUM(CASE WHEN b.soldQuantity BETWEEN 1 AND 10 THEN 1 ELSE 0 END),
+                SUM(CASE WHEN b.stockQuantity BETWEEN 1 AND 10 THEN 1 ELSE 0 END),
                 SUM(CASE WHEN b.stockQuantity = 0 THEN 1 ELSE 0 END)
             )
             FROM Book b

@@ -19,6 +19,7 @@ public class AuthorServiceImpl extends ContextHandler implements AuthorService {
         return executeInContext(() -> authorRepository.findById(authorId).map(AuthorDTO::from).orElse(null));
     }
 
+    @Override
     public AuthorStatsDTO getAuthorStats(Long authorId) {
         return executeInContext(() -> authorRepository.getAuthorStats(authorId));
     }

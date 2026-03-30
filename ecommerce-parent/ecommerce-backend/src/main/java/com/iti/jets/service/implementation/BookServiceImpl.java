@@ -10,6 +10,7 @@ import com.iti.jets.model.dto.response.PageResponseDTO;
 import com.iti.jets.model.entity.Author;
 import com.iti.jets.model.entity.Book;
 import com.iti.jets.model.entity.Category;
+import com.iti.jets.repository.interfaces.AuthorRepository;
 import com.iti.jets.repository.interfaces.BookRepository;
 import com.iti.jets.repository.interfaces.CategoryRepository;
 import com.iti.jets.service.generic.ContextHandler;
@@ -24,10 +25,16 @@ public class BookServiceImpl extends ContextHandler implements BookService {
 
     private final BookRepository bookRepository;
     private final CategoryRepository categoryRepository;
+    private final AuthorRepository authorRepository;
 
-    public BookServiceImpl(BookRepository bookRepository, CategoryRepository categoryRepository) {
+    public BookServiceImpl(
+        BookRepository bookRepository,
+        CategoryRepository categoryRepository,
+        AuthorRepository authorRepository
+    ) {
         this.bookRepository = bookRepository;
         this.categoryRepository = categoryRepository;
+        this.authorRepository = authorRepository;
     }
 
     @Override
@@ -157,9 +164,14 @@ public class BookServiceImpl extends ContextHandler implements BookService {
             dto.getAuthors().stream()
                 .filter(name -> name != null && !name.isBlank())
                 .map(name -> {
-                    Author author = new Author();
-                    author.setName(name);
-                    return author;
+                    Optional<Author> authorOptional = authorRepository.findByName(name);
+                    if (authorOptional.isEmpty()) {
+                        Author author = new Author();
+                        author.setName(name);
+                        return author;
+                    } else {
+                        return authorOptional.get();
+                    }
                 })
                 .forEach(book::addAuthor);  // keeps bidirectional ref in sync
         }

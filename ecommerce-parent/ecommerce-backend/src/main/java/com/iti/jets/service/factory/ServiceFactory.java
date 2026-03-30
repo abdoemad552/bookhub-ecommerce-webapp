@@ -58,7 +58,7 @@ public class ServiceFactory {
         this.authService = new AuthServiceImpl(userRepository, categoryRepository, UserMapper.getInstance());
         this.userService = new UserServiceImpl(userRepository, categoryRepository, UserMapper.getInstance());
         this.categoryService = new CategoryServiceImpl(categoryRepository, CategoryMapper.getInstance());
-        this.bookService = new BookServiceImpl(bookRepository, categoryRepository);
+        this.bookService = new BookServiceImpl(bookRepository, categoryRepository, authorRepository);
         this.reviewService = new ReviewServiceImpl(reviewRepository, userRepository, bookRepository);
         this.wishlistService = new WishlistServiceImpl(wishlistRepository, userRepository, bookRepository);
         this.cartService = new CartServiceImpl(cartRepository, bookRepository, CartMapper.getInstance());

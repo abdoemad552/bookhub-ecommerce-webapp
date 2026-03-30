@@ -5,6 +5,8 @@ import com.iti.jets.model.entity.Author;
 import com.iti.jets.repository.generic.BaseRepositoryImpl;
 import com.iti.jets.repository.interfaces.AuthorRepository;
 
+import java.util.Optional;
+
 public class AuthorRepositoryImpl extends BaseRepositoryImpl<Author, Long>
         implements AuthorRepository {
 
@@ -23,6 +25,16 @@ public class AuthorRepositoryImpl extends BaseRepositoryImpl<Author, Long>
             """, AuthorStatsDTO.class)
             .setParameter("authorId", authorId)
             .getSingleResult()
+        );
+    }
+
+    @Override
+    public Optional<Author> findByName(String name) {
+        return executeReadOnly(em -> em
+            .createQuery("SELECT a FROM Author a WHERE a.name = :name", Author.class)
+            .setParameter("name", name)
+            .getResultStream()
+            .findFirst()
         );
     }
 }
