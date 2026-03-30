@@ -57,7 +57,7 @@ export function getCurrentState() {
         .find(".selected-category")
         .map(function () { return $(this).data("category") })
         .get() || [];
-    const includeInterests  = $("#include-interests").val() === "true";
+    const includeInterests  = $("#include-interests").is(":checked");
     const minPrice          = $("#min-price-input").val() || 0;
     const maxPrice          = $("#max-price-input").val() || 999999;
     const sort              = $("#sort-container").data("selectedSortCriteria") || "featured";
