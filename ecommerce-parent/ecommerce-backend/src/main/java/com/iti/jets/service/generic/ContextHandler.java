@@ -28,7 +28,7 @@ public abstract class ContextHandler {
             action.run();
         } catch (Exception e) {
             LOGGER.error("Unexpected service error", e);
-            throw new RuntimeException("Unexpected error: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
         } finally {
             JPAConfig.closeEntityManager();
         }
@@ -46,7 +46,7 @@ public abstract class ContextHandler {
             return query.get();
         } catch (Exception e) {
             LOGGER.error("Unexpected service error", e);
-            throw new RuntimeException("Unexpected error: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
         } finally {
             JPAConfig.closeEntityManager();
         }

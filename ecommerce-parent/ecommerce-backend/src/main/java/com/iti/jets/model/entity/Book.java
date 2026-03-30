@@ -36,7 +36,7 @@ public class Book {
     private String title;
 
     @Lob
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
