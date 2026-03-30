@@ -3,7 +3,6 @@ package com.iti.jets.repository.generic;
 import com.iti.jets.config.JPAConfig;
 import com.iti.jets.exception.RepositoryException;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,27 +20,16 @@ public class BaseRepositoryImpl<T, ID> implements BaseRepository<T, ID> {
     @SuppressWarnings("unchecked")
     protected BaseRepositoryImpl() {
         this.entityClass = (Class<T>)
-                ((ParameterizedType) getClass().getGenericSuperclass())
-                        .getActualTypeArguments()[0];
+            ((ParameterizedType) getClass().getGenericSuperclass())
+                .getActualTypeArguments()[0];
     }
 
     // Generic method for write operations (save, update, delete)
     protected <R> R executeInTransaction(Function<EntityManager, R> action) {
         EntityManager em = JPAConfig.getEntityManager();
-        EntityTransaction tx = em.getTransaction();
         try {
-            // Begin only if not already active
-            if (!tx.isActive()) {
-                tx.begin();
-            }
-
-            R result = action.apply(em);
-            tx.commit();
-            return result;
+            return action.apply(em);
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             throw new RepositoryException("Transaction failed for " + entityClass.getSimpleName(), e);
         }
     }

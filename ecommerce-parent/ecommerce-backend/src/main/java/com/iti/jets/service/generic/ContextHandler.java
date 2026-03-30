@@ -1,6 +1,8 @@
 package com.iti.jets.service.generic;
 
 import com.iti.jets.config.JPAConfig;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,13 +26,19 @@ public abstract class ContextHandler {
      * @param action the operation to execute
      */
     protected void executeInContext(Runnable action) {
+        EntityManager em = JPAConfig.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        boolean weStartedIt = !tx.isActive();
         try {
+            if (weStartedIt) tx.begin();
             action.run();
+            if (weStartedIt) tx.commit();
         } catch (Exception e) {
+            if (weStartedIt && tx.isActive()) tx.rollback();
             LOGGER.error("Unexpected service error", e);
-            throw new RuntimeException("Unexpected error: " + e.getMessage());
+            throw new RuntimeException(e);
         } finally {
-            JPAConfig.closeEntityManager();
+            if (weStartedIt) JPAConfig.closeEntityManager();
         }
     }
     
@@ -42,13 +50,20 @@ public abstract class ContextHandler {
      * @return the result of the query
      */
     protected <R> R executeInContext(Supplier<R> query) {
+        EntityManager em = JPAConfig.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        boolean weStartedIt = !tx.isActive();
         try {
-            return query.get();
+            if (weStartedIt) tx.begin();
+            R result = query.get();
+            if (weStartedIt) tx.commit();
+            return result;
         } catch (Exception e) {
+            if (weStartedIt && tx.isActive()) tx.rollback();
             LOGGER.error("Unexpected service error", e);
-            throw new RuntimeException("Unexpected error: " + e.getMessage());
+            throw new RuntimeException(e);
         } finally {
-            JPAConfig.closeEntityManager();
+            if (weStartedIt) JPAConfig.closeEntityManager();
         }
     }
 }
