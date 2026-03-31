@@ -63,58 +63,42 @@ export class AddCategoryDialog {
         // Disable submit while the request is in flight
         this._setSubmitting($dialog, true);
 
+        console.log(payload);
 
-        // const formData = new FormData();
-        // formData.append('isbn',          payload.isbn);
-        // formData.append('title',         payload.title);
-        // formData.append('price',         payload.price);
-        // formData.append('stockQuantity', payload.stockQuantity);
-        // formData.append('pages',         payload.pages);
-        // formData.append('category',      payload.category);
-        // formData.append('bookType',      payload.bookType);
-        // formData.append('publishDate',   payload.publishDate);
-        //
-        // if (payload.description) formData.append('description', payload.description);
-        // if (payload.imageFile)   formData.append('image', payload.imageFile);
-        //
-        // payload.authors.forEach(name => formData.append('authors', name));
-        //
-        // console.log(payload);
-        //
-        // $.ajax({
-        //     url:         `${getContextPath()}/admin/books`,
-        //     method:      'POST',
-        //     data:        formData,
-        //     contentType: false,
-        //     processData: false,
-        // })
-        // .done(() => {
-        //     this._setSubmitting($dialog, false);
-        //     this._showFeedback($dialog, 'Book added successfully!', true);
-        //
-        //     // Notify parent and close after a short delay so the user sees the message
-        //     this._feedbackTimer = setTimeout(() => {
-        //         this.options.onSuccess?.();
-        //         this._dialog.close();
-        //     }, CLOSE_DELAY);
-        // })
-        // .fail((jqXHR) => {
-        //     this._setSubmitting($dialog, false);
-        //
-        //     // Try to extract the server's error message from the JSON body
-        //     let message = 'Something went wrong. Please try again.';
-        //     try {
-        //         const body = JSON.parse(jqXHR.responseText);
-        //         if (body?.error) message = body.error;
-        //     } catch (_) { /* response wasn't JSON — keep the default message */ }
-        //
-        //     this._showFeedback($dialog, message, false);
-        //
-        //     // Auto-dismiss the error message after a delay
-        //     this._feedbackTimer = setTimeout(() => {
-        //         this._hideFeedback($dialog);
-        //     }, MESSAGE_DELAY);
-        // });
+        $.ajax({
+            url:    `${getContextPath()}/addCategory`,
+            method: 'POST',
+            data:   { category: payload.category },
+        })
+        .done(() => {
+            this._setSubmitting($dialog, false);
+            this._showFeedback($dialog, 'Category added successfully!', true);
+
+            loadCategories($("#add-book-dialog, #edit-book-dialog"));
+
+            // Notify parent and close after a short delay so the user sees the message
+            this._feedbackTimer = setTimeout(() => {
+                this.options.onSuccess?.();
+                this._dialog.close();
+            }, CLOSE_DELAY);
+        })
+        .fail((jqXHR) => {
+            this._setSubmitting($dialog, false);
+
+            // Try to extract the server's error message from the JSON body
+            let message = 'Something went wrong. Please try again.';
+            try {
+                const body = JSON.parse(jqXHR.responseText);
+                if (body?.error) message = body.error;
+            } catch (_) { /* response wasn't JSON — keep the default message */ }
+
+            this._showFeedback($dialog, message, false);
+
+            // Auto-dismiss the error message after a delay
+            this._feedbackTimer = setTimeout(() => {
+                this._hideFeedback($dialog);
+            }, MESSAGE_DELAY);
+        });
     }
 
     // ── Feedback bar ──────────────────────────────────────────────────────────

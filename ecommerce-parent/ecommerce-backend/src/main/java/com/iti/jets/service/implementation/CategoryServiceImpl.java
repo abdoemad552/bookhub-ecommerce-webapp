@@ -83,7 +83,7 @@ public class CategoryServiceImpl extends ContextHandler implements CategoryServi
     public BaseResponse<Void> addCategory(String name) {
         return executeInContext(() -> {
             Optional<Category> catOpt = categoryRepository.findByName(name);
-            if(catOpt.isEmpty()){
+            if(catOpt.isPresent()){
                 return ResponseFactory.failure("This category already exists");
             }
 

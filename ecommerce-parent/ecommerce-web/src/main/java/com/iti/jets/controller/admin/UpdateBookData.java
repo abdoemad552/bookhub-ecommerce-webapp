@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("updateBookData")
+@WebServlet("/updateBookData")
 public class UpdateBookData extends HttpServlet {
 
     BookService bookService;
@@ -28,7 +28,7 @@ public class UpdateBookData extends HttpServlet {
         String newStock = req.getParameter("newStock");
         String bookIdStr = req.getParameter("bookId");
 
-        if(newPrice != null && newStock != null && bookIdStr != null){
+        if (newPrice != null && newStock != null && bookIdStr != null){
             Long bookId = Long.parseLong(bookIdStr);
             bookService.updateBookData(bookId, newPrice, newStock);
         }

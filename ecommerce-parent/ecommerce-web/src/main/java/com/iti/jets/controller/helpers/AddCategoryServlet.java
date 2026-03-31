@@ -25,17 +25,22 @@ public class AddCategoryServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String name = req.getParameter("categoryName");
+    protected void doPost(
+        HttpServletRequest req,
+        HttpServletResponse resp
+    ) throws ServletException, IOException {
+        String name = req.getParameter("category");
+
         BaseResponse<Void> res = categoryService.addCategory(name);
 
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
         if(res.isSuccess()){
-            jsonObjectBuilder.add("sucess", "true");
+            jsonObjectBuilder.add("success", "true");
+            resp.getWriter().write(jsonObjectBuilder.build().toString());
         }else{
-            jsonObjectBuilder.add("failure", res.getMessage());
+            resp.setStatus(HttpServletResponse.SC_CONFLICT);
+            jsonObjectBuilder.add("error", res.getMessage());
+            resp.getWriter().write(jsonObjectBuilder.build().toString());
         }
-
-        resp.getWriter().write(jsonObjectBuilder.build().toString());
     }
 }
