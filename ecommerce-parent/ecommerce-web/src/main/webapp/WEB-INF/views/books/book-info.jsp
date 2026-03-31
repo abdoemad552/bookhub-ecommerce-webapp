@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/tailwind.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/fonts.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/book-info.css">
     <script src="${pageContext.request.contextPath}/assets/js/jquery/jquery.js"></script>
 </head>
 <body class="font-google-sans antialiased">
@@ -153,7 +154,7 @@
                             </div>
                             <div>
                                 <p class="text-sm sm:text-base font-semibold text-foreground">Free Shipping</p>
-                                <p class="text-xs sm:text-[0.92rem] text-muted-foreground">On orders over 50 EGP</p>
+                                <p class="text-xs sm:text-[0.92rem] text-muted-foreground">On any orders</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
