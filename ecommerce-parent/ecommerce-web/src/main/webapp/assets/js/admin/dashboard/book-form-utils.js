@@ -504,41 +504,32 @@ export function validateAddBookForm($dialog) {
     };
 }
 
-export function validateEditBookForm($dialog) {
+export function validateAddCategoryForm($dialog) {
     clearErrors($dialog);
     let ok = true;
 
-    // ── ISBN ──────────────────────────────────────────────────────────────────
-    // Required. Accepts ISBN-10 or ISBN-13, with or without hyphens/spaces.
-    // The check digit is mathematically verified.
+    const category = $dialog.find('#category').val() ?? '';
 
-    const isbnRaw    = $dialog.find('#book-isbn').val().trim();
-    let   isbnNorm   = '';
-
-    if (!isbnRaw) {
-        fieldError($dialog, 'book-isbn', 'ISBN is required.');
-        ok = false;
-    } else {
-        const isbnResult = validateISBN(isbnRaw);
-        if (!isbnResult.ok) {
-            fieldError($dialog, 'book-isbn', isbnResult.reason);
-            ok = false;
-        } else {
-            isbnNorm = isbnResult.normalized;
-        }
-    }
-
-    // ── Title ─────────────────────────────────────────────────────────────────
-
-    const title = $dialog.find('#book-title').val().trim();
-
-    if (!title) {
-        fieldError($dialog, 'book-title', 'Title is required.');
-        ok = false;
-    } else if (title.length > TITLE_MAX_LENGTH) {
-        fieldError($dialog, 'book-title', `Title must be ${TITLE_MAX_LENGTH} characters or fewer.`);
+    if (!category.trim()) {
+        fieldError($dialog, 'category', 'Please enter a valid category.');
         ok = false;
     }
+
+    if (!ok) {
+        const $first = $dialog.find('.is-invalid').first()[0];
+        if ($first) $first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return { ok: false, payload: null };
+    }
+
+    return {
+        ok: true,
+        payload: { category }
+    };
+}
+
+export function validateEditBookForm($dialog) {
+    clearErrors($dialog);
+    let ok = true;
 
     // ── Price ─────────────────────────────────────────────────────────────────
 
@@ -609,86 +600,6 @@ export function validateEditBookForm($dialog) {
         ok = false;
     }
 
-    // ── Publish date ──────────────────────────────────────────────────────────
-
-    const publishDateRaw    = $dialog.find('#book-publish-date').val();
-    const publishDateResult = validatePublishDate(publishDateRaw);
-    let   publishDate       = '';
-
-    if (!publishDateResult.ok) {
-        fieldError($dialog, 'book-publish-date', publishDateResult.reason);
-        ok = false;
-    } else {
-        publishDate = publishDateRaw;
-    }
-
-    // ── Description (optional) ────────────────────────────────────────────────
-
-    const descriptionRaw = $dialog.find('#book-description').val().trim();
-    let   description    = null;
-
-    if (descriptionRaw) {
-        if (descriptionRaw.length > DESCRIPTION_MAX_LENGTH) {
-            fieldError(
-                $dialog,
-                'book-description',
-                `Description must be ${DESCRIPTION_MAX_LENGTH} characters or fewer ` +
-                `(currently ${descriptionRaw.length}).`,
-            );
-            ok = false;
-        } else {
-            description = descriptionRaw;
-        }
-    }
-
-    // ── Authors ───────────────────────────────────────────────────────────────
-
-    const authors        = [];
-    const seenAuthorKeys = new Set();
-    let   authorErrors   = false;
-
-    $dialog.find('#authors-list .author-row').each(function () {
-        const $input = $(this).find('input');
-        const name   = $input.val().trim();
-
-        if (!name) return; // silently skip blank rows
-
-        if (!isPlausibleHumanName(name)) {
-            $input.addClass('is-invalid').attr('aria-invalid', 'true');
-            const $rowErr = $(this).find('[data-error]');
-            if ($rowErr.length) {
-                $rowErr.text(`"${name}" does not look like a valid author name.`).removeClass('hidden');
-            }
-            authorErrors = true;
-            ok = false;
-            return;
-        }
-
-        const key = name.toLowerCase().replace(/\s+/g, ' ');
-        if (seenAuthorKeys.has(key)) {
-            $input.addClass('is-invalid').attr('aria-invalid', 'true');
-            authorErrors = true;
-            ok = false;
-            return;
-        }
-
-        seenAuthorKeys.add(key);
-        authors.push(name);
-    });
-
-    if (authors.length === 0 && !authorErrors) {
-        const $firstAuthorInput = $dialog.find('#authors-list .author-row:first-child input');
-        $firstAuthorInput.addClass('is-invalid').attr('aria-invalid', 'true');
-        fieldError($dialog, 'book-author-1', 'At least one author is required.');
-        ok = false;
-    }
-
-    if (authors.length > AUTHORS_MAX) {
-        ok = false;
-        $dialog.find('#authors-list .author-row').last().find('input')
-            .addClass('is-invalid').attr('aria-invalid', 'true');
-    }
-
     // ── Scroll to first error & return ────────────────────────────────────────
 
     if (!ok) {
@@ -700,19 +611,11 @@ export function validateEditBookForm($dialog) {
     return {
         ok: true,
         payload: {
-            isbn: isbnNorm,
-            title,
-            description,
             pages,
             price,
             stockQuantity,
-            publishDate,
             bookType,
             category,
-            authors,
-            // imageUrl is passed through from the hidden #book-image-url field by the
-            // caller (edit-book-dialog.js) — it is not validated here because the
-            // edit form never touches it; cover changes go through the table thumbnail.
         },
     };
 }

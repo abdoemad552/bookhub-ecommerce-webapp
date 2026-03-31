@@ -1,99 +1,120 @@
 /**
- * edit-book-dialog.js
- * Manages the "Edit Book" dialog.
- *
- * Usage:
- *   import { EditBookDialog } from './editBookDialog.js';
- *   const editDialog = new EditBookDialog({ onSuccess: () => refreshTable() });
- *   editDialog.init();              // call once after the dialog HTML is in the DOM
- *   editDialog.openWith(bookData);  // pass the book object to pre-fill the form
- *   editDialog.destroy();           // call when the page/tab unmounts
+ * addBookDialog.js
+ * Manages the "Add New Book" dialog.
  */
 
-import { BookDialog } from './book-dialog.js';
+import { BookDialog }        from './book-dialog.js';
 import {
     clearErrors,
+    validateAddBookForm,
     bindAuthorControls,
     unbindAuthorControls,
     resetAuthorRows,
-    populateBookForm, validateEditBookForm, loadCategories,
+    bindImageUpload,
+    unbindImageUpload,
+    resetImageUpload,
+    loadCategories, validateAddCategoryForm,
 } from './book-form-utils.js';
 import { getContextPath } from '../../util.js';
 
 const CLOSE_DELAY   = 1800;  // ms to wait after success before closing
 const MESSAGE_DELAY = 3500;  // ms before error message fades out
 
-export class EditBookDialog {
+export class AddCategoryDialog {
     /**
-     * @param {Object} [options]
-     * @param {Function} [options.onSuccess]  — called with updated book payload after save
+     * @param {Object}   [options]
+     * @param {Function} [options.onSuccess]  — called after a successful save
      */
     constructor(options = {}) {
         this.options        = options;
         this._dialog        = null;
-        this._feedbackTimer = null;
+        this._feedbackTimer = null;  // tracks auto-dismiss timeout
     }
 
-    // ── Lifecycle ────────────────────────────────────────────────────────────
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     init() {
-        this._dialog = new BookDialog('#edit-book-dialog', {
+        this._dialog = new BookDialog('#add-category-dialog', {
             onClose: () => this._reset(),
         });
 
-        const $dialog = $('#edit-book-dialog');
+        const $dialog = $('#add-category-dialog');
 
-        loadCategories($dialog);
-
-        // Submit
-        $dialog.on('click.editBook', '#submit-btn', () => this._submit());
+        $dialog.on('click.addCategory', '#submit-btn', () => this._submit());
+        $(document).on('click.addCategory', '#open-add-category-modal-btn', () => this._dialog.open());
     }
 
     destroy() {
         this._clearFeedbackTimer();
-        const $dialog = $('#edit-book-dialog');
-        $dialog.off('click.editBook');
+        const $dialog = $('#add-category-dialog');
+        $dialog.off('click.addCategory');
+        $(document).off('click.addCategory');
         this._dialog = null;
     }
 
-    // ── Public ────────────────────────────────────────────────────────────────
-
-    /**
-     * Pre-fills the form with existing book data then opens the dialog.
-     * @param {Object} book — shape matches BookResponseDTO (id, title, authors, price, …)
-     */
-    openWith(book) {
-        const $dialog = $('#edit-book-dialog');
-        this._reset();                   // clear any previous state first
-        populateBookForm($dialog, book); // fill fields from the book object
-        this._dialog.open();
-    }
-
-    // ── Private ──────────────────────────────────────────────────────────────
+    // ── Submit ────────────────────────────────────────────────────────────────
 
     _submit() {
-        const $dialog         = $('#edit-book-dialog');
-        const { ok, payload } = validateEditBookForm($dialog);
+        const $dialog         = $('#add-category-dialog');
+        const { ok, payload } = validateAddCategoryForm($dialog);
+        console.log(ok, payload);
         if (!ok) return;
 
-        const bookId = $dialog.find('#book-id').val();
+        // Disable submit while the request is in flight
+        this._setSubmitting($dialog, true);
 
-        // TODO: replace with your real API call, e.g.:
+
+        // const formData = new FormData();
+        // formData.append('isbn',          payload.isbn);
+        // formData.append('title',         payload.title);
+        // formData.append('price',         payload.price);
+        // formData.append('stockQuantity', payload.stockQuantity);
+        // formData.append('pages',         payload.pages);
+        // formData.append('category',      payload.category);
+        // formData.append('bookType',      payload.bookType);
+        // formData.append('publishDate',   payload.publishDate);
+        //
+        // if (payload.description) formData.append('description', payload.description);
+        // if (payload.imageFile)   formData.append('image', payload.imageFile);
+        //
+        // payload.authors.forEach(name => formData.append('authors', name));
+        //
+        // console.log(payload);
+        //
         // $.ajax({
-        //     url: `${getContextPath()}/admin/books/${bookId}`,
-        //     method: 'PUT',
-        //     contentType: 'application/json',
-        //     data: JSON.stringify(payload),
-        //     success: (response) => {
-        //         this.options.onSuccess?.(response);
+        //     url:         `${getContextPath()}/admin/books`,
+        //     method:      'POST',
+        //     data:        formData,
+        //     contentType: false,
+        //     processData: false,
+        // })
+        // .done(() => {
+        //     this._setSubmitting($dialog, false);
+        //     this._showFeedback($dialog, 'Book added successfully!', true);
+        //
+        //     // Notify parent and close after a short delay so the user sees the message
+        //     this._feedbackTimer = setTimeout(() => {
+        //         this.options.onSuccess?.();
         //         this._dialog.close();
-        //     },
-        //     error: () => { /* handle error */ }
+        //     }, CLOSE_DELAY);
+        // })
+        // .fail((jqXHR) => {
+        //     this._setSubmitting($dialog, false);
+        //
+        //     // Try to extract the server's error message from the JSON body
+        //     let message = 'Something went wrong. Please try again.';
+        //     try {
+        //         const body = JSON.parse(jqXHR.responseText);
+        //         if (body?.error) message = body.error;
+        //     } catch (_) { /* response wasn't JSON — keep the default message */ }
+        //
+        //     this._showFeedback($dialog, message, false);
+        //
+        //     // Auto-dismiss the error message after a delay
+        //     this._feedbackTimer = setTimeout(() => {
+        //         this._hideFeedback($dialog);
+        //     }, MESSAGE_DELAY);
         // });
-
-        console.log(`✏️ Edit book [${bookId}] payload:`, payload);
-        this.options.onSuccess?.({ id: bookId, ...payload });
-        this._dialog.close();
     }
 
     // ── Feedback bar ──────────────────────────────────────────────────────────
@@ -102,7 +123,7 @@ export class EditBookDialog {
      * Injects (or updates) a feedback bar directly above the footer.
      *
      * Success bar: green, closes after CLOSE_DELAY.
-     * Error bar:   red,   auto-hides after MESSAGE_DELAY, stays dismissible.
+     * Error bar:   red,   auto-hides after MESSAGE_DELAY, stays clickable.
      *
      * @param {jQuery}  $dialog
      * @param {string}  message
@@ -110,7 +131,7 @@ export class EditBookDialog {
      */
     _showFeedback($dialog, message, isSuccess) {
         this._clearFeedbackTimer();
-        this._hideFeedback($dialog);
+        this._hideFeedback($dialog);  // remove any existing bar immediately
 
         const icon = isSuccess
             ? /* checkmark */ `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
@@ -181,12 +202,12 @@ export class EditBookDialog {
                 .html(`
                     <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg"
                          fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                        <circle class="opacity-25" cx="12" cy="12" r="10"
-                                stroke="currentColor" stroke-width="4"/>
-                        <path class="opacity-75" fill="currentColor"
-                              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                      <circle class="opacity-25" cx="12" cy="12" r="10"
+                              stroke="currentColor" stroke-width="4"/>
+                      <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                     </svg>
-                    Saving...`);
+                    Adding...`);
         } else {
             $btn.prop('disabled', false)
                 .html(`
@@ -196,7 +217,7 @@ export class EditBookDialog {
                          aria-hidden="true">
                         <path d="M5 12h14"/><path d="M12 5v14"/>
                     </svg>
-                    Save Changes`);
+                    Add`);
         }
     }
 
@@ -204,9 +225,8 @@ export class EditBookDialog {
 
     _reset() {
         this._clearFeedbackTimer();
-        const $dialog = $('#edit-book-dialog');
-        $dialog.find('#book-form')[0].reset();
-        $dialog.find('#book-id').val('');
+        const $dialog = $('#add-category-dialog');
+        $dialog.find('#category-form')[0].reset();
         this._hideFeedback($dialog);
         clearErrors($dialog);
     }

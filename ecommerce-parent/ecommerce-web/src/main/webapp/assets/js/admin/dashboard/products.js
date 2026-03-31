@@ -8,10 +8,12 @@ import { BooksTable }      from './books-table.js';
 import { AddBookDialog }   from './add-book-dialog.js';
 import { EditBookDialog }  from './edit-book-dialog.js';
 import {showFeedbackMessage} from "../../common/book-card.js";
+import {AddCategoryDialog} from "./add-category-dialog.js";
 
 let table      = null;
 let addDialog  = null;
 let editDialog = null;
+let addCategoryDialog = null;
 
 export async function initProducts() {
     destroyProducts();
@@ -49,6 +51,12 @@ export async function initProducts() {
         onSuccess: () => table.reload(),
     });
     editDialog.init();
+
+    // ── Add Category dialog ───────────────────────────────────────────────────────────
+    addCategoryDialog = new AddCategoryDialog({
+        onSuccess: () => table.reload(),
+    });
+    addCategoryDialog.init();
 }
 
 export function destroyProducts() {
