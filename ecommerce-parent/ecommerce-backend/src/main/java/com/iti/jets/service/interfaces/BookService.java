@@ -33,4 +33,6 @@ public interface BookService extends BaseService<Book, Long> {
     PageResponseDTO<BookCardDTO> findAuthoredBooks(Long authorId, int page, int size);
 
     Long countAuthoredBooks(Long authorId);
+
+    boolean updateBookData(Long bookId, String newPrice, String newStock);
 }
