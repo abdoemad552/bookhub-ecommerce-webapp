@@ -58,16 +58,6 @@ public class UserMapper {
                 .build();
     }
 
-    public UserDetailsDTO toUserDetailsDTO(User user) {
-        if (user == null) return null;
-
-        return UserDetailsDTO.builder()
-                .user(toDTO(user))
-                .addresses(mapAddresses(user))
-                .interests(mapCategories(user))
-                .build();
-    }
-
     public AddressDTO toAddressDTO(Address address) {
         if (address == null) return null;
 
