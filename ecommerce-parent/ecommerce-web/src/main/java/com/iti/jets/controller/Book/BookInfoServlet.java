@@ -1,4 +1,4 @@
-package com.iti.jets.controller;
+package com.iti.jets.controller.Book;
 
 import com.iti.jets.model.dto.request.BookFilterDTO;
 import com.iti.jets.model.dto.response.BookCardDTO;

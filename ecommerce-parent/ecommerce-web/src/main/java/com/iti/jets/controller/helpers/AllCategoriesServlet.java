@@ -1,4 +1,4 @@
-package com.iti.jets.controller;
+package com.iti.jets.controller.helpers;
 
 import com.iti.jets.model.dto.response.CategoryDTO;
 import com.iti.jets.service.factory.ServiceFactory;

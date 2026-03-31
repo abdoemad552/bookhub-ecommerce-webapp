@@ -1,7 +1,6 @@
-package com.iti.jets.controller;
+package com.iti.jets.controller.Book;
 
 import com.iti.jets.controller.admin.AdminBooksServlet;
-import com.iti.jets.model.dto.response.AuthorStatsDTO;
 import com.iti.jets.model.dto.response.BookCardDTO;
 import com.iti.jets.model.dto.response.PageResponseDTO;
 import com.iti.jets.service.factory.ServiceFactory;

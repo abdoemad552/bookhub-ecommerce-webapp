@@ -1,4 +1,4 @@
-package com.iti.jets.controller;
+package com.iti.jets.controller.cart;
 
 import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.model.entity.Cart;

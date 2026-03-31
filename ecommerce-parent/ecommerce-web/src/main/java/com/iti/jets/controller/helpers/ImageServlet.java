@@ -1,9 +1,8 @@
-package com.iti.jets.controller;
+package com.iti.jets.controller.helpers;
 
 import com.iti.jets.model.dto.response.ImageResource;
 import com.iti.jets.service.extra.ImageService;
 import com.iti.jets.service.factory.ServiceFactory;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

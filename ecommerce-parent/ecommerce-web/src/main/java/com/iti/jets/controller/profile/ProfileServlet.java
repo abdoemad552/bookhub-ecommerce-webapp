@@ -1,4 +1,4 @@
-package com.iti.jets.controller;
+package com.iti.jets.controller.profile;
 
 import com.iti.jets.controller.admin.AdminBooksServlet;
 import com.iti.jets.model.dto.request.AddressRequestDTO;

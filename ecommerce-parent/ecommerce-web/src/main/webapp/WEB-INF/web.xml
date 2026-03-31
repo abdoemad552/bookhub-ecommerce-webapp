@@ -6,7 +6,7 @@
 
     <servlet>
         <servlet-name>FeaturedBooksServlet</servlet-name>
-        <servlet-class>com.iti.jets.controller.FeaturedBooksServlet</servlet-class>
+        <servlet-class>com.iti.jets.controller.helpers.FeaturedBooksServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
@@ -18,11 +18,11 @@
     </servlet>
     <servlet>
         <servlet-name>HomeServlet</servlet-name>
-        <servlet-class>com.iti.jets.controller.HomeServlet</servlet-class>
+        <servlet-class>com.iti.jets.controller.home.HomeServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ProfileServlet</servlet-name>
-        <servlet-class>com.iti.jets.controller.ProfileServlet</servlet-class>
+        <servlet-class>com.iti.jets.controller.profile.ProfileServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AdminDashboardServlet</servlet-name>
@@ -105,6 +105,4 @@
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/admin/*</url-pattern>
     </filter-mapping>
-
-
 </web-app>

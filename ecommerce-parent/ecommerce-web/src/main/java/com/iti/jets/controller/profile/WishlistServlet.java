@@ -1,4 +1,4 @@
-package com.iti.jets.controller;
+package com.iti.jets.controller.profile;
 
 import com.iti.jets.model.dto.response.UserDTO;
 import com.iti.jets.service.factory.ServiceFactory;
