@@ -138,6 +138,21 @@ public class BookServiceImpl extends ContextHandler implements BookService {
         return executeInContext(() -> bookRepository.countAuthoredBooks(authorId));
     }
 
+    @Override
+    public boolean updateBookData(Long bookId, String newPrice, String newStock) {
+        return executeInContext(() -> {
+           Optional<Book> bookOpt = bookRepository.findById(bookId);
+           if(bookOpt.isEmpty()) return false;
+
+           Book book = bookOpt.get();
+           book.setPrice(BigDecimal.valueOf(Double.parseDouble(newPrice)));
+           book.setStockQuantity(Integer.parseInt(newStock));
+           bookRepository.update(book);
+
+           return true;
+        });
+    }
+
     private Category findOrCreateCategory(String category) {
         return categoryRepository.findByName(category.trim())
             .orElseGet(() -> {

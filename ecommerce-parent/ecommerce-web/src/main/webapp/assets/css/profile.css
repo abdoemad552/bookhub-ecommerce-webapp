@@ -340,7 +340,7 @@ button.profile-tab.tab-active {
 .order-card {
     border-radius: 1rem !important;
     border: 1.5px solid var(--border);
-    background: var(--background);
+    background: transparent;
     padding: 1rem 1.25rem;
     display: block;
     text-decoration: none;
@@ -366,8 +366,7 @@ button.profile-tab.tab-active {
 }
 
 .order-card:hover .order-card-arrow {
-    background: var(--primary);
-    border-color: var(--primary);
+    background: var(--accent);
     color: var(--primary-foreground);
 }
 

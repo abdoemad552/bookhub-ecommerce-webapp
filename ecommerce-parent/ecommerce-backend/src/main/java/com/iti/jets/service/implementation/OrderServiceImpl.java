@@ -155,6 +155,14 @@ public class OrderServiceImpl extends ContextHandler implements OrderService {
             orderRepository.update(order);
             userRepository.update(order.getUser());
 
+            // Update book stock quantity
+            Set<OrderItem> items = order.getItems();
+            for(var item : items){
+                item.getBook().setStockQuantity(item.getBook().getStockQuantity() + item.getQuantity());
+                item.getBook().setSoldQuantity(item.getBook().getSoldQuantity() - item.getQuantity());
+                bookRepository.update(item.getBook());
+            }
+
             return ResponseFactory.success("Order cancelled successfully");
         });
     }

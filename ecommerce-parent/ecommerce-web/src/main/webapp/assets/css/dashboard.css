@@ -298,3 +298,382 @@ dialog.is-open::backdrop {
     width: 16px;
     height: 16px;
 }
+
+
+/* ══════════════════════════════════════════════════════
+   OVERVIEW PAGE — 3-row dashboard layout
+   Supports: overview.jsp stat cards, panels, inventory
+══════════════════════════════════════════════════════ */
+
+/* ── Outer grid ─────────────────────────────────────── */
+.overview-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* ══════════════════════════════
+   ROW 1 — Stat Cards
+══════════════════════════════ */
+.overview-row--stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+@media (min-width: 768px) {
+    .overview-row--stats {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+}
+
+/* Card shell */
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 30px 30px 30px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    transition: box-shadow 0.25s ease, transform 0.22s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+}
+
+/* Decorative background orb */
+.stat-card__orb {
+    position: absolute;
+    top: -28px;
+    right: -28px;
+    width: 99px;
+    height: 99px;
+    border-radius: 50%;
+    opacity: 0.12;
+    pointer-events: none;
+    transition: transform 0.5s ease;
+}
+
+.stat-card:hover .stat-card__orb {
+    transform: scale(1.5);
+}
+
+/* Icon container */
+.stat-card__icon-wrap {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Text block */
+.stat-card__body { position: relative; }
+
+.stat-card__value {
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    font-weight: 800;
+    color: var(--foreground);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 0 0 3px;
+}
+
+.stat-card__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted-foreground);
+    margin: 0;
+}
+
+/* Colour themes — orb + icon */
+.stat-card--emerald .stat-card__orb,
+.stat-card--emerald .stat-card__icon-wrap {
+    background: linear-gradient(135deg, #10b981, #0d9488);
+}
+
+.stat-card--blue .stat-card__orb,
+.stat-card--blue .stat-card__icon-wrap {
+    background: linear-gradient(135deg, #3b82f6, #4f46e5);
+}
+
+.stat-card--violet .stat-card__orb,
+.stat-card--violet .stat-card__icon-wrap {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.stat-card--amber .stat-card__orb,
+.stat-card--amber .stat-card__icon-wrap {
+    background: linear-gradient(135deg, #f59e0b, #ea580c);
+}
+
+/* Plug stat cards into the existing card-pop animation */
+.overview-row--stats .stat-card {
+    opacity: 0;
+    animation: card-pop 0.3s cubic-bezier(0.34, 1.20, 0.64, 1) forwards;
+}
+
+.overview-row--stats .stat-card:nth-child(1) { animation-delay: 0.06s; }
+.overview-row--stats .stat-card:nth-child(2) { animation-delay: 0.12s; }
+.overview-row--stats .stat-card:nth-child(3) { animation-delay: 0.18s; }
+.overview-row--stats .stat-card:nth-child(4) { animation-delay: 0.24s; }
+
+
+/* ══════════════════════════════
+   ROW 2 — Mid (categories + roles)
+══════════════════════════════ */
+.overview-row--mid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+}
+
+@media (min-width: 640px) {
+    .overview-row--mid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+/* ── Shared panel shell ─────────────────────────────── */
+.panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px;
+    transition: box-shadow 0.25s ease;
+}
+
+.panel:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Panel header: coloured dot + label */
+.panel__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.panel__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.panel__dot--blue    { background: #3b82f6; }
+.panel__dot--violet  { background: #8b5cf6; }
+.panel__dot--amber   { background: #f59e0b; }
+.panel__dot--emerald { background: #10b981; }
+
+.panel__title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted-foreground);
+    margin: 0;
+}
+
+/* ── Top Categories panel ───────────────────────────── */
+.categories-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.category-row__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+}
+
+.category-row__name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.category-row__pct {
+    font-size: 0.79rem;
+    font-weight: 700;
+    color: var(--muted-foreground);
+    font-variant-numeric: tabular-nums;
+}
+
+.category-row__track {
+    height: 7px;
+    background: var(--muted);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.category-row__fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.6s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+.fill--blue    { background: linear-gradient(90deg, #3b82f6, #6366f1); }
+.fill--emerald { background: linear-gradient(90deg, #10b981, #0d9488); }
+.fill--violet  { background: linear-gradient(90deg, #8b5cf6, #a855f7); }
+
+/* ── User Roles panel ───────────────────────────────── */
+.roles-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100% - 42px); /* full height minus the panel header */
+}
+
+.role-divider {
+    width: 1px;
+    height: 56px;
+    background: var(--border);
+    margin: 0 28px;
+    flex-shrink: 0;
+}
+
+.role-item { text-align: center; }
+
+.role-item__icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.13);
+}
+
+.role-item__icon--violet { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+.role-item__icon--blue   { background: linear-gradient(135deg, #3b82f6, #4f46e5); }
+
+.role-item__count {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--foreground);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin: 0 0 4px;
+}
+
+.role-item__label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted-foreground);
+    margin: 0;
+}
+
+
+/* ══════════════════════════════
+   ROW 3 — Inventory Status
+══════════════════════════════ */
+.panel--inventory {
+    padding: 20px 28px;
+}
+
+.inventory-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0;
+}
+
+/* Vertical separator between items */
+.inv-separator {
+    width: 1px;
+    height: 44px;
+    background: var(--border);
+    flex-shrink: 0;
+    margin: 0 28px;
+}
+
+/* Stack vertically and hide separators on very small screens */
+@media (max-width: 480px) {
+    .inventory-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .inv-separator { display: none; }
+}
+
+.inv-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 140px;
+}
+
+/* Status dot with glow ring */
+.inv-item__indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.inv-item__indicator--emerald {
+    background: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.inv-item__indicator--amber {
+    background: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+}
+
+.inv-item__indicator--red {
+    background: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.inv-item__body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.inv-item__label {
+    font-size: 0.80rem;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+/* Count badge */
+.inv-item__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.79rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    width: fit-content;
+}
+
+.inv-item__badge--emerald { background: rgba(16, 185, 129, 0.10); color: #059669; }
+.inv-item__badge--amber   { background: rgba(245, 158, 11, 0.10); color: #d97706; }
+.inv-item__badge--red     { background: rgba(239, 68,  68, 0.10); color: #dc2626; }

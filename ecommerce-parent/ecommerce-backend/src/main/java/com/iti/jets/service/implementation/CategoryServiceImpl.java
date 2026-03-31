@@ -2,6 +2,8 @@ package com.iti.jets.service.implementation;
 
 import com.iti.jets.mapper.CategoryMapper;
 import com.iti.jets.model.dto.response.CategoryDTO;
+import com.iti.jets.model.dto.response.factory.BaseResponse;
+import com.iti.jets.model.dto.response.factory.ResponseFactory;
 import com.iti.jets.model.entity.Category;
 import com.iti.jets.repository.interfaces.CategoryRepository;
 import com.iti.jets.service.generic.ContextHandler;
@@ -75,5 +77,27 @@ public class CategoryServiceImpl extends ContextHandler implements CategoryServi
     @Override
     public Set<Long> filterExists(Collection<Long> ids) {
         return executeInContext(() -> categoryRepository.filterExists(ids));
+    }
+
+    @Override
+    public BaseResponse<Void> addCategory(String name) {
+        return executeInContext(() -> {
+            Optional<Category> catOpt = categoryRepository.findByName(name);
+            if(catOpt.isEmpty()){
+                return ResponseFactory.failure("This category already exists");
+            }
+
+            if(name.isBlank()){
+                return ResponseFactory.failure("Category name is required");
+            }
+
+            Category category = Category.builder()
+                    .name(name)
+                    .build();
+
+            categoryRepository.save(category);
+
+            return ResponseFactory.success("Category added successfully");
+        });
     }
 }
