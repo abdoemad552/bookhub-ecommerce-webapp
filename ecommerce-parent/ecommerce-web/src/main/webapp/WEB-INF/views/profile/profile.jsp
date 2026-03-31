@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/order-payment-review.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/profile.css">
 
-    <script src="${pageContext.request.contextPath}/assets/js/jquery/jquery.js"></script>
-    <script type="module" src="${pageContext.request.contextPath}/assets/js/profile/profile.js"></script>
+  <script src="${pageContext.request.contextPath}/assets/js/jquery/jquery.js"></script>
+  <script type="module" src="${pageContext.request.contextPath}/assets/js/profile/profile.js"></script>
 </head>
 <body class="font-google-sans antialiased">
 <div class="min-h-screen bg-background">
@@ -59,53 +59,58 @@
 
           <%-- User identity --%>
           <div class="flex items-center gap-3 pb-4 border-b border-border">
-              <div class="flex flex-col items-center justify-center w-full gap-3">
-                  <div class="profile-avatar-wrap">
-                      <div class="profile-avatar">
-                          <button type="button"
-                                  data-upload-profile
-                                  data-user-id="${sessionScope.user.id}"
-                                  aria-label="Change profile image for ${sessionScope.user.username}"
-                                  class="group relative w-full h-full rounded overflow-hidden shrink-0 flex items-center justify-center text-muted-foreground cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-                              <c:choose>
-                                  <c:when test="${sessionScope.user.profilePicUrl != null}">
-                                      <img src="${pageContext.request.contextPath}/${sessionScope.user.profilePicUrl}" alt="Cover of ${sessionScope.user.username}" loading="lazy" class="w-full h-full object-cover rounded-full">
-                                  </c:when>
-                                  <c:otherwise>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                           fill="none" stroke="currentColor" stroke-width="1.6"
-                                           stroke-linecap="round" stroke-linejoin="round" class="text-primary">
-                                          <circle cx="12" cy="8" r="4"/>
-                                          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                                      </svg>
-                                  </c:otherwise>
-                              </c:choose>
-                              <!-- hover overlay -->
-                              <span class="absolute inset-0 bg-black/50 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none rounded-full"  aria-hidden="true">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"  fill="none" stroke="currentColor" stroke-width="2"  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <div class="flex flex-col items-center justify-center w-full gap-3">
+              <div class="profile-avatar-wrap">
+                <div class="profile-avatar">
+                  <button type="button"
+                          data-upload-profile
+                          data-user-id="${sessionScope.user.id}"
+                          aria-label="Change profile image for ${sessionScope.user.username}"
+                          class="group relative w-full h-full rounded overflow-hidden shrink-0 flex items-center justify-center text-muted-foreground cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                    <c:choose>
+                      <c:when test="${sessionScope.user.profilePicUrl != null}">
+                        <img src="${pageContext.request.contextPath}/${sessionScope.user.profilePicUrl}"
+                             alt="Cover of ${sessionScope.user.username}" loading="lazy"
+                             class="w-full h-full object-cover rounded-full">
+                      </c:when>
+                      <c:otherwise>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="1.6"
+                             stroke-linecap="round" stroke-linejoin="round" class="text-primary">
+                          <circle cx="12" cy="8" r="4"/>
+                          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                        </svg>
+                      </c:otherwise>
+                    </c:choose>
+                    <!-- hover overlay -->
+                    <span class="absolute inset-0 bg-black/50 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none rounded-full"
+                          aria-hidden="true">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                       fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                       stroke-linejoin="round" aria-hidden="true">
                                       <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/>
                                       <circle cx="12" cy="13" r="3"/>
                                   </svg>
                               </span>
-                          </button>
-                      </div>
-                  </div>
-                  <div class="min-w-0 flex-1 ">
-                      <c:choose>
-                          <c:when test="${not empty requestScope.profileUser.firstName or not empty requestScope.profileUser.lastName}">
-                              <p class="profile-user-name text-foreground truncate">
-                                  ${requestScope.profileUser.firstName} ${requestScope.profileUser.lastName}
-                              </p>
-                          </c:when>
-                          <c:otherwise>
-                              <p class="profile-user-name text-foreground truncate">
-                                  ${requestScope.profileUser.username}
-                              </p>
-                          </c:otherwise>
-                      </c:choose>
-                      <p class="profile-user-email text-muted-foreground truncate text-center">${requestScope.profileUser.username}</p>
-                  </div>
+                  </button>
+                </div>
               </div>
+              <div class="min-w-0 flex-1 ">
+                <c:choose>
+                  <c:when test="${not empty requestScope.profileUser.firstName or not empty requestScope.profileUser.lastName}">
+                    <p class="profile-user-name text-foreground truncate">
+                        ${requestScope.profileUser.firstName} ${requestScope.profileUser.lastName}
+                    </p>
+                  </c:when>
+                  <c:otherwise>
+                    <p class="profile-user-name text-foreground truncate">
+                        ${requestScope.profileUser.username}
+                    </p>
+                  </c:otherwise>
+                </c:choose>
+                <p class="profile-user-email text-muted-foreground truncate text-center">${requestScope.profileUser.username}</p>
+              </div>
+            </div>
           </div>
 
           <%-- Quick stats --%>
@@ -135,9 +140,9 @@
               Profile
             </button>
             <button type="button" data-tab="interests-info" class="profile-tab">
-              <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke-width="2" fill="currentColor"
+                   class="bi bi-filter" viewBox="0 0 16 16">
+                <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
               </svg>
               Interests
             </button>
@@ -497,7 +502,14 @@
                       <div class="flex items-start justify-between gap-2">
                         <p class="wishlist-card-title">${book.title}</p>
                         <c:if test="${book.stockQuantity le 0}">
-                          <span class="shrink-0 text-xs bg-red-100 text-red-700 rounded-lg px-2 py-0.5 font-semibold">Out of stock</span>
+                          <span class="oos-badge shrink-0">
+                            <svg class="oos-icon" width="13" height="13" viewBox="0 0 13 13" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                              <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+                              <line x1="3.5" y1="3.5" x2="9.5" y2="9.5" stroke="currentColor" stroke-width="1.5"
+                                    stroke-linecap="round"/>
+                            </svg>
+                          </span>
                         </c:if>
                       </div>
 

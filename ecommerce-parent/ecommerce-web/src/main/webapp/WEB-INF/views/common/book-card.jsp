@@ -45,7 +45,6 @@
               <line x1="3.5" y1="3.5" x2="9.5" y2="9.5" stroke="currentColor" stroke-width="1.5"
                     stroke-linecap="round"/>
             </svg>
-<%--            <span class="oos-text">Out of Stock</span>--%>
           </span>
         </c:if>
       </div>
