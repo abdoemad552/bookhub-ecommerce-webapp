@@ -1,0 +1,903 @@
+/* ── Table wrapper with horizontal scroll ── */
+.um-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border);
+}
+
+.um-table-wrapper::-webkit-scrollbar { height: 4px; }
+.um-table-wrapper::-webkit-scrollbar-track { background: transparent; }
+.um-table-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 9999px; }
+
+/* ── Table base ── */
+.um-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.um-table thead tr {
+    border-bottom: 1px solid var(--border);
+    background: var(--muted);
+}
+
+.um-table thead th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+}
+
+.um-table tbody tr {
+    transition: background 0.15s ease;
+}
+.um-table tbody td {
+    border-bottom: 1px solid var(--border);
+}
+.um-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.um-table tbody tr:hover { background: var(--accent)/40; }
+
+.um-table td {
+    padding: 0.875rem 1rem;
+    color: var(--foreground);
+    vertical-align: middle;
+}
+
+.um-table-wrapper  table tbody tr:hover {
+    background: rgba(120, 53, 15, .03);
+}
+
+/* ── Avatar ── */
+.um-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid var(--border);
+}
+
+.um-avatar-fallback {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #fff;
+    user-select: none;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+/* Gradient cycle for avatar backgrounds */
+.um-avatar-fallback[data-color="0"] { background: var(--accent); }
+.um-avatar-fallback[data-color="1"] { background: var(--accent); }
+.um-avatar-fallback[data-color="2"] { background: var(--accent); }
+.um-avatar-fallback[data-color="3"] { background: var(--accent); }
+.um-avatar-fallback[data-color="4"] { background: var(--accent); }
+.um-avatar-fallback[data-color="5"] { background: var(--accent); }
+.um-avatar-fallback[data-color="6"] { background: var(--accent); }
+.um-avatar-fallback[data-color="7"] { background: var(--accent); }
+.um-avatar-fallback[data-color="8"] { background: var(--accent); }
+.um-avatar-fallback[data-color="9"] { background: var(--accent); }
+
+/* ── Role badges ── */
+.um-role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.um-role-badge.role-admin {
+    background: rgb(239 68 68 / 0.10);
+    color: #dc2626;
+    border: 1px solid rgb(239 68 68 / 0.25);
+}
+
+.um-role-badge.role-user {
+    background: rgb(16 185 129 / 0.10);
+    color: #059669;
+    border: 1px solid rgb(16 185 129 / 0.25);
+}
+
+/* ── Action button ── */
+.um-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 0.6rem;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--foreground);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.um-action-btn:hover {
+    border-color: oklch(0.35 0.08 30);
+    color: oklch(0.35 0.08 30);
+    background: oklch(0.35 0.08 30 / 0.06);
+}
+
+.um-action-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+/* ── Pagination ── */
+.um-page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.um-page-btn:hover:not(:disabled) {
+    border-color: oklch(0.35 0.08 30);
+    color: oklch(0.35 0.08 30);
+    background: oklch(0.35 0.08 30 / 0.06);
+}
+
+.um-page-btn.active {
+    border-color: oklch(0.35 0.08 30);
+    background: oklch(0.35 0.08 30);
+    color: #fff;
+}
+
+.um-page-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* ─── Row entrance animation ── */
+@keyframes um-row-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.um-table tbody tr { animation: um-row-in 0.22s ease both; }
+.um-table tbody tr:nth-child(1)  { animation-delay: 0.03s; }
+.um-table tbody tr:nth-child(2)  { animation-delay: 0.06s; }
+.um-table tbody tr:nth-child(3)  { animation-delay: 0.09s; }
+.um-table tbody tr:nth-child(4)  { animation-delay: 0.12s; }
+.um-table tbody tr:nth-child(5)  { animation-delay: 0.15s; }
+.um-table tbody tr:nth-child(6)  { animation-delay: 0.18s; }
+.um-table tbody tr:nth-child(7)  { animation-delay: 0.21s; }
+.um-table tbody tr:nth-child(8)  { animation-delay: 0.24s; }
+.um-table tbody tr:nth-child(9)  { animation-delay: 0.27s; }
+.um-table tbody tr:nth-child(10) { animation-delay: 0.30s; }
+
+/* ─── Search bar ── */
+.um-search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.um-search-wrap svg {
+    position: absolute;
+    left: 12px;
+    width: 15px;
+    height: 15px;
+    color: var(--muted-foreground);
+    pointer-events: none;
+}
+
+.um-search-input {
+    height: 36px;
+    padding: 0 12px 0 36px;
+    border-radius: 0.6rem;
+    border: 1.5px solid var(--border);
+    background: var(--background);
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: var(--foreground);
+    width: 220px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.um-search-input::placeholder { color: var(--muted-foreground); }
+
+.um-search-input:focus {
+    outline: none;
+    border-color: oklch(0.35 0.08 30);
+    box-shadow: 0 0 0 3px oklch(0.35 0.08 30 / 0.10);
+}
+
+/* ─── Modal overlay ── */
+#um-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0,0,0,0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    transition: background 0.25s ease;
+    pointer-events: none;
+    opacity: 0;
+}
+
+#um-modal-backdrop.is-open {
+    background: rgba(0,0,0,0.45);
+    pointer-events: all;
+    opacity: 1;
+}
+
+/* ─── Modal panel ── */
+#um-modal-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90svh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 32px 72px rgba(0,0,0,0.18);
+    transform: scale(0.94) translateY(12px);
+    opacity: 0;
+    transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease;
+    overflow: hidden;
+}
+
+#um-modal-backdrop.is-open #um-modal-panel {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* ─── Hero banner ── */
+.um-modal-hero {
+    position: relative;
+    padding: 1.5rem 1.5rem 0;
+    background: linear-gradient(160deg, oklch(0.35 0.08 30 / 0.06) 0%, transparent 60%);
+    border-bottom: 1px solid var(--border);
+}
+
+.um-modal-hero-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.um-modal-hero-close:hover {
+    background: var(--muted);
+    color: var(--foreground);
+}
+
+/* Avatar ring */
+.um-modal-avatar-ring {
+    flex-shrink: 0;
+    padding: 3px;
+    border-radius: 50%;
+}
+
+.um-modal-avatar-ring .um-avatar,
+.um-modal-avatar-ring .um-avatar-fallback {
+    border: 2px solid var(--card) !important;
+}
+
+/* ─── Stats strip ── */
+.um-stats-strip {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 1.25rem;
+    padding: 0.875rem 0;
+    border-top: 1px solid var(--border);
+}
+
+.um-stat-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--border);
+    flex-shrink: 0;
+    margin: 0 1rem;
+}
+
+.um-stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.um-stat-pill svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: oklch(0.35 0.08 30);
+    opacity: 0.75;
+}
+
+.um-stat-pill-label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted-foreground);
+    line-height: 1;
+    margin-bottom: 3px;
+}
+
+.um-stat-pill-value {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--foreground);
+    line-height: 1;
+}
+
+/* ─── Scrollable body ── */
+#um-modal-body {
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+#um-modal-body::-webkit-scrollbar { width: 4px; }
+#um-modal-body::-webkit-scrollbar-track { background: transparent; }
+#um-modal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 9999px; }
+
+/* ─── Order cards ── */
+.um-order-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1.5px solid var(--border);
+    background: var(--background);
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.15s ease;
+}
+
+.um-order-card:hover {
+    border-color: oklch(0.35 0.08 30 / 0.5);
+    box-shadow: 0 4px 16px oklch(0.35 0.08 30 / 0.08);
+    transform: translateY(-1px);
+}
+
+.um-order-card:active { transform: translateY(0); }
+
+.um-order-card-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.um-order-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: oklch(0.35 0.08 30 / 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.um-order-icon svg {
+    width: 15px;
+    height: 15px;
+    color: oklch(0.35 0.08 30);
+}
+
+.um-order-code {
+    font-size: 0.83rem;
+    font-weight: 700;
+    color: var(--foreground);
+    display: block;
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+
+.um-order-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.um-order-date {
+    font-size: 0.68rem;
+    color: var(--muted-foreground);
+    font-weight: 500;
+}
+
+.um-order-card-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.um-order-total {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--foreground);
+}
+
+.um-order-arrow {
+    color: var(--muted-foreground);
+    opacity: 0.4;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.um-order-card:hover .um-order-arrow {
+    opacity: 1;
+    transform: translateX(2px);
+}
+
+.um-order-arrow svg { width: 14px; height: 14px; }
+
+/* ─── Order status badges ── */
+.um-order-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.um-order-status.status-delivered {
+    background: rgb(16 185 129 / 0.12);
+    color: #059669;
+    border: 1px solid rgb(16 185 129 / 0.25);
+}
+
+.um-order-status.status-processing {
+    background: rgb(245 158 11 / 0.12);
+    color: #d97706;
+    border: 1px solid rgb(245 158 11 / 0.25);
+}
+
+.um-order-status.status-cancelled {
+    background: rgb(239 68 68 / 0.12);
+    color: #dc2626;
+    border: 1px solid rgb(239 68 68 / 0.25);
+}
+
+/* ─── Modal footer ── */
+.um-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--border);
+    background: var(--muted);
+}
+
+.um-footer-close-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 1rem;
+    height: 38px;
+    border-radius: 0.6rem;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    font-family: inherit;
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    transition: border-color 0.18s ease, color 0.18s ease;
+}
+
+.um-footer-close-btn:hover {
+    border-color: var(--foreground);
+    color: var(--foreground);
+}
+
+/* Grant / Revoke button */
+.um-footer-role-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 1.25rem;
+    height: 38px;
+    border-radius: 0.6rem;
+    border: none;
+    font-family: inherit;
+    font-size: 0.83rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.um-footer-role-btn.grant {
+    background: oklch(0.35 0.08 30);
+    color: #fff;
+    box-shadow: 0 2px 12px oklch(0.35 0.08 30 / 0.30);
+}
+
+.um-footer-role-btn.grant:hover {
+    background: oklch(0.28 0.08 30);
+    box-shadow: 0 4px 18px oklch(0.35 0.08 30 / 0.40);
+    transform: translateY(-1px);
+}
+
+.um-footer-role-btn.revoke {
+    background: rgb(239 68 68 / 0.10);
+    color: #dc2626;
+    border: 1.5px solid rgb(239 68 68 / 0.25);
+}
+
+.um-footer-role-btn.revoke:hover {
+    background: rgb(239 68 68 / 0.18);
+    box-shadow: 0 2px 12px rgb(239 68 68 / 0.15);
+    transform: translateY(-1px);
+}
+
+.um-footer-role-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.um-footer-role-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ─── Empty / error state ── */
+.um-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 3rem 1rem;
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.um-empty-state svg { width: 36px; height: 36px; opacity: 0.4; }
+.um-empty-state.hidden { display: none !important; }
+/* ─── Order card wrap (holds card + cancel btn) ── */
+.um-order-card-wrap {
+    margin-bottom: 0.5rem;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+    background: var(--background);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.um-order-card-wrap:hover {
+    border-color: oklch(0.35 0.08 30 / 0.4);
+    box-shadow: 0 4px 16px oklch(0.35 0.08 30 / 0.07);
+}
+
+/* Override card's own border/bg since wrap owns them */
+.um-order-card-wrap .um-order-card {
+    border: none;
+    background: transparent;
+    margin-bottom: 0;
+    border-radius: 0;
+    transform: none !important; /* wrap handles hover lift */
+}
+
+.um-order-card-wrap:hover .um-order-card {
+    box-shadow: none;
+}
+
+/* ─── Cancel order button ── */
+.um-cancel-order-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-top: 1px solid rgb(239 68 68 / 0.15);
+    background: rgb(239 68 68 / 0.04);
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #dc2626;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+    letter-spacing: 0.01em;
+}
+
+.um-cancel-order-btn:hover {
+    background: rgb(239 68 68 / 0.10);
+    color: #b91c1c;
+}
+
+.um-cancel-order-btn svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+}
+
+.um-cancel-order-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Hide animation for cancel button after optimistic update */
+.um-cancel-order-btn--hiding {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+/* ─── Toast container ── */
+#um-toast-container {
+    position: fixed;
+    top: 1.25rem;
+    right: 1.25rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    pointer-events: none;
+}
+
+/* ─── Toast ── */
+.um-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1.5px solid transparent;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+    font-size: 0.83rem;
+    font-weight: 600;
+    min-width: 240px;
+    max-width: 340px;
+    pointer-events: all;
+    opacity: 0;
+    transform: translateY(-12px) scale(0.97);
+    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    font-family: inherit;
+}
+
+.um-toast.um-toast-show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.um-toast.um-toast-hide {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.um-toast-success {
+    background: #f0fdf4;
+    border-color: rgb(16 185 129 / 0.30);
+    color: #065f46;
+}
+
+.um-toast-error {
+    background: #fef2f2;
+    border-color: rgb(239 68 68 / 0.30);
+    color: #991b1b;
+}
+
+.um-toast-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+.um-toast-icon svg {
+    width: 15px;
+    height: 15px;
+}
+
+.um-toast-msg {
+    flex: 1;
+    line-height: 1.4;
+}
+
+.um-toast-close {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.15s ease;
+    padding: 0;
+    color: inherit;
+}
+
+.um-toast-close:hover { opacity: 1; }
+.um-toast-close svg { width: 12px; height: 12px; }
+
+/* ─── Cancel confirmation dialog ── */
+#um-confirm-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9998; /* just below toast (9999) but above user modal (50) */
+    background: rgba(0, 0, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+#um-confirm-backdrop.is-open {
+    background: rgba(0, 0, 0, 0.5);
+    pointer-events: all;
+    opacity: 1;
+}
+
+#um-confirm-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1.125rem;
+    width: 100%;
+    max-width: 360px;
+    padding: 1.75rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.20);
+    transform: scale(0.93) translateY(10px);
+    opacity: 0;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+}
+
+#um-confirm-backdrop.is-open #um-confirm-panel {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* Icon circle */
+.um-confirm-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgb(239 68 68 / 0.10);
+    border: 1.5px solid rgb(239 68 68 / 0.20);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+}
+
+.um-confirm-icon-wrap svg {
+    width: 22px;
+    height: 22px;
+    color: #dc2626;
+}
+
+#um-confirm-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0 0 0.5rem;
+    font-family: inherit;
+}
+
+#um-confirm-desc {
+    font-size: 0.83rem;
+    color: var(--muted-foreground);
+    line-height: 1.5;
+    margin: 0 0 1.5rem;
+    font-family: inherit;
+}
+
+.um-confirm-actions {
+    display: flex;
+    gap: 0.625rem;
+    width: 100%;
+}
+
+.um-confirm-btn {
+    flex: 1;
+    height: 40px;
+    border-radius: 0.65rem;
+    font-family: inherit;
+    font-size: 0.83rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    border: 1.5px solid transparent;
+}
+
+.um-confirm-btn--no {
+    background: var(--muted);
+    border-color: var(--border);
+    color: var(--foreground);
+}
+
+.um-confirm-btn--no:hover {
+    background: var(--accent);
+    border-color: var(--border);
+    color: #fff;
+}
+
+.um-confirm-btn--yes {
+    background: #dc2626;
+    color: #fff;
+    box-shadow: 0 2px 10px rgb(239 68 68 / 0.25);
+}
+
+.um-confirm-btn--yes:hover {
+    background: #ba1e1e;
+    box-shadow: 0 4px 16px rgb(239 68 68 / 0.35);
+    transform: translateY(-1px);
+}
+
+.um-confirm-btn--yes:active {
+    transform: translateY(0);
+}
+
+.um-confirm-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}

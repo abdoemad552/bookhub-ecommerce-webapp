@@ -1,0 +1,103 @@
+package com.iti.jets.service.implementation;
+
+import com.iti.jets.mapper.CategoryMapper;
+import com.iti.jets.model.dto.response.CategoryDTO;
+import com.iti.jets.model.dto.response.factory.BaseResponse;
+import com.iti.jets.model.dto.response.factory.ResponseFactory;
+import com.iti.jets.model.entity.Category;
+import com.iti.jets.repository.interfaces.CategoryRepository;
+import com.iti.jets.service.generic.ContextHandler;
+import com.iti.jets.service.interfaces.CategoryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+public class CategoryServiceImpl extends ContextHandler implements CategoryService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CategoryServiceImpl.class);
+
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
+
+    public CategoryServiceImpl(CategoryRepository categoryRepository,
+                               CategoryMapper categoryMapper) {
+        this.categoryRepository = categoryRepository;
+        this.categoryMapper = categoryMapper;
+    }
+
+    @Override
+    public CategoryDTO findById(Long id) {
+        return executeInContext(() -> {
+            Optional<Category> categoryOpt = categoryRepository.findById(id);
+            return categoryOpt.map(categoryMapper::toDTO).orElse(null);
+        });
+    }
+
+    @Override
+    public List<CategoryDTO> findAll() {
+        return executeInContext(() -> categoryRepository.findAll()
+            .stream()
+            .map(categoryMapper::toDTO)
+            .toList()
+        );
+    }
+
+    @Override
+    public List<CategoryDTO> findAll(int pageNumber, int pageSize) {
+        return executeInContext(() -> categoryRepository
+                .findAll(pageNumber, pageSize)
+                .stream()
+                .map(categoryMapper::toDTO)
+                .toList()
+        );
+    }
+
+    @Override
+    public void delete(Long id) {
+        executeInContext(() -> {
+            Optional<Category> categoryOpt = categoryRepository.findById(id);
+            categoryOpt.ifPresent(categoryRepository::delete);
+        });
+    }
+
+    @Override
+    public long count() {
+        return executeInContext(categoryRepository::count);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return executeInContext(() -> categoryRepository.existsById(id));
+    }
+
+    @Override
+    public Set<Long> filterExists(Collection<Long> ids) {
+        return executeInContext(() -> categoryRepository.filterExists(ids));
+    }
+
+    @Override
+    public BaseResponse<Void> addCategory(String name) {
+        return executeInContext(() -> {
+            Optional<Category> catOpt = categoryRepository.findByName(name);
+            if(catOpt.isPresent()){
+                return ResponseFactory.failure("This category already exists");
+            }
+
+            if(name.isBlank()){
+                return ResponseFactory.failure("Category name is required");
+            }
+
+            Category category = Category.builder()
+                    .name(name)
+                    .build();
+
+            categoryRepository.save(category);
+
+            return ResponseFactory.success("Category added successfully");
+        });
+    }
+}

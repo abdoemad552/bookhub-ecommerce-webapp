@@ -1,0 +1,679 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ── Reset dialog defaults ── */
+dialog {
+    padding: 0;
+    border: none;
+    background: transparent;
+    overflow: visible;
+}
+
+/* ── Backdrop ── */
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0);
+    transition: background 0.25s ease;
+}
+
+dialog.is-open::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+/* ══════════════════════════════
+   MOBILE — bottom sheet
+══════════════════════════════ */
+@media (max-width: 639px) {
+    dialog {
+        position: fixed;
+        inset: auto 0 0 0;
+        width: 100%;
+        max-width: 36rem;
+        margin: 0;
+        transform: translateY(100%);
+        transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    dialog.is-open  { transform: translateY(0); }
+    dialog.is-closing { transform: translateY(100%); }
+    .dialog-panel {
+        border-radius: 1.25rem 1.25rem 0 0 !important;
+        max-height: 92svh;
+        overflow-y: auto;
+    }
+}
+
+/* ══════════════════════════════
+   DESKTOP — centered modal
+══════════════════════════════ */
+@media (min-width: 640px) {
+    dialog {
+        position: fixed;
+        inset: 0;
+        margin: auto;
+        width: 100%;
+        max-width: 36rem;
+        height: fit-content;
+        opacity: 0;
+        transform: scale(0.96) translateY(8px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    dialog.is-open {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    dialog.is-closing {
+        opacity: 0;
+        transform: scale(0.96) translateY(8px);
+    }
+    .dialog-panel { border-radius: 0.875rem !important; }
+}
+
+.field-input:focus {
+    outline: none;
+    border-color: oklch(0.35 0.08 30);
+    box-shadow: 0 0 0 3px oklch(0.35 0.08 30 / 0.12);
+}
+
+.field-input.is-invalid {
+    border-color: #f87171;
+}
+
+.field-input.is-invalid:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+/* ── Author row enter animation ── */
+@keyframes row-in {
+    from { opacity: 0; transform: translateY(-5px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.author-row { animation: row-in 0.18s ease forwards; }
+
+/* ── Scrollbar ── */
+.dialog-panel::-webkit-scrollbar { width: 4px; }
+.dialog-panel::-webkit-scrollbar-track { background: transparent; }
+.dialog-panel::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 9999px; }
+
+/* ── Panel: flex column so header/footer are fixed, form scrolls ── */
+.dialog-panel {
+    display: flex;
+    flex-direction: column;
+    max-height: 90svh;        /* cap on desktop */
+}
+
+/* ── Form body: the only scrolling region ── */
+.dialog-panel form {
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;            /* critical — lets a flex child shrink below content size */
+}
+
+/* ── Mobile: tighter cap since bottom sheet already reserves space ── */
+@media (max-width: 639px) {
+    .dialog-panel {
+        max-height: 92svh;
+    }
+}
+
+/* ── Thin scrollbar on the form ── */
+.dialog-panel form::-webkit-scrollbar       { width: 4px; }
+.dialog-panel form::-webkit-scrollbar-track { background: transparent; }
+.dialog-panel form::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 9999px; }
+
+/* ══════════════════════════════════════════════════════
+   TAB CONTENT — shared enter animation
+   Every tab fragment must have id="tab-content-root"
+   or the JS wraps it automatically.
+══════════════════════════════════════════════════════ */
+
+/* Exit: current tab fades + slides up before new tab loads */
+#main-content.tab-leaving {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    pointer-events: none;
+}
+
+/* Enter: new content starts invisible and slides up into place */
+@keyframes tab-enter {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#main-content.tab-entering {
+    animation: tab-enter 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── Staggered children: every direct child animates in sequence ── */
+#main-content.tab-entering > * {
+    opacity: 0;
+    animation: tab-enter 0.26s cubic-bezier(0.34, 1.10, 0.64, 1) forwards;
+}
+
+#main-content.tab-entering > *:nth-child(1) { animation-delay: 0.04s; }
+#main-content.tab-entering > *:nth-child(2) { animation-delay: 0.10s; }
+#main-content.tab-entering > *:nth-child(3) { animation-delay: 0.16s; }
+#main-content.tab-entering > *:nth-child(4) { animation-delay: 0.22s; }
+#main-content.tab-entering > *:nth-child(5) { animation-delay: 0.28s; }
+
+/* ── Overview stat cards: pop in with a slight scale ── */
+@keyframes card-pop {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+.tab-card-animate {
+    opacity: 0;
+    animation: card-pop 0.3s cubic-bezier(0.34, 1.20, 0.64, 1) forwards;
+}
+
+.tab-card-animate:nth-child(1) { animation-delay: 0.06s; }
+.tab-card-animate:nth-child(2) { animation-delay: 0.12s; }
+.tab-card-animate:nth-child(3) { animation-delay: 0.18s; }
+.tab-card-animate:nth-child(4) { animation-delay: 0.24s; }
+
+/* ── Table rows in products tab: reuse um-row-in ── */
+@keyframes row-slide-in {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.books-row-animate {
+    animation: row-slide-in 0.2s ease both;
+}
+
+/* Stagger for up to 10 book rows */
+.books-row-animate:nth-child(1)  { animation-delay: 0.04s; }
+.books-row-animate:nth-child(2)  { animation-delay: 0.07s; }
+.books-row-animate:nth-child(3)  { animation-delay: 0.10s; }
+.books-row-animate:nth-child(4)  { animation-delay: 0.13s; }
+.books-row-animate:nth-child(5)  { animation-delay: 0.16s; }
+.books-row-animate:nth-child(6)  { animation-delay: 0.19s; }
+.books-row-animate:nth-child(7)  { animation-delay: 0.22s; }
+.books-row-animate:nth-child(8)  { animation-delay: 0.25s; }
+.books-row-animate:nth-child(9)  { animation-delay: 0.28s; }
+.books-row-animate:nth-child(10) { animation-delay: 0.31s; }
+
+/* ── Products page header button matches um-action-btn style ── */
+.products-header-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 1rem;
+    height: 36px;
+    border-radius: 0.6rem;
+    border: none;
+    background: oklch(0.35 0.08 30);
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.83rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px oklch(0.35 0.08 30 / 0.25);
+    transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.15s ease;
+}
+
+.products-header-btn:hover {
+    background: oklch(0.28 0.08 30);
+    box-shadow: 0 4px 16px oklch(0.35 0.08 30 / 0.35);
+    transform: translateY(-1px);
+}
+
+.products-header-btn:active { transform: translateY(0); }
+.products-header-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ── Products page: table rows match overview card style ── */
+#books-table-container table tbody tr {
+    transition: background 0.15s ease;
+    border-bottom: 1px solid var(--border);
+}
+
+#books-table-container table tbody tr:hover {
+    background: rgba(120, 53, 15, .03);
+}
+
+/* ── Products page: stock badges use same pill style as user badges ── */
+#books-table-container .stock-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+
+/* Delete Book Confirmation Dialog */
+#book-confirm-backdrop.is-open {
+    background: rgba(0, 0, 0, 0.5);
+    pointer-events: all;
+    opacity: 1;
+}
+
+#book-confirm-backdrop.is-open #book-confirm-panel {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+#book-confirm-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0 0 0.5rem;
+    font-family: inherit;
+}
+
+#book-confirm-desc {
+    font-size: 0.83rem;
+    color: var(--muted-foreground);
+    line-height: 1.5;
+    margin: 0 0 1.5rem;
+    font-family: inherit;
+}
+
+.alert-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.alert-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+.alert-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+
+/* ══════════════════════════════════════════════════════
+   OVERVIEW PAGE — 3-row dashboard layout
+   Supports: overview.jsp stat cards, panels, inventory
+══════════════════════════════════════════════════════ */
+
+/* ── Outer grid ─────────────────────────────────────── */
+.overview-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* ══════════════════════════════
+   ROW 1 — Stat Cards
+══════════════════════════════ */
+.overview-row--stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+@media (min-width: 768px) {
+    .overview-row--stats {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+}
+
+/* Card shell */
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 30px 30px 30px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    transition: box-shadow 0.25s ease, transform 0.22s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+}
+
+/* Decorative background orb */
+.stat-card__orb {
+    position: absolute;
+    top: -28px;
+    right: -28px;
+    width: 99px;
+    height: 99px;
+    border-radius: 50%;
+    opacity: 0.12;
+    pointer-events: none;
+    transition: transform 0.5s ease;
+}
+
+.stat-card:hover .stat-card__orb {
+    transform: scale(1.5);
+}
+
+/* Icon container */
+.stat-card__icon-wrap {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Text block */
+.stat-card__body { position: relative; }
+
+.stat-card__value {
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    font-weight: 800;
+    color: var(--foreground);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 0 0 3px;
+}
+
+.stat-card__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted-foreground);
+    margin: 0;
+}
+
+/* Colour themes — orb + icon */
+.stat-card--emerald .stat-card__orb,
+.stat-card--emerald .stat-card__icon-wrap {
+    background: linear-gradient(135deg, #10b981, #0d9488);
+}
+
+.stat-card--blue .stat-card__orb,
+.stat-card--blue .stat-card__icon-wrap {
+    background: linear-gradient(135deg, #3b82f6, #4f46e5);
+}
+
+.stat-card--violet .stat-card__orb,
+.stat-card--violet .stat-card__icon-wrap {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.stat-card--amber .stat-card__orb,
+.stat-card--amber .stat-card__icon-wrap {
+    background: linear-gradient(135deg, #f59e0b, #ea580c);
+}
+
+/* Plug stat cards into the existing card-pop animation */
+.overview-row--stats .stat-card {
+    opacity: 0;
+    animation: card-pop 0.3s cubic-bezier(0.34, 1.20, 0.64, 1) forwards;
+}
+
+.overview-row--stats .stat-card:nth-child(1) { animation-delay: 0.06s; }
+.overview-row--stats .stat-card:nth-child(2) { animation-delay: 0.12s; }
+.overview-row--stats .stat-card:nth-child(3) { animation-delay: 0.18s; }
+.overview-row--stats .stat-card:nth-child(4) { animation-delay: 0.24s; }
+
+
+/* ══════════════════════════════
+   ROW 2 — Mid (categories + roles)
+══════════════════════════════ */
+.overview-row--mid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+}
+
+@media (min-width: 640px) {
+    .overview-row--mid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+/* ── Shared panel shell ─────────────────────────────── */
+.panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px;
+    transition: box-shadow 0.25s ease;
+}
+
+.panel:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Panel header: coloured dot + label */
+.panel__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.panel__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.panel__dot--blue    { background: #3b82f6; }
+.panel__dot--violet  { background: #8b5cf6; }
+.panel__dot--amber   { background: #f59e0b; }
+.panel__dot--emerald { background: #10b981; }
+
+.panel__title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted-foreground);
+    margin: 0;
+}
+
+/* ── Top Categories panel ───────────────────────────── */
+.categories-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.category-row__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+}
+
+.category-row__name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.category-row__pct {
+    font-size: 0.79rem;
+    font-weight: 700;
+    color: var(--muted-foreground);
+    font-variant-numeric: tabular-nums;
+}
+
+.category-row__track {
+    height: 7px;
+    background: var(--muted);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.category-row__fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.6s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+.fill--blue    { background: linear-gradient(90deg, #3b82f6, #6366f1); }
+.fill--emerald { background: linear-gradient(90deg, #10b981, #0d9488); }
+.fill--violet  { background: linear-gradient(90deg, #8b5cf6, #a855f7); }
+
+/* ── User Roles panel ───────────────────────────────── */
+.roles-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100% - 42px); /* full height minus the panel header */
+}
+
+.role-divider {
+    width: 1px;
+    height: 56px;
+    background: var(--border);
+    margin: 0 28px;
+    flex-shrink: 0;
+}
+
+.role-item { text-align: center; }
+
+.role-item__icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.13);
+}
+
+.role-item__icon--violet { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+.role-item__icon--blue   { background: linear-gradient(135deg, #3b82f6, #4f46e5); }
+
+.role-item__count {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--foreground);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin: 0 0 4px;
+}
+
+.role-item__label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted-foreground);
+    margin: 0;
+}
+
+
+/* ══════════════════════════════
+   ROW 3 — Inventory Status
+══════════════════════════════ */
+.panel--inventory {
+    padding: 20px 28px;
+}
+
+.inventory-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0;
+}
+
+/* Vertical separator between items */
+.inv-separator {
+    width: 1px;
+    height: 44px;
+    background: var(--border);
+    flex-shrink: 0;
+    margin: 0 28px;
+}
+
+/* Stack vertically and hide separators on very small screens */
+@media (max-width: 480px) {
+    .inventory-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .inv-separator { display: none; }
+}
+
+.inv-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 140px;
+}
+
+/* Status dot with glow ring */
+.inv-item__indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.inv-item__indicator--emerald {
+    background: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.inv-item__indicator--amber {
+    background: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+}
+
+.inv-item__indicator--red {
+    background: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.inv-item__body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.inv-item__label {
+    font-size: 0.80rem;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+/* Count badge */
+.inv-item__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.79rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    width: fit-content;
+}
+
+.inv-item__badge--emerald { background: rgba(16, 185, 129, 0.10); color: #059669; }
+.inv-item__badge--amber   { background: rgba(245, 158, 11, 0.10); color: #d97706; }
+.inv-item__badge--red     { background: rgba(239, 68,  68, 0.10); color: #dc2626; }

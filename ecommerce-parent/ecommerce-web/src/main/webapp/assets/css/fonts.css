@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap');
+
+.font-google-sans {
+    font-family: "Google Sans", sans-serif;
+}
+
+.font-google-sans-light {
+    font-family: "Google Sans", sans-serif;
+    font-weight: 300;
+}
+
+.font-google-sans-regular {
+    font-family: "Google Sans", sans-serif;
+    font-weight: 400;
+}
+
+.font-google-sans-medium {
+    font-family: "Google Sans", sans-serif;
+    font-weight: 500;
+}
+
+.font-google-sans-bold {
+    font-family: "Google Sans", sans-serif;
+    font-weight: 700;
+}
+
+.font-google-sans-italic {
+    font-family: "Google Sans", sans-serif;
+    font-style: italic;
+}
+
+.font-google-sans-bold-italic {
+    font-family: "Google Sans", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+}
+

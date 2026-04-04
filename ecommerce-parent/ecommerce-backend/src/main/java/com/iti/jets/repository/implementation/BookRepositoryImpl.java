@@ -1,0 +1,296 @@
+package com.iti.jets.repository.implementation;
+
+import com.iti.jets.model.dto.request.BookFilterDTO;
+import com.iti.jets.model.entity.Book;
+import com.iti.jets.model.entity.Category;
+import com.iti.jets.repository.generic.BaseRepositoryImpl;
+import com.iti.jets.repository.interfaces.BookRepository;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+
+public class BookRepositoryImpl extends BaseRepositoryImpl<Book, Long> implements BookRepository {
+
+    @Override
+    public Optional<Book> findById(Long id) {
+        return executeReadOnly(em ->
+            em.createQuery(
+                "SELECT DISTINCT b FROM Book b " +
+                "LEFT JOIN FETCH b.category " +
+                "LEFT JOIN FETCH b.bookAuthors ba " +
+                "LEFT JOIN FETCH ba.author " +
+                "WHERE b.id = :id",
+                getEntityClass()
+            )
+            .setParameter("id", id)
+            .getResultStream()
+            .findFirst()
+        );
+    }
+
+    @Override
+    public List<Book> findAll(int pageNumber, int pageSize, BookFilterDTO filter) {
+        return executeReadOnly(em -> {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Book> criteriaQuery = cb.createQuery(getEntityClass());
+            Root<Book> bookRoot = criteriaQuery.from(getEntityClass());
+
+            bookRoot.fetch("category", JoinType.LEFT);
+            bookRoot.fetch("bookAuthors", JoinType.LEFT).fetch("author", JoinType.LEFT);
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (filter != null) {
+                if (filter.getCategoryIds() != null && !filter.getCategoryIds().isEmpty()) {
+                    Join<Book, Category> categoryJoin = bookRoot.join("category", JoinType.LEFT);
+                    predicates.add(categoryJoin.get("id").in(filter.getCategoryIds()));
+                }
+
+                if (filter.getMinPrice() > 0) {
+                    predicates.add(
+                        cb.greaterThanOrEqualTo(
+                            bookRoot.get("price"),
+                            BigDecimal.valueOf(filter.getMinPrice())
+                        )
+                    );
+                }
+
+                if (filter.getMaxPrice() > 0) {
+                    predicates.add(
+                        cb.lessThanOrEqualTo(
+                            bookRoot.get("price"),
+                            BigDecimal.valueOf(filter.getMaxPrice())
+                        )
+                    );
+                }
+
+                if (filter.getSearchQuery() != null && !filter.getSearchQuery().isBlank()) {
+                    String trimmedSearchQuery = filter.getSearchQuery().trim();
+                    String titleSearchQuery = buildContainsPattern(trimmedSearchQuery.toLowerCase(Locale.ROOT));
+                    String descriptionSearchQuery = buildContainsPattern(trimmedSearchQuery);
+
+                    predicates.add(
+                        cb.or(
+                            cb.like(cb.lower(bookRoot.get("title")), titleSearchQuery, '\\'),
+                            cb.like(bookRoot.get("description"), descriptionSearchQuery, '\\')
+                        )
+                    );
+                }
+
+            }
+
+            List<Order> orderBy = buildOrderBy(cb, bookRoot, filter);
+
+            criteriaQuery.select(bookRoot)
+                    .distinct(true)
+                    .orderBy(orderBy);
+
+            if (!predicates.isEmpty()) {
+                criteriaQuery.where(predicates.toArray(new Predicate[0]));
+            }
+
+            TypedQuery<Book> query = em.createQuery(criteriaQuery);
+
+            int safePageNumber = Math.max(pageNumber, 1);
+            int safePageSize = Math.max(pageSize, 1);
+            query.setFirstResult((safePageNumber - 1) * safePageSize);
+            query.setMaxResults(safePageSize);
+
+            return query.getResultList();
+        });
+    }
+
+    public long count(BookFilterDTO filter) {
+        return executeReadOnly(em -> {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+
+            Root<Book> bookRoot = cq.from(Book.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (filter != null) {
+                if (filter.getCategoryIds() != null && !filter.getCategoryIds().isEmpty()) {
+                    Join<Book, Category> categoryJoin = bookRoot.join("category", JoinType.LEFT);
+                    predicates.add(categoryJoin.get("id").in(filter.getCategoryIds()));
+                }
+
+                if (filter.getMinPrice() > 0) {
+                    predicates.add(
+                        cb.greaterThanOrEqualTo(
+                            bookRoot.get("price"),
+                            BigDecimal.valueOf(filter.getMinPrice())
+                        )
+                    );
+                }
+
+                if (filter.getMaxPrice() > 0) {
+                    predicates.add(
+                        cb.lessThanOrEqualTo(
+                            bookRoot.get("price"),
+                            BigDecimal.valueOf(filter.getMaxPrice())
+                        )
+                    );
+                }
+
+                if (filter.getSearchQuery() != null && !filter.getSearchQuery().isBlank()) {
+                    String trimmedSearchQuery = filter.getSearchQuery().trim();
+                    String titleSearchQuery = buildContainsPattern(trimmedSearchQuery.toLowerCase(Locale.ROOT));
+                    String descriptionSearchQuery = buildContainsPattern(trimmedSearchQuery);
+
+                    predicates.add(
+                        cb.or(
+                            cb.like(cb.lower(bookRoot.get("title")), titleSearchQuery, '\\'),
+                            cb.like(bookRoot.get("description"), descriptionSearchQuery, '\\')
+                        )
+                    );
+                }
+            }
+
+            cq.select(cb.countDistinct(bookRoot));
+
+            if (!predicates.isEmpty()) {
+                cq.where(predicates.toArray(new Predicate[0]));
+            }
+
+            return em.createQuery(cq).getSingleResult();
+        });
+    }
+
+
+    @Override
+    public List<Book> findAllFeatured() {
+        return executeReadOnly(em ->
+                em.createQuery(
+                    "SELECT DISTINCT b FROM Book b " +
+                    "LEFT JOIN FETCH b.category " +
+                    "LEFT JOIN FETCH b.bookAuthors ba " +
+                    "LEFT JOIN FETCH ba.author " +
+                    "ORDER BY COALESCE(b.averageRating, 0) DESC, COALESCE(b.soldQuantity, 0) DESC, b.title ASC",
+                    getEntityClass()
+                )
+                .setMaxResults(12)
+                .getResultList()
+        );
+    }
+
+    @Override
+    public List<Book> findAllSummary(int page, int size) {
+        return executeReadOnly(em -> em
+            .createQuery("""
+                SELECT DISTINCT b
+                FROM Book b
+                LEFT JOIN FETCH b.bookAuthors ba
+                LEFT JOIN FETCH ba.author
+                ORDER BY b.publishDate DESC
+            """, Book.class)
+            .setFirstResult(page * size)
+            .setMaxResults(size)
+            .getResultList()
+        );
+    }
+
+    @Override
+    public Optional<Book> findByIsbn(String isbn) {
+        return executeReadOnly(em -> em
+            .createQuery("SELECT b FROM Book b WHERE b.isbn = :isbn", Book.class)
+            .setParameter("isbn", isbn)
+            .getResultStream()
+            .findFirst()
+        );
+    }
+
+    @Override
+    public void updateCoverUrl(Long bookId, String coverUrl) {
+        executeInTransaction(em -> em
+            .createQuery("UPDATE Book b SET b.imageUrl = :coverUrl WHERE b.id = :bookId")
+            .setParameter("coverUrl", coverUrl)
+            .setParameter("bookId", bookId)
+            .executeUpdate()
+        );
+    }
+
+    @Override
+    public int deductStock(Long bookId, int quantity) {
+        return executeInTransaction(em -> {
+            return em.createQuery(
+                            "UPDATE Book b " +
+                                    "SET b.stockQuantity = b.stockQuantity - :qty, " +
+                                    "    b.soldQuantity  = b.soldQuantity  + :qty  " +
+                                    "WHERE b.id = :id " +
+                                    "AND b.stockQuantity >= :qty") // Check AND deduct in ONE query!
+                    .setParameter("qty", quantity)
+                    .setParameter("id", bookId)
+                    .executeUpdate();
+        });
+    }
+
+    public List<Book> findAuthoredBooks(Long authorId, int page, int size) {
+        return executeReadOnly(em -> em
+            .createQuery("""
+                SELECT bo.book
+                FROM BookAuthor bo
+                WHERE bo.author.id = :authorId
+            """, Book.class)
+            .setParameter("authorId", authorId)
+            .setFirstResult((page - 1) * size)
+            .setMaxResults(size)
+            .getResultList()
+        );
+    }
+
+    public Long countAuthoredBooks(Long authorId) {
+        return executeReadOnly(em -> em
+            .createQuery("""
+                SELECT COUNT(bo)
+                FROM BookAuthor bo
+                WHERE bo.author.id = :authorId
+            """, Long.class)
+            .setParameter("authorId", authorId)
+            .getSingleResult()
+        );
+    }
+
+    private List<Order> buildOrderBy(CriteriaBuilder criteriaBuilder, Root<Book> bookRoot, BookFilterDTO filter) {
+        String sortCriteria = filter == null || filter.getSortCriteria() == null
+                ? "featured"
+                : filter.getSortCriteria().trim().toLowerCase(Locale.ROOT);
+
+        List<Order> orderBy = new ArrayList<>();
+
+        switch (sortCriteria) {
+            case "price-low-to-high" -> orderBy.add(criteriaBuilder.asc(bookRoot.get("price")));
+            case "price-high-to-low" -> orderBy.add(criteriaBuilder.desc(bookRoot.get("price")));
+            case "rating" -> orderBy.add(criteriaBuilder.desc(criteriaBuilder.coalesce(bookRoot.get("averageRating"), 0.0)));
+            default -> {
+                orderBy.add(criteriaBuilder.desc(criteriaBuilder.coalesce(bookRoot.get("averageRating"), 0.0)));
+                orderBy.add(criteriaBuilder.desc(criteriaBuilder.coalesce(bookRoot.get("soldQuantity"), 0)));
+            }
+        }
+
+        orderBy.add(criteriaBuilder.asc(bookRoot.get("title")));
+        return orderBy;
+    }
+
+    private String buildContainsPattern(String searchValue) {
+        if (searchValue == null) return "%";
+
+        String escaped = searchValue
+            .replace("\\", "\\\\")
+            .replace("%", "\\%")
+            .replace("_", "\\_");
+
+        return "%" + escaped + "%";
+    }
+}
