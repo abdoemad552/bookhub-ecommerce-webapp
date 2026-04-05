@@ -274,7 +274,7 @@ ecommerce-webapp/
 - Factory Pattern
 - Singleton Pattern
 - DTO (Data Transfer Object) Pattern
-- Builder Pattern**
+- Builder Pattern
 ---
 ## 📡 Asynchronous Processing
 
