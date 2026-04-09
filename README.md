@@ -21,7 +21,7 @@
 - [Design Patterns & Principles](#-design-patterns--principles)
 - [Asynchronous Processing](#-asynchronous-processing)
 - [Concurrency & Thread Safety](#-concurrency--thread-safety)
-- [Database Schema (ERD)](#-database-schema-(erd))
+- [Database Schema (ERD)](#-database-schema-erd)
 - [Run the Code](#-run-the-code)
 - [Testing & Code Coverage](#-testing--code-coverage)
 - [Demo Video](#-demo-video)
