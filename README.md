@@ -21,6 +21,7 @@
 - [Design Patterns & Principles](#-design-patterns--principles)
 - [Asynchronous Processing](#-asynchronous-processing)
 - [Concurrency & Thread Safety](#-concurrency--thread-safety)
+- [Database Schema (ERD)](#-database-schema-(erd))
 - [Run the Code](#-run-the-code)
 - [Testing & Code Coverage](#-testing--code-coverage)
 - [Demo Video](#-demo-video)
@@ -310,6 +311,10 @@ ecommerce-webapp/
 - Isolation between concurrent transactions
 - Prevention of race conditions
 - Proper resource cleanup per thread
+
+## 📊 Database Schema (ERD)
+
+<img width="2000" height="2000" align=center alt="Picture1" src="https://github.com/user-attachments/assets/a8f6f83b-ca8d-4c8d-a25c-29ea9aa5688d" />
 
 ## 🚀 Run the Code
 
